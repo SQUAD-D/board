@@ -1,0 +1,22 @@
+.top-title{
+    display: flex;
+    height: 100px;
+    justify-content: center;
+}
+
+.signup-title{
+    display: flex;
+    margin-bottom: 40px;
+    justify-content: center;
+}
+
+.signup-wrapper{
+    display: flex;
+    justify-content: center;
+}
+
+#signup-form > input{
+    height: 30px;
+    padding: 0 10px;
+    margin-bottom: 14px;
+}
