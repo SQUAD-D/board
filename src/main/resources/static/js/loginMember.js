@@ -16,6 +16,7 @@ submitBtn.addEventListener("click", () => {
             if(result === "success"){
                 console.log(result);
                 isValidateInfo = true;
+                window.location.href='/';
             }else{
                 alert("로그인 정보를 다시 확인해주세요.");
             }

@@ -2,19 +2,15 @@ package squad.board.apicontroller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import squad.board.domain.member.Member;
 import squad.board.dto.member.CreateMemberDto;
 import squad.board.dto.member.LoginMemberDto;
 import squad.board.dto.member.ValidateLoginIdDto;
 import squad.board.service.MemberService;
-
-import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor

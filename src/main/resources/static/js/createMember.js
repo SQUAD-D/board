@@ -42,7 +42,9 @@ submitBtn.addEventListener("click", () => {
         nickName: nickName
     })
         .then((response) => {
-            console.log(response)
+            if(response.status === 200){
+                window.location.href = '/';
+            }
         })
 });
 

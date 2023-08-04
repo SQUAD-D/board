@@ -62,5 +62,4 @@ public class MemberService {
         }
         return "success";
     }
-
 }
