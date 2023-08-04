@@ -5,7 +5,10 @@ import squad.board.domain.member.Member;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateMemberDto {
     private String loginId;
     private String loginPw;
