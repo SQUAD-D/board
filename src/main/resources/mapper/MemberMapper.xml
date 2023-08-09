@@ -18,8 +18,8 @@
         select * from member where login_id = #{loginId} and login_pw = #{loginPw}
     </select>
 
-    <select id="findByLoginId" parameterType="string" resultType="_int">
-        select COUNT(member_id) from member where login_id = #{loginId}
+    <select id="findByLoginId" parameterType="string" resultType="Member">
+        select * from member where login_id = #{loginId}
     </select>
 
 </mapper>

@@ -11,15 +11,16 @@ submitBtn.addEventListener("click", () => {
         loginId: loginId,
         loginPw: loginPw,
     })
-        .then((response) => {
-            const result = response.data;
-            if(result === "success"){
-                console.log(result);
-                isValidateInfo = true;
-                window.location.href='/';
-            }else{
-                alert("로그인 정보를 다시 확인해주세요.");
+        .then(response => {
+            const data = response.data;
+            const message = data.message;
+            const code = data.code;
+            if(code === 101){
+                alert(message);
+                return
             }
+            isValidateInfo = true;
+            window.location.href='/';
         })
 });
 

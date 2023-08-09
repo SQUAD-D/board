@@ -40,10 +40,8 @@ class MemberServiceTest {
         CreateMemberDto createMemberDto = new CreateMemberDto("bukak3","1234","song","hae");
         memberService.join(createMemberDto);
         String loginId = "bukak3";
-
         //when
         String result = memberService.validationLoginId(loginId);
-        System.out.println("result = " + result);
         //then
         Assertions.assertThat(result).isEqualTo("failed");
     }
@@ -58,7 +56,6 @@ class MemberServiceTest {
 
         //when
         String result = memberService.validationLoginId(loginId);
-        System.out.println("result = " + result);
 
         //then
         Assertions.assertThat(result).isEqualTo("success");

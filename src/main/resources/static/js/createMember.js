@@ -13,13 +13,14 @@ validationBtn.addEventListener("click", () => {
         loginId: loginId
     })
         .then((response) => {
-            const result = response.data;
-            console.log(result);
-            if (result === "success") {
-                alert("사용가능한 아이디 입니다.")
-                isValidateId = true;
+            const data = response.data
+            const message = data.message
+            const code = data.code
+            if (code === 102) {
+                alert(message)
+                isValidateId = true
             }else{
-                alert("중복된 아이디입니다.")
+                alert(message)
             }
         })
 })
