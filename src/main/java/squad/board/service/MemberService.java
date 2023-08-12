@@ -3,6 +3,7 @@ package squad.board.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.domain.member.Member;
@@ -17,6 +18,7 @@ import static squad.board.exception.login.LoginStatus.INVALID_LOGIN_INFO;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class MemberService {
 
@@ -38,6 +40,7 @@ public class MemberService {
     public Member login(LoginRequestDto loginRequestDto) {
         String loginId = loginRequestDto.getLoginId();
         String loginPw = loginRequestDto.getLoginPw();
+        log.info("{} Login", loginId);
         return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
     }
 
@@ -62,7 +65,7 @@ public class MemberService {
     // 회원가입 시 중복아이디 검증
     public void validationLoginId(String loginId) throws LoginException {
         Member findMember = memberMapper.findByLoginId(loginId);
-        if (findMember == null) {
+        if (findMember != null) {
             throw new LoginException(DUPLICATED_LOGIN_ID);
         }
     }
