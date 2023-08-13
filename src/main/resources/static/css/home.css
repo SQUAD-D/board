@@ -1,0 +1,18 @@
+.top-title{
+    display: flex;
+    height: 300px;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-button{
+    display: flex;
+    justify-content: center;
+    padding-block: 10px;
+}
+
+.login-button{
+    display: flex;
+    justify-content: center;
+    padding-block: 10px;
+}
