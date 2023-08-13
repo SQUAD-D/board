@@ -1,9 +1,9 @@
 const loginIdInput = document.getElementById("loginId");
 const loginPwInput = document.getElementById("loginPw");
-const submitBtn = document.getElementById("submit-btn");
+const loginBtn = document.getElementById("login-btn");
 let isValidateInfo = false;
 
-submitBtn.addEventListener("click", () => {
+loginBtn.addEventListener("click", () => {
     const loginId = loginIdInput.value;
     const loginPw = loginPwInput.value;
 
@@ -15,12 +15,12 @@ submitBtn.addEventListener("click", () => {
             const data = response.data;
             const message = data.message;
             const code = data.code;
-            if(code === 101){
+            if (code === 101) {
                 alert(message);
                 return
             }
             isValidateInfo = true;
-            window.location.href='/';
+            window.location.href = '/';
         })
 });
 
