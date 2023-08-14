@@ -9,7 +9,7 @@ import squad.board.exception.login.LoginResponse;
 public class MemberApiAdvisor {
 
     @ExceptionHandler(LoginException.class)
-    public LoginResponse loginExceptionHandler(LoginException loginException) {
+    public LoginResponse<Void> loginExceptionHandler(LoginException loginException) {
         return new LoginResponse<>(loginException.getLoginStatus(), null);
     }
 }

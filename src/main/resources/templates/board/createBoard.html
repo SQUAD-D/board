@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Simple Board</title>
     <link rel="stylesheet" href="/css/boardBase.css">
-    <link rel="stylesheet" href="/css/boardList.css">
+    <link rel="stylesheet" href="/css/createBoard.css">
 </head>
 <body>
 <header>
@@ -20,17 +20,19 @@
     <div class="main-container">
 
         <div class="menu-container">
-            <button class="menu-btn" id="writeBoard" onclick="location.href='/boards/new'">글쓰기</button>
             <button class="menu-btn" id="myBoard">나의 게시글</button>
             <button class="menu-btn" id="myComment">나의 댓글</button>
             <button class="menu-btn" id="updateInfo">회원 정보 수정</button>
             <button class="menu-btn" id="logOut">로그아웃</button>
         </div>
 
-        <div class="search-container">
-            <input type="text" class="search-box" placeholder="검색어를 입력해주세요."/>
-            <button class="search-btn">검색</button>
-            <!--            차후 검색 조건 추가 -->
+        <div class="create-board-container">
+            <input type="text" class="title-box" placeholder="제목을 입력해주세요."/>
+            <textarea class="content-box" placeholder="내용을 입력해주세요."></textarea>
+        </div>
+
+        <div class="create-btn">
+            <button>완료</button>
         </div>
     </div>
 </main>

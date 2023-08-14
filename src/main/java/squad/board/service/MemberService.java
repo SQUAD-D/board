@@ -44,7 +44,7 @@ public class MemberService {
         return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
     }
 
-    // 로그인(세션) 검증
+    // 로그인 후 세션 발급
     public LoginResponseDto sessionValidation(Member member, HttpServletRequest request) throws LoginException {
         // 로그인 정보 검증
         if (member == null) {
@@ -61,6 +61,7 @@ public class MemberService {
 
         return new LoginResponseDto(member.getMemberId(), member.getNickName());
     }
+
 
     // 회원가입 시 중복아이디 검증
     public void validationLoginId(String loginId) throws LoginException {

@@ -13,7 +13,6 @@ validationBtn.addEventListener("click", () => {
         loginId: signUpId
     })
         .then((response) => {
-            //4xx 일때 처리
             const data = response.data
             const message = data.message
             const code = data.code
@@ -45,6 +44,7 @@ signUpBtn.addEventListener("click", () => {
     })
         .then((response) => {
             if (response.status === 200) {
+                alert("회원가입이 완료, 로그인 후 사용해주세요.")
                 window.location.href = '/';
             }
         })

@@ -34,7 +34,7 @@ public class MemberApiController {
 
     // 중복 아이디 검증
     @PostMapping("/validation")
-    public LoginResponse validationLoginId(@RequestBody ValidateLoginIdDto loginIdDto) {
+    public LoginResponse<Void> validationLoginId(@RequestBody ValidateLoginIdDto loginIdDto) {
         memberService.validationLoginId(loginIdDto.getLoginId());
         return new LoginResponse<>(VALID_LOGIN_ID, null);
     }

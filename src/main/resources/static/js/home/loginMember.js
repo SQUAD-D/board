@@ -20,7 +20,7 @@ loginBtn.addEventListener("click", () => {
                 return
             }
             isValidateInfo = true;
-            window.location.href = '/';
+            window.location.href = '/boards';
         })
 });
 
