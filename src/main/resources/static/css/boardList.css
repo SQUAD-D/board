@@ -8,6 +8,10 @@ input {
     width: 30%;
 }
 
+a {
+    text-decoration: none;
+}
+
 .search-container {
     display: flex;
     justify-content: center;

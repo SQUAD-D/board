@@ -6,15 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
 import squad.board.dto.member.CreateMemberDto;
 import squad.board.dto.member.LoginRequestDto;
 import squad.board.dto.member.LoginResponseDto;
 import squad.board.exception.login.LoginException;
+import squad.board.exception.session.SessionException;
 import squad.board.repository.MemberMapper;
 
-import static squad.board.exception.login.LoginStatus.DUPLICATED_LOGIN_ID;
-import static squad.board.exception.login.LoginStatus.INVALID_LOGIN_INFO;
+import static squad.board.exception.login.LoginStatus.*;
+import static squad.board.exception.session.SessionStatus.INVALID_SESSION_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +46,8 @@ public class MemberService {
         return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
     }
 
-    // 로그인 후 세션 발급
-    public LoginResponseDto sessionValidation(Member member, HttpServletRequest request) throws LoginException {
+    // 세션 발급
+    public CommonIdResponse provideSession(Member member, HttpServletRequest request) {
         // 로그인 정보 검증
         if (member == null) {
             throw new LoginException(INVALID_LOGIN_INFO);
@@ -59,7 +61,17 @@ public class MemberService {
         // 유효 시간은 30분
         session.setMaxInactiveInterval(1800);
 
-        return new LoginResponseDto(member.getMemberId(), member.getNickName());
+        return new CommonIdResponse(member.getMemberId());
+    }
+
+    // 세션 검증
+    public Long validateSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        // (주소창으로 직접)세션이 없는 접근이거나, 세션이 만료되면 메인으로 리다이렉션
+        if (session == null) {
+            throw new SessionException(INVALID_SESSION_ID);
+        }
+        return (Long) session.getAttribute("memberId");
     }
 
 

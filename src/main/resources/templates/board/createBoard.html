@@ -12,7 +12,7 @@
 <body>
 <header>
     <div>
-        <h1 class="title-container" id="title">Simple Board</h1>
+        <h1 class="title-container" id="topTitle"><a href="/boards">Simple Board</a></h1>
     </div>
 </header>
 
@@ -27,16 +27,17 @@
         </div>
 
         <div class="create-board-container">
-            <input type="text" class="title-box" placeholder="제목을 입력해주세요."/>
-            <textarea class="content-box" placeholder="내용을 입력해주세요."></textarea>
+            <input type="text" class="title-box" placeholder="제목을 입력해주세요." id="title"/>
+            <textarea class="content-box" placeholder="내용을 입력해주세요." id="content"></textarea>
         </div>
 
         <div class="create-btn">
-            <button>완료</button>
+            <button id="write-btn">작성</button>
         </div>
     </div>
 </main>
 
-
+<script src="/js/board/createBoard.js"></script>
+<script src="/webjars/github-com-axios-axios/1.3.2/axios.min.js"></script>
 </body>
 </html>

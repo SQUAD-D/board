@@ -11,16 +11,15 @@ loginBtn.addEventListener("click", () => {
         loginId: loginId,
         loginPw: loginPw,
     })
-        .then(response => {
-            const data = response.data;
-            const message = data.message;
-            const code = data.code;
-            if (code === 101) {
-                alert(message);
-                return
-            }
+        .then(() => {
             isValidateInfo = true;
             window.location.href = '/boards';
+        })
+        .catch(error => {
+            const data = error.response.data;
+            if (data.code === 101) {
+                alert(data.message);
+            }
         })
 });
 

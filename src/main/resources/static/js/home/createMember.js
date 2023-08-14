@@ -13,14 +13,16 @@ validationBtn.addEventListener("click", () => {
         loginId: signUpId
     })
         .then((response) => {
-            const data = response.data
-            const message = data.message
-            const code = data.code
-            if (code === 102) {
-                alert(message)
-                isValidateId = true
-            } else {
-                alert(message)
+            const data = response.data;
+            if (data.code === 102) {
+                alert(data.message)
+            }
+        })
+        .catch(error => {
+            const data = error.response.data;
+            if (data.code === 103) {
+                alert(data.message)
+                isValidateId = true;
             }
         })
 })

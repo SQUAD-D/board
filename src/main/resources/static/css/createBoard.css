@@ -34,6 +34,10 @@ input {
     width: 100%;
 }
 
+textarea {
+    resize: none;
+}
+
 .create-board-container {
     display: flex;
     flex-direction: column;
