@@ -4,8 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="squad.board.repository.BoardMapper">
-    <insert id="save" parameterType="Member" useGeneratedKeys="true" keyProperty="boardId" keyColumn="board_id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="boardId" keyColumn="board_id">
         insert into board(member_id, title, content, created_date, modified_date)
         values (#{memberId}, #{title}, #{content}, #{createdDate}, #{modifiedDate})
     </insert>
+
+    <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponseDto">
+        select b.title,
+               b.content,
+               m.nick_name,
+               b.created_date
+        from board b
+                 join member m
+                      on b.member_id = m.member_id
+        order by created_date desc
+    </select>
 </mapper>

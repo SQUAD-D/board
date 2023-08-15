@@ -16,6 +16,7 @@ validationBtn.addEventListener("click", () => {
             const data = response.data;
             if (data.code === 102) {
                 alert(data.message)
+                isValidateId = false;
             }
         })
         .catch(error => {
@@ -29,7 +30,7 @@ validationBtn.addEventListener("click", () => {
 
 
 signUpBtn.addEventListener("click", () => {
-    if (isValidateId === false) {
+    if (isValidateId === true) {
         alert("중복아이디 체크가 필요합니다")
         return
     }
