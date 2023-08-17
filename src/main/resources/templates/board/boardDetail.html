@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -7,20 +8,62 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Simple Board</title>
     <link rel="stylesheet" href="/css/boardBase.css">
+    <link rel="stylesheet" href="/css/boardDetail.css">
 </head>
 <body>
 <header>
-    <div>
-        <h1 class="title-container" id="title">Simple Board</h1>
+    <div class="title-container">
+        <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
     </div>
 </header>
 
 <main>
     <div class="main-container">
-        <p>게시글</p>
+        <div class="menu-container">
+            <button
+                    class="menu-btn"
+                    id="writeBoard"
+                    onclick="location.href='/boards/new'">
+                글쓰기
+            </button>
+            <button class="menu-btn" id="myBoard">나의 게시글</button>
+            <button class="menu-btn" id="myComment">나의 댓글</button>
+            <button class="menu-btn" id="updateInfo">회원 정보 수정</button>
+            <button class="menu-btn" id="logOut">로그아웃</button>
+        </div>
+
+        <div class="board-container">
+            <p id="boardId" hidden="hidden" th:text="${board.boardId}"></p>
+            <div class="member-info">
+                <h2 th:text="|닉네임 : ${board.nickName}|"></h2><br>
+                <p class="createdDate" th:text="|작성일 : ${board.createdDate}|"></p>
+                <p class="modifiedDate" th:if="${board.modifiedDate != null}"
+                   th:text="${board.modifiedDate}"></p>
+            </div>
+            <div class="board-title">
+                <h1 th:text="${board.title}"></h1>
+            </div>
+            <div class="board-content">
+                <pre th:text="${board.content}">
+                </pre>
+            </div>
+            <div class="board-menu-container">
+                <button class="menu-btn" id="delete-req-btn">삭제
+                </button>
+                <button class="menu-btn" id="update-req-btn">수정
+                </button>
+            </div>
+        </div>
     </div>
 </main>
-
-
+<footer>
+    <div class="footer-info">
+        SQUAD-BOARD / Song Hae Chan
+    </div>
+</footer>
 </body>
+<script src="/js/board/logout.js"></script>
+<script src="/js/board/boardDetail.js"></script>
+<script src="/js/board/simpleModifiedDate.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 </html>

@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
-import squad.board.dto.member.CreateMemberDto;
-import squad.board.dto.member.LoginRequestDto;
-import squad.board.dto.member.LoginResponseDto;
+import squad.board.dto.member.CreateMember;
+import squad.board.dto.member.LoginRequest;
 import squad.board.exception.login.LoginException;
 import squad.board.exception.session.SessionException;
 import squad.board.repository.MemberMapper;
@@ -27,8 +26,8 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     @Transactional
-    public Long join(CreateMemberDto createMemberDto) {
-        Member member = createMemberDto.toEntity();
+    public Long join(CreateMember createMember) {
+        Member member = createMember.toEntity();
         memberMapper.save(member);
         return member.getMemberId();
     }
@@ -39,11 +38,19 @@ public class MemberService {
     }
 
     // 회원 로그인
-    public Member login(LoginRequestDto loginRequestDto) {
-        String loginId = loginRequestDto.getLoginId();
-        String loginPw = loginRequestDto.getLoginPw();
+    public Member login(LoginRequest loginRequest) {
+        String loginId = loginRequest.getLoginId();
+        String loginPw = loginRequest.getLoginPw();
         log.info("{} Login", loginId);
         return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
+    }
+
+    public CommonIdResponse logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Long memberId = (Long) session.getAttribute("memberId");
+        log.info("{} Logout", memberId);
+        session.invalidate();
+        return new CommonIdResponse(memberId);
     }
 
     // 세션 발급

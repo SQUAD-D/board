@@ -1,9 +1,7 @@
 package squad.board.dto.board;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -11,8 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class BoardResponseDto {
+public class BoardResponse {
+    private Long boardId;
     private String title;
     private String content;
     private String nickName;

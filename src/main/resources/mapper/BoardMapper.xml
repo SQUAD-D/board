@@ -9,8 +9,9 @@
         values (#{memberId}, #{title}, #{content}, #{createdDate}, #{modifiedDate})
     </insert>
 
-    <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponseDto">
-        select b.title,
+    <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponse">
+        select b.board_id,
+               b.title,
                b.content,
                m.nick_name,
                b.created_date
@@ -19,4 +20,32 @@
                       on b.member_id = m.member_id
         order by created_date desc
     </select>
+
+    <select id="findByIdWithNickName" resultType="squad.board.dto.board.BoardDetailResponse" parameterType="long">
+        select b.board_id, b.title, b.content, m.nick_name, b.created_date, b.modified_date
+        from board b
+                 join member m
+                      on b.member_id = m.member_id
+        where b.board_id = #{boardId}
+    </select>
+
+    <delete id="deleteById">
+        delete
+        from board
+        where board_id = #{boardId}
+    </delete>
+
+    <select id="findById" resultType="Board">
+        select *
+        from board
+        where board_id = #{boardId}
+    </select>
+
+    <update id="updateById">
+        update board
+        set title         = #{dto.title},
+            content       = #{dto.content},
+            modified_date = #{modifiedDate}
+        where board_id = #{boardId}
+    </update>
 </mapper>

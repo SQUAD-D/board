@@ -20,10 +20,19 @@ function formatRelativeDate(date) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const createdDateElements = document.querySelectorAll("#createdDate");
+    const createdDateElements = document.querySelectorAll(".createdDate");
 
     createdDateElements.forEach(function (element) {
         const createdDate = new Date(element.textContent);
         element.textContent = formatRelativeDate(createdDate);
     });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const modifiedDateElements = document.querySelector(".modifiedDate");
+
+    if (modifiedDateElements) {
+        const modifiedDate = new Date(modifiedDateElements.textContent);
+        modifiedDateElements.textContent = formatRelativeDate(modifiedDate);
+    }
 });

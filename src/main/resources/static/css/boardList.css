@@ -61,6 +61,8 @@ a {
 
 .board-list-container {
     margin-top: 40px;
+    margin-bottom: 100px;
+    padding-bottom: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -84,7 +86,7 @@ thead {
 }
 
 td {
-    padding: 10px 100px;
+    padding: 10px 50px;
     text-align: left;
     font-weight: normal;
 }
@@ -104,15 +106,6 @@ tbody tr:hover {
     cursor: pointer;
 }
 
-th:nth-child(1), td:nth-child(1) { /* 제목 컬럼 */
-    width: 35%;
-}
-
-th:nth-child(2), td:nth-child(2) { /* 닉네임 컬럼 */
-    width: 15%;
-}
-
-/* 링크 스타일 */
 a {
     text-decoration: none;
     color: #3498db;
@@ -123,5 +116,6 @@ a:hover {
     color: #2980b9;
 }
 
+/* 게시판 끝 */
 
 

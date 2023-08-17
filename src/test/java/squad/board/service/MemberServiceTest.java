@@ -9,7 +9,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.domain.member.Member;
-import squad.board.dto.member.CreateMemberDto;
+import squad.board.dto.member.CreateMember;
 import squad.board.exception.login.LoginException;
 import squad.board.repository.MemberMapper;
 
@@ -27,10 +27,10 @@ class MemberServiceTest {
     @DisplayName("저장한 멤버의 PK값으로 조회한 멤버의 PK는 같아야한다.")
     void 회원가입() {
         //given
-        CreateMemberDto createMemberDto = new CreateMemberDto("bukak2", "1234", "song", "hae");
+        CreateMember createMember = new CreateMember("bukak2", "1234", "song", "hae");
 
         //when
-        Long savedMemberId = memberService.join(createMemberDto);
+        Long savedMemberId = memberService.join(createMember);
         Member findMember = memberService.findMember(savedMemberId);
 
         //then
@@ -41,8 +41,8 @@ class MemberServiceTest {
     @DisplayName("DB에 해당하는 로그인 아이디가 존재하면(중복이면) 예외를 발생시킨다.")
     void 중복아이디검증() {
         //given
-        CreateMemberDto createMemberDto = new CreateMemberDto("bukak3", "1234", "song", "hae");
-        memberService.join(createMemberDto);
+        CreateMember createMember = new CreateMember("bukak3", "1234", "song", "hae");
+        memberService.join(createMember);
         String loginId = "bukak3";
 
         //then

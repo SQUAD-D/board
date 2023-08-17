@@ -15,8 +15,8 @@
 </head>
 <body>
 <header>
-    <div>
-        <h1 class="title-container" id="topTitle">Simple Board</h1>
+    <div class="title-container">
+        <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
     </div>
 </header>
 
@@ -26,9 +26,7 @@
             <button
                     class="menu-btn"
                     id="writeBoard"
-                    onclick="location.href='/boards/new'"
-            >
-                글쓰기
+                    onclick="location.href='/boards/new'">글쓰기
             </button>
             <button class="menu-btn" id="myBoard">나의 게시글</button>
             <button class="menu-btn" id="myComment">나의 댓글</button>
@@ -58,12 +56,15 @@
                     </thead>
                     <tbody>
                     <tr th:each="board:${boards}">
-                        <td th:text="${board.title}"></td>
+                        <td>
+                            <a th:text="${board.title}"
+                               th:href="@{/boards/{boardId}(boardId=${board.boardId})}"></a>
+                        </td>
                         <td>
                             <a th:text="${board.nickName}"></a>
                         </td>
                         <td>
-                            <a th:text="${board.createdDate}" id="createdDate"></a>
+                            <a th:text="${board.createdDate}" class="createdDate"></a>
                         </td>
                     </tr>
                     </tbody>
@@ -73,9 +74,14 @@
         </div>
     </div>
 </main>
-
-<script src="/js/board/boardList.js"></script>
-<script src="/js/board/simpleDateFormat.js"></script>
+<footer>
+    <div class="footer-info">
+        SQUAD-BOARD / Song Hae Chan
+    </div>
+</footer>
 </body>
+<script src="/js/board/logout.js"></script>
+<script src="/js/board/simpleCreatedDate.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 </html>
 </html>

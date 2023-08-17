@@ -18,7 +18,7 @@
 
 <main>
     <div class="main-container">
-
+        <p id="boardId" hidden="hidden" th:text="${board.boardId}"></p>
         <div class="menu-container">
             <button class="menu-btn" id="myBoard">나의 게시글</button>
             <button class="menu-btn" id="myComment">나의 댓글</button>
@@ -27,12 +27,13 @@
         </div>
 
         <div class="create-board-container">
-            <input type="text" class="title-box" placeholder="제목을 입력해주세요." id="title"/>
-            <textarea class="content-box" placeholder="내용을 입력해주세요." id="content"></textarea>
+            <input type="text" class="title-box" th:value="${board.title}" placeholder="제목을 입력해주세요." id="title"/>
+            <textarea class="content-box" th:value="${board.content}" th:text="${board.content}"
+                      id="content"></textarea>
         </div>
 
-        <div class="create-btn">
-            <button id="write-btn">작성</button>
+        <div class="update-btn">
+            <button id="update-btn">수정</button>
         </div>
     </div>
 </main>
@@ -42,8 +43,8 @@
         SQUAD-BOARD / Song Hae Chan
     </div>
 </footer>
-<script src="/js/board/logout.js"></script>
-<script src="/js/board/createBoard.js"></script>
+
+<script src="/js/board/boardUpdate.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 </body>
 </html>

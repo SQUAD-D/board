@@ -3,13 +3,16 @@ package squad.board.apicontroller;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 import squad.board.commonresponse.CommonResponse;
+import squad.board.exception.board.BoardException;
+import squad.board.exception.board.BoardStatus;
 import squad.board.exception.login.LoginException;
 import squad.board.exception.login.LoginStatus;
 import squad.board.exception.session.SessionException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ApiExceptionHandler {
 
     // 로그인관련 예외 전역 처리
@@ -30,5 +33,15 @@ public class ApiExceptionHandler {
         int statusCode = sessionException.getSessionStatus().getHttpStatusCode().value();
         response.setStatus(statusCode);
         return new ModelAndView("redirect:/");
+    }
+
+    @ExceptionHandler(BoardException.class)
+    public CommonResponse<Void, BoardStatus> boardExceptionHandler(
+            HttpServletResponse response,
+            BoardException boardException
+    ) {
+        int statusCode = boardException.getBoardStatus().getHttpStatusCode().value();
+        response.setStatus(statusCode);
+        return new CommonResponse<>(boardException.getBoardStatus(), null);
     }
 }

@@ -10,14 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.commonresponse.CommonResponse;
 import squad.board.domain.member.Member;
-import squad.board.dto.member.CreateMemberDto;
-import squad.board.dto.member.LoginRequestDto;
-import squad.board.dto.member.ValidateLoginIdDto;
+import squad.board.dto.member.CreateMember;
+import squad.board.dto.member.LoginRequest;
+import squad.board.dto.member.ValidateLoginId;
 import squad.board.exception.login.LoginStatus;
 import squad.board.service.MemberService;
 
-import static squad.board.exception.login.LoginStatus.SUCCESS;
-import static squad.board.exception.login.LoginStatus.VALID_LOGIN_ID;
+import static squad.board.exception.login.LoginStatus.*;
 
 @RestController
 @RequestMapping("/members")
@@ -28,13 +27,13 @@ public class MemberApiController {
 
     // 회원가입 요청
     @PostMapping("/new")
-    public ResponseEntity<Long> createMember(@RequestBody CreateMemberDto createMemberDto) {
-        return ResponseEntity.ok(memberService.join(createMemberDto));
+    public ResponseEntity<Long> createMember(@RequestBody CreateMember createMember) {
+        return ResponseEntity.ok(memberService.join(createMember));
     }
 
     // 중복 아이디 검증
     @PostMapping("/validation")
-    public CommonResponse<Void, LoginStatus> validationLoginId(@RequestBody ValidateLoginIdDto loginIdDto) {
+    public CommonResponse<Void, LoginStatus> validationLoginId(@RequestBody ValidateLoginId loginIdDto) {
         memberService.validationLoginId(loginIdDto.getLoginId());
         return new CommonResponse<>(VALID_LOGIN_ID, null);
     }
@@ -42,9 +41,17 @@ public class MemberApiController {
     // 로그인
     @PostMapping("/login")
     public CommonResponse<CommonIdResponse, LoginStatus> loginMember(
-            @RequestBody LoginRequestDto loginRequestDto,
+            @RequestBody LoginRequest loginRequest,
             HttpServletRequest request) {
-        Member member = memberService.login(loginRequestDto);
+        Member member = memberService.login(loginRequest);
         return new CommonResponse<>(SUCCESS, memberService.provideSession(member, request));
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public CommonResponse<CommonIdResponse, LoginStatus> logoutMember(
+            HttpServletRequest request
+    ) {
+        return new CommonResponse<>(LOGOUT_SUCCESS, memberService.logout(request));
     }
 }

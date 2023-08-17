@@ -8,14 +8,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class CreateMemberDto {
+public class CreateMember {
     private String loginId;
     private String loginPw;
     private String name;
     private String nickName;
 
-    public Member toEntity(){
+    public Member toEntity() {
         return Member.builder()
                 .loginId(loginId)
                 .loginPw(loginPw)
