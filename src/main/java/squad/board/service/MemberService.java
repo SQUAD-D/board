@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
-import squad.board.dto.member.CreateMember;
+import squad.board.dto.member.CreateMemberRequest;
 import squad.board.dto.member.LoginRequest;
 import squad.board.exception.login.LoginException;
 import squad.board.exception.session.SessionException;
 import squad.board.repository.MemberMapper;
 
-import static squad.board.exception.login.LoginStatus.*;
+import static squad.board.exception.login.LoginStatus.DUPLICATED_LOGIN_ID;
+import static squad.board.exception.login.LoginStatus.INVALID_LOGIN_INFO;
 import static squad.board.exception.session.SessionStatus.INVALID_SESSION_ID;
 
 @Service
@@ -26,10 +27,12 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     @Transactional
-    public Long join(CreateMember createMember) {
+    public CommonIdResponse join(CreateMemberRequest createMember) {
+        // 서버 쪽에서 한 번 더 중복아이디 검증처리
+        validationLoginId(createMember.getLoginId());
         Member member = createMember.toEntity();
         memberMapper.save(member);
-        return member.getMemberId();
+        return new CommonIdResponse(member.getMemberId());
     }
 
     // Id로 회원 조회
@@ -80,7 +83,6 @@ public class MemberService {
         }
         return (Long) session.getAttribute("memberId");
     }
-
 
     // 회원가입 시 중복아이디 검증
     public void validationLoginId(String loginId) throws LoginException {

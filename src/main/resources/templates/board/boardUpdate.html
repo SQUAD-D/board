@@ -18,7 +18,7 @@
 
 <main>
     <div class="main-container">
-        <p id="boardId" hidden="hidden" th:text="${board.boardId}"></p>
+        <p id="boardId" hidden="hidden"></p>
         <div class="menu-container">
             <button class="menu-btn" id="myBoard">나의 게시글</button>
             <button class="menu-btn" id="myComment">나의 댓글</button>
@@ -27,8 +27,8 @@
         </div>
 
         <div class="create-board-container">
-            <input type="text" class="title-box" th:value="${board.title}" placeholder="제목을 입력해주세요." id="title"/>
-            <textarea class="content-box" th:value="${board.content}" th:text="${board.content}"
+            <input type="text" name="inputTitle" class="title-box" placeholder="제목을 입력해주세요." id="title"/>
+            <textarea class="content-box"
                       id="content"></textarea>
         </div>
 

@@ -1,51 +1,55 @@
 package squad.board.apicontroller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import squad.board.commonresponse.CommonIdResponse;
-import squad.board.commonresponse.CommonResponse;
+import squad.board.dto.board.BoardDetailResponse;
 import squad.board.dto.board.BoardUpdateRequest;
-import squad.board.dto.board.CreateBoard;
-import squad.board.exception.board.BoardStatus;
+import squad.board.dto.board.CreateBoardRequest;
 import squad.board.service.BoardService;
-import squad.board.service.MemberService;
-
-import static squad.board.exception.board.BoardStatus.*;
 
 @RestController
+@RequestMapping("/api/boards")
 @RequiredArgsConstructor
 public class BoardApiController {
 
-    private final MemberService memberService;
     private final BoardService boardService;
 
     // 게시글 생성
-    @PostMapping("/boards/new")
-    public CommonResponse<CommonIdResponse, BoardStatus> saveBoard(
+    @PostMapping
+    public CommonIdResponse saveBoard(
             HttpServletRequest request,
-            @RequestBody CreateBoard createBoard) {
-        Long memberId = memberService.validateSession(request);
-        return new CommonResponse<>(SUCCESS, boardService.createBoard(memberId, createBoard));
+            @Valid @RequestBody CreateBoardRequest createBoard) {
+        Long memberId = (Long) request.getAttribute("memberId");
+        return boardService.createBoard(memberId, createBoard);
     }
 
     // 게시글 삭제
-    @DeleteMapping("/boards/{boardId}")
-    public CommonResponse<CommonIdResponse, BoardStatus> deleteBoard(
+    @DeleteMapping("/{boardId}")
+    public CommonIdResponse deleteBoard(
             HttpServletRequest request,
             @PathVariable Long boardId
     ) {
-        Long memberId = memberService.validateSession(request);
-        return new CommonResponse<>(DELETE_SUCCESS, boardService.deleteBoard(boardId, memberId));
+        Long memberId = (Long) request.getAttribute("memberId");
+        return boardService.deleteBoard(boardId, memberId);
     }
 
-    @PatchMapping("/boards/{boardId}")
-    public CommonResponse<CommonIdResponse, BoardStatus> updateBoard(
-            HttpServletRequest request,
+    // 게시글 수정
+    @PatchMapping("/{boardId}")
+    public CommonIdResponse updateBoard(
             @PathVariable Long boardId,
-            @RequestBody BoardUpdateRequest boardUpdateRequest
+            @Valid @RequestBody BoardUpdateRequest boardUpdateRequest
     ) {
-        memberService.validateSession(request);
-        return new CommonResponse<>(UPDATE_SUCCESS, boardService.updateBoard(boardId, boardUpdateRequest));
+        return boardService.updateBoard(boardId, boardUpdateRequest);
+    }
+
+    // 상세 게시글 조회
+    @GetMapping("/{boardId}")
+    public BoardDetailResponse oldBoard(
+            @PathVariable Long boardId
+    ) {
+        return boardService.findOneBoard(boardId);
     }
 }

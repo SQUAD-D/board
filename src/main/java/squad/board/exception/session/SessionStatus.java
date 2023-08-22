@@ -1,6 +1,7 @@
 package squad.board.exception.session;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import squad.board.commonresponse.CommonStatus;
 
@@ -11,7 +12,7 @@ import squad.board.commonresponse.CommonStatus;
  */
 @Getter
 public enum SessionStatus implements CommonStatus {
-    INVALID_SESSION_ID(HttpStatus.valueOf(302), 200, "세션 만료");
+    INVALID_SESSION_ID(HttpStatus.valueOf(302), 200, "세션 검증 실패");
 
     private final HttpStatus httpStatusCode;
     private final int code;

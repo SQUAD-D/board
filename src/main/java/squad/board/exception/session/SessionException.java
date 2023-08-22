@@ -1,10 +1,11 @@
 package squad.board.exception.session;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import squad.board.exception.CommonException;
 
-@AllArgsConstructor
 @Getter
-public class SessionException extends RuntimeException {
-    private SessionStatus sessionStatus;
+public class SessionException extends CommonException {
+    public SessionException(SessionStatus status) {
+        super(status);
+    }
 }

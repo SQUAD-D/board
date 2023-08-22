@@ -1,10 +1,11 @@
 const logoutBtn = document.getElementById("logOut");
 
 logoutBtn.addEventListener("click", () => {
-    axios.post("http://localhost:8080/members/logout")
+    axios.post("http://localhost:8080/api/members/logout")
+        // 로그아웃 성공
         .then((response) => {
-            const data = response.data;
-            if (data.code === 104) {
+            const statusCode = response.status;
+            if (statusCode === 200) {
                 window.location.href = "/";
             }
         })

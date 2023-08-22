@@ -1,10 +1,11 @@
 package squad.board.exception.board;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import squad.board.exception.CommonException;
 
-@AllArgsConstructor
 @Getter
-public class BoardException extends RuntimeException {
-    private BoardStatus boardStatus;
+public class BoardException extends CommonException {
+    public BoardException(BoardStatus status) {
+        super(status);
+    }
 }

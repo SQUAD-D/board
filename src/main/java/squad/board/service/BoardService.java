@@ -8,16 +8,14 @@ import squad.board.domain.board.Board;
 import squad.board.dto.board.BoardDetailResponse;
 import squad.board.dto.board.BoardResponse;
 import squad.board.dto.board.BoardUpdateRequest;
-import squad.board.dto.board.CreateBoard;
+import squad.board.dto.board.CreateBoardRequest;
 import squad.board.exception.board.BoardException;
-import squad.board.exception.board.BoardStatus;
 import squad.board.repository.BoardMapper;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static squad.board.exception.board.BoardStatus.*;
+import static squad.board.exception.board.BoardStatus.INVALID_DELETE_UPDATE;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +25,7 @@ public class BoardService {
     private final BoardMapper boardMapper;
 
     @Transactional
-    public CommonIdResponse createBoard(Long memberId, CreateBoard createBoard) {
+    public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
         Board board = createBoard.toEntity(memberId);
         Long boardId = boardMapper.save(board);
         return new CommonIdResponse(boardId);
@@ -61,6 +59,4 @@ public class BoardService {
             throw new BoardException(INVALID_DELETE_UPDATE);
         }
     }
-
-
 }

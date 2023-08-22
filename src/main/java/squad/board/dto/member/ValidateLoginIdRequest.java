@@ -6,9 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequest {
+public class ValidateLoginIdRequest {
     @NotEmpty(message = "아이디를 입력해주세요.")
     private String loginId;
-    @NotEmpty(message = "비밀번호를 입력해주세요.")
-    private String loginPw;
 }

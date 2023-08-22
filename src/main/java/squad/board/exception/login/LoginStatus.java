@@ -11,11 +11,8 @@ import squad.board.commonresponse.CommonStatus;
  */
 @Getter
 public enum LoginStatus implements CommonStatus {
-    SUCCESS(HttpStatus.valueOf(200), 100, "로그인 성공"),
     INVALID_LOGIN_INFO(HttpStatus.valueOf(400), 101, "로그인 정보를 찾을 수 없습니다."),
-    VALID_LOGIN_ID(HttpStatus.valueOf(200), 102, "사용가능한 아이디입니다."),
-    DUPLICATED_LOGIN_ID(HttpStatus.valueOf(400), 103, "중복된 아이디입니다."),
-    LOGOUT_SUCCESS(HttpStatus.valueOf(200), 104, "로그아웃 성공");
+    DUPLICATED_LOGIN_ID(HttpStatus.valueOf(400), 103, "중복된 아이디입니다.");
 
     private final HttpStatus httpStatusCode;
     private final int code;

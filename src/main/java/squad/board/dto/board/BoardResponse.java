@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
+// 게시판 목록 DTO
 public class BoardResponse {
     private Long boardId;
     private String title;
