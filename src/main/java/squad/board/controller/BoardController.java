@@ -46,7 +46,7 @@ public class BoardController {
     ) {
         BoardDetailResponse board = boardService.findOneBoard(boardId);
         model.addAttribute("board", board);
-        return "/board/boardDetail";
+        return "/board/detailBoard";
     }
 
     // 게시글 수정 페이지
@@ -57,6 +57,6 @@ public class BoardController {
     ) {
         Long memberId = memberService.validateSession(request);
         boardService.isOriginalWriter(boardId, memberId);
-        return "/board/boardUpdate";
+        return "/board/updateBoard";
     }
 }
