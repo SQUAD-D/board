@@ -34,7 +34,7 @@ public class BoardService {
     public List<BoardResponse> findBoards() {
         return boardMapper.findAllWithNickName();
     }
-
+    
     public BoardDetailResponse findOneBoard(Long boardId) {
         return boardMapper.findByIdWithNickName(boardId);
     }

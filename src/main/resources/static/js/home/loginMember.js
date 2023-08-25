@@ -7,11 +7,12 @@ loginBtn.addEventListener("click", () => {
     const loginPw = loginPwInput.value;
 
     axios.post("http://localhost:8080/api/members/login", {
-        loginId: loginId,
-        loginPw: loginPw,
+        loginId,
+        loginPw,
     })
         .then(() => {
-            window.location.href = '/boards';
+            // 첫 화면은 1페이지 15건의 게시글
+            window.location.href = '/boards?page=1&size=15';
         })
         // 잘못된 로그인 요청 (아이디, 비밀번호 불일치)
         .catch(error => {

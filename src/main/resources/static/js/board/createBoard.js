@@ -6,8 +6,8 @@ writeBtn.addEventListener("click", () => {
     const title = titleInput.value;
     const content = contentInput.value;
     axios.post("http://localhost:8080/api/boards", {
-        title: title,
-        content: content
+        title,
+        content
     }).then(response => {
         const statusCode = response.status;
         // 게시글 작성 성공

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.dto.board.BoardDetailResponse;
 import squad.board.dto.board.BoardUpdateRequest;
@@ -20,19 +21,17 @@ public class BoardApiController {
     // 게시글 생성
     @PostMapping
     public CommonIdResponse saveBoard(
-            HttpServletRequest request,
+            @SessionAttribute Long memberId,
             @Valid @RequestBody CreateBoardRequest createBoard) {
-        Long memberId = (Long) request.getAttribute("memberId");
         return boardService.createBoard(memberId, createBoard);
     }
 
     // 게시글 삭제
     @DeleteMapping("/{boardId}")
     public CommonIdResponse deleteBoard(
-            HttpServletRequest request,
+            @SessionAttribute Long memberId,
             @PathVariable Long boardId
     ) {
-        Long memberId = (Long) request.getAttribute("memberId");
         return boardService.deleteBoard(boardId, memberId);
     }
 

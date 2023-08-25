@@ -1,6 +1,5 @@
 package squad.board.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -8,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import squad.board.argumentresolver.SessionAttribute;
 import squad.board.dto.board.BoardDetailResponse;
 import squad.board.dto.board.BoardResponse;
 import squad.board.service.BoardService;
@@ -52,10 +53,9 @@ public class BoardController {
     // 게시글 수정 페이지
     @GetMapping("/update/{boardId}")
     public String updateBoard(
-            HttpServletRequest request,
+            @SessionAttribute Long memberId,
             @PathVariable Long boardId
     ) {
-        Long memberId = memberService.validateSession(request);
         boardService.isOriginalWriter(boardId, memberId);
         return "/board/updateBoard";
     }

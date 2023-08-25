@@ -12,8 +12,8 @@ updateBtn.addEventListener("click", () => {
     const title = titleInput.value;
     const content = contentInput.value;
     axios.patch(`http://localhost:8080/api/boards/${boardId}`, {
-        title: title,
-        content: content,
+        title,
+        content,
     })
         .then(() => {
             window.location.href = `http://localhost:8080/boards/${boardId}`

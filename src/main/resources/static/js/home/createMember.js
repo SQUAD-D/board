@@ -9,7 +9,7 @@ const validationBtn = document.getElementById("validation-btn");
 validationBtn.addEventListener("click", () => {
     const signUpId = signUpIdInput.value;
     axios.post("http://localhost:8080/api/members/validation", {
-        loginId: signUpId
+        signUpId
     })
         // 중복아이디 X
         .then((response) => {
