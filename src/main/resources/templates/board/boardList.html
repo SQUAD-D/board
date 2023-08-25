@@ -1,15 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta charset="UTF-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Simple Board</title>
+
+    <link rel="stylesheet" href="/css/boardBase.css"/>
+    <link rel="stylesheet" href="/css/boardList.css"/>
 </head>
 <body>
+<header>
+    <div class="title-container">
+        <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
+    </div>
+</header>
 
+<main>
+    <div class="main-container">
+        <div class="menu-container">
+            <button
+                    class="menu-btn"
+                    id="writeBoard"
+                    onclick="location.href='/boards/new'">글쓰기
+            </button>
+            <button class="menu-btn" id="myBoard">나의 게시글</button>
+            <button class="menu-btn" id="myComment">나의 댓글</button>
+            <button class="menu-btn" id="updateInfo">회원 정보 수정</button>
+            <button class="menu-btn" id="logOut">로그아웃</button>
+        </div>
 
+        <div class="search-container">
+            <input
+                    type="text"
+                    class="search-box"
+                    placeholder="검색어를 입력해주세요."
+            />
+            <button class="search-btn">검색</button>
+            <!--            차후 검색 조건 추가 -->
+        </div>
 
+        <div class="board-list-container">
+            <div class="board-list">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>닉네임</th>
+                        <th>게시일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="board:${boards}">
+                        <td>
+                            <a th:text="${board.title}"
+                               th:href="@{/boards/{boardId}(boardId=${board.boardId})}"></a>
+                        </td>
+                        <td>
+                            <a th:text="${board.nickName}"></a>
+                        </td>
+                        <td>
+                            <a th:text="${board.createdDate}" class="createdDate"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="board-page-container"></div>
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="footer-info">
+        SQUAD-BOARD / Song Hae Chan
+    </div>
+</footer>
 </body>
+<script src="/js/home/logoutMember.js"></script>
+<script src="/js/board/simpleCreatedDate.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+</html>
 </html>

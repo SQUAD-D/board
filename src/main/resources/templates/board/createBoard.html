@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Simple Board</title>
+    <link rel="stylesheet" href="/css/boardBase.css">
+    <link rel="stylesheet" href="/css/createBoard.css">
+</head>
+<body>
+<header>
+    <div class="title-container">
+        <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
+    </div>
+</header>
+
+<main>
+    <div class="main-container">
+
+        <div class="menu-container">
+            <button class="menu-btn" id="myBoard">나의 게시글</button>
+            <button class="menu-btn" id="myComment">나의 댓글</button>
+            <button class="menu-btn" id="updateInfo">회원 정보 수정</button>
+            <button class="menu-btn" id="logOut">로그아웃</button>
+        </div>
+
+        <div class="create-board-container">
+            <input type="text" class="title-box" placeholder="제목을 입력해주세요." id="title"/>
+            <textarea class="content-box" placeholder="내용을 입력해주세요." id="content"></textarea>
+        </div>
+
+        <div class="create-btn">
+            <button id="write-btn">작성</button>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-info">
+        SQUAD-BOARD / Song Hae Chan
+    </div>
+</footer>
+<script src="/js/home/logoutMember.js"></script>
+<script src="/js/board/createBoard.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+</body>
+</html>

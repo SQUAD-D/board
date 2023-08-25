@@ -1,10 +1,11 @@
 package squad.board.exception.login;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import squad.board.exception.CommonException;
 
-@AllArgsConstructor
 @Getter
-public class LoginException extends RuntimeException{
-    private LoginStatus loginStatus;
+public class LoginException extends CommonException {
+    public LoginException(LoginStatus status) {
+        super(status);
+    }
 }

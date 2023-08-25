@@ -6,15 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
-import squad.board.dto.member.CreateMemberDto;
-import squad.board.dto.member.LoginRequestDto;
-import squad.board.dto.member.LoginResponseDto;
+import squad.board.dto.member.CreateMemberRequest;
+import squad.board.dto.member.LoginRequest;
 import squad.board.exception.login.LoginException;
+import squad.board.exception.session.SessionException;
 import squad.board.repository.MemberMapper;
 
 import static squad.board.exception.login.LoginStatus.DUPLICATED_LOGIN_ID;
 import static squad.board.exception.login.LoginStatus.INVALID_LOGIN_INFO;
+import static squad.board.exception.session.SessionStatus.INVALID_SESSION_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +27,12 @@ public class MemberService {
     private final MemberMapper memberMapper;
 
     @Transactional
-    public Long join(CreateMemberDto createMemberDto) {
-        Member member = createMemberDto.toEntity();
+    public CommonIdResponse join(CreateMemberRequest createMember) {
+        // 서버 쪽에서 한 번 더 중복아이디 검증처리
+        validationLoginId(createMember.getLoginId());
+        Member member = createMember.toEntity();
         memberMapper.save(member);
-        return member.getMemberId();
+        return new CommonIdResponse(member.getMemberId());
     }
 
     // Id로 회원 조회
@@ -37,15 +41,23 @@ public class MemberService {
     }
 
     // 회원 로그인
-    public Member login(LoginRequestDto loginRequestDto) {
-        String loginId = loginRequestDto.getLoginId();
-        String loginPw = loginRequestDto.getLoginPw();
+    public Member login(LoginRequest loginRequest) {
+        String loginId = loginRequest.getLoginId();
+        String loginPw = loginRequest.getLoginPw();
         log.info("{} Login", loginId);
         return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
     }
 
-    // 로그인(세션) 검증
-    public LoginResponseDto sessionValidation(Member member, HttpServletRequest request) throws LoginException {
+    public CommonIdResponse logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Long memberId = (Long) session.getAttribute("memberId");
+        log.info("{} Logout", memberId);
+        session.invalidate();
+        return new CommonIdResponse(memberId);
+    }
+
+    // 세션 발급
+    public CommonIdResponse provideSession(Member member, HttpServletRequest request) {
         // 로그인 정보 검증
         if (member == null) {
             throw new LoginException(INVALID_LOGIN_INFO);
@@ -59,7 +71,17 @@ public class MemberService {
         // 유효 시간은 30분
         session.setMaxInactiveInterval(1800);
 
-        return new LoginResponseDto(member.getMemberId(), member.getNickName());
+        return new CommonIdResponse(member.getMemberId());
+    }
+
+    // 세션 검증
+    public Long validateSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        // (주소창으로 직접)세션이 없는 접근이거나, 세션이 만료되면 메인으로 리다이렉션
+        if (session == null) {
+            throw new SessionException(INVALID_SESSION_ID);
+        }
+        return (Long) session.getAttribute("memberId");
     }
 
     // 회원가입 시 중복아이디 검증

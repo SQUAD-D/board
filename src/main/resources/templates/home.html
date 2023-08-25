@@ -9,22 +9,46 @@
 </head>
 <body>
 
-<header class="top-title">
-    <h1>Simple Board</h1>
+<header class="title-container">
+    <h1 id="title">Simple Board</h1>
 </header>
-<nav>
-    <div class="signup-button">
-        <a href="members/new">
-            <button>회원 가입</button>
-        </a>
+<main>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container input-form">
+            <h1>회원가입</h1>
+            <input type="text" placeholder="아이디" id="signUpId"/>
+            <button id="validation-btn">중복체크</button>
+            <input type="password" placeholder="비밀번호" id="signUpPw"/>
+            <input type="text" placeholder="이름" id="signUpName"/>
+            <input type="text" placeholder="닉네임" id="signUpNickName"/>
+            <button id="sign-up-btn">회원가입</button>
+        </div>
+        <div class="form-container sign-in-container input-form">
+            <h1>로그인</h1>
+            <input type="text" placeholder="아이디" id="loginId"/>
+            <input type="password" placeholder="비밀번호" id="loginPw"/>
+            <button id="login-btn">로그인</button>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>어서오세요</h1>
+                    <p>로그인 후 새로운 글을 작성해주세요</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>안녕하세요</h1>
+                    <p>회원가입 후 새로운 글을 작성해주세요</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="login-button">
-        <a href="members/login">
-            <button>로그인</button>
-        </a>
-    </div>
-</nav>
+</main>
 </body>
-
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<script src="/js/home/loginMember.js"></script>
+<script src="/js/home/createMember.js"></script>
+<script src="/js/home/changeForm.js"></script>
 </html>
