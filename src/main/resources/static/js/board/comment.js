@@ -26,12 +26,11 @@ writeBtn.addEventListener("click", () => {
 commentsContainer.addEventListener("click", function (event) {
     const clickedElement = event.target;
     event.preventDefault();
-    const boardId = id.textContent;
     if (clickedElement.id === 'delete-comment') {
         if (confirm("정말 삭제하시겠습니까?")) {
             const commentId = getCommentId(clickedElement);
             const commentElement = clickedElement.closest('.comment-content');
-            axios.delete(`http://localhost:8080/api/boards/${boardId}/comments/${commentId}`)
+            axios.delete(`http://localhost:8080/api/boards/comments/${commentId}`)
                 .then(() => {
                     commentElement.remove();
                 })
@@ -67,12 +66,11 @@ commentsContainer.addEventListener("click", function (event) {
 commentsContainer.addEventListener("click", function (event) {
     const clickedElement = event.target;
     if (clickedElement.id === 'comment-write') {
-        const boardId = id.textContent;
         const inputElement = document.getElementById('update-content');
         const hiddenCommentId = document.getElementById('comment-id');
         const commentId = hiddenCommentId.textContent;
         const content = inputElement.value;
-        axios.patch(`http://localhost:8080/api/boards/${boardId}/comments/${commentId}`, {
+        axios.patch(`http://localhost:8080/api/boards/comments/${commentId}`, {
             content
         })
             .then(() => {
@@ -91,6 +89,18 @@ commentsContainer.addEventListener("click", function (event) {
     }
 })
 
+// 대댓글 표출
+commentsContainer.addEventListener("click", function (event) {
+    const clickedElement = event.target;
+    const childComment = document.querySelector(".child-comment");
+    if (clickedElement.id === 'reply') {
+        if (childComment.style.display === "none") {
+            childComment.style.display = "block";
+        } else {
+            childComment.style.display = "none";
+        }
+    }
+})
 
 // 댓글의 PK값 추출
 function getCommentId(element) {
@@ -134,6 +144,10 @@ function displayComments() {
                         <a href="#" id="reply">답글</a>
                         <a href="#" id="update-comment">수정</a>
                         <a href="#" id="delete-comment">삭제</a>
+                    </div>
+                    <div style="display: none" class="child-comment">
+                    <input type="text" placeholder="답글을 입력해주세요." id="reply-content"/>
+                    <button class="comment-writeBtn" id="comment-write">작성</button>
                     </div>
                 </div>`
             }

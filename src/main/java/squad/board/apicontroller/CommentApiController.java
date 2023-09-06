@@ -13,12 +13,13 @@ import squad.board.service.CommentService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/boards/{boardId}/comments")
+@RequestMapping("/api/boards")
 public class CommentApiController {
 
     private final CommentService commentService;
 
-    @PostMapping
+    // 댓글 생성
+    @PostMapping("/{boardId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public CommonIdResponse saveComment(
             @SessionAttribute Long memberId,
@@ -28,19 +29,22 @@ public class CommentApiController {
         return commentService.saveComment(memberId, boardId, commentSaveRequest);
     }
 
-    @GetMapping
+    // 전체 댓글 리스트
+    @GetMapping("/{boardId}/comments")
     public CommentListResponse findAllComments(
             @PathVariable Long boardId
     ) {
         return commentService.getCommentList(boardId);
     }
 
-    @DeleteMapping("/{commentId}")
+    // 댓글 삭제
+    @DeleteMapping("/comments/{commentId}")
     public void deleteComment(@PathVariable Long commentId, @SessionAttribute Long memberId) {
         commentService.deleteComment(commentId, memberId);
     }
 
-    @PatchMapping("/{commentId}")
+    // 댓글 수정
+    @PatchMapping("/comments/{commentId}")
     public void updateComment(
             @PathVariable Long commentId,
             @RequestBody CommentUpdateRequest commentUpdateRequest,
