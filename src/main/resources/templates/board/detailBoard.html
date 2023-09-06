@@ -36,7 +36,7 @@
             <p id="boardId" hidden="hidden" th:text="${board.boardId}"></p>
             <div class="member-info">
                 <h2 th:text="|닉네임 : ${board.nickName}|"></h2><br>
-                <p class="createdDate" th:text="|작성일 : ${board.createdDate}|"></p>
+                <p style="color: gray" th:text="|작성일 : ${board.createdDate}|"></p>
                 <p class="modifiedDate" th:if="${board.modifiedDate != null}"
                    th:text="${board.modifiedDate}"></p>
             </div>
@@ -53,6 +53,12 @@
                 <button class="menu-btn" id="update-req-btn">수정
                 </button>
             </div>
+            <div class="comment-container" id="comment-container">
+            </div>
+            <div class="comment-write-container">
+                <input type="text" placeholder="댓글을 입력해주세요." id="comment-content"/>
+                <button class="comment-writeBtn" id="comment-write">작성</button>
+            </div>
         </div>
     </div>
 </main>
@@ -63,7 +69,8 @@
 </footer>
 </body>
 <script src="/js/home/logoutMember.js"></script>
-<script src="/js/board/detailBaord.js"></script>
-<script src="/js/board/simpleModifiedDate.js"></script>
+<script src="/js/board/detailBoard.js"></script>
+<script src="/js/board/simpleDateFormatter.js"></script>
+<script src="/js/board/comment.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 </html>

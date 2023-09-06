@@ -22,8 +22,8 @@ public class SessionInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) {
-        Long memberId = memberService.validateSession(request);
-        request.setAttribute("memberId", memberId);
+        // member service에서 쓰지말자
+        memberService.validateSession(request);
         return true;
     }
 }

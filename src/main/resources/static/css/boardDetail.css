@@ -17,7 +17,7 @@
     transition: background-color 0.3s, color 0.3s;
 }
 
-.menu-btn:hover {
+.menu-btn :hover {
     color: white;
     background-color: #5685ff;
 }
@@ -46,17 +46,19 @@
 
 .board-menu-container {
     border-top: 1px solid #5685ff;
+    border-bottom: 1px solid #5685ff;
     padding-top: 30px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding-bottom: 30px;
 }
 
 .createdDate, .modifiedDate {
     color: gray;
+    font-size: 13px;
+    margin-bottom: 20px;
 }
 
 pre {
-    font-size: 14px;
+    font-size: 18px;
 }
 
 h2 {
@@ -67,3 +69,41 @@ p {
     margin-top: 0;
     margin-bottom: 10px;
 }
+
+/* 댓글 컨테이너 시작 */
+
+input {
+    background-color: #eee;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 60%;
+}
+
+.comment-content {
+    margin-top: 20px;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.content {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.comment-menu {
+    margin-bottom: 20px;
+    color: #8f8f8f;
+}
+
+.comment-write-container {
+    margin-top: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #8f8f8f;
+}
+
+
+

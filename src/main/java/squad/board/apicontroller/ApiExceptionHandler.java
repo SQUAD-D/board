@@ -55,6 +55,17 @@ public class ApiExceptionHandler {
         return new CommonExceptionResponse<>(boardException.getCommonStatus());
     }
 
+    // 댓글 관련 예외 처리
+    @ExceptionHandler(CommonException.class)
+    public CommonExceptionResponse<CommonStatus> CommentExceptionHandler(
+            HttpServletResponse response,
+            CommonException commonException
+    ) {
+        setStatusCode(response, commonException);
+        return new CommonExceptionResponse<>(commonException.getCommonStatus());
+    }
+
+    // 타입 검증 에러
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CommonArgumentResponse inputExceptionHandler(

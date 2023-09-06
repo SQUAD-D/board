@@ -7,12 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import squad.board.argumentresolver.SessionAttribute;
 import squad.board.dto.board.BoardDetailResponse;
 import squad.board.dto.board.BoardResponse;
 import squad.board.service.BoardService;
-import squad.board.service.MemberService;
 
 import java.util.List;
 
@@ -22,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final MemberService memberService;
     private final BoardService boardService;
 
     // 게시판 리스트 페이지
@@ -53,10 +49,7 @@ public class BoardController {
     // 게시글 수정 페이지
     @GetMapping("/update/{boardId}")
     public String updateBoard(
-            @SessionAttribute Long memberId,
-            @PathVariable Long boardId
     ) {
-        boardService.isOriginalWriter(boardId, memberId);
         return "/board/updateBoard";
     }
 }
