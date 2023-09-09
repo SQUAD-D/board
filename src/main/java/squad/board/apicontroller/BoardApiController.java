@@ -1,6 +1,5 @@
 package squad.board.apicontroller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +36,18 @@ public class BoardApiController {
 
     // 게시글 수정
     @PatchMapping("/{boardId}")
+    // 반환고민
     public CommonIdResponse updateBoard(
             @PathVariable Long boardId,
-            @Valid @RequestBody BoardUpdateRequest boardUpdateRequest
+            @Valid @RequestBody BoardUpdateRequest boardUpdateRequest,
+            @SessionAttribute Long memberId
     ) {
-        return boardService.updateBoard(boardId, boardUpdateRequest);
+        return boardService.updateBoard(boardId, memberId, boardUpdateRequest);
     }
 
     // 상세 게시글 조회
     @GetMapping("/{boardId}")
-    public BoardDetailResponse oldBoard(
+    public BoardDetailResponse getBoard(
             @PathVariable Long boardId
     ) {
         return boardService.findOneBoard(boardId);

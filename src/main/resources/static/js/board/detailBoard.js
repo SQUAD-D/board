@@ -1,9 +1,9 @@
 const deleteReqBtn = document.getElementById("delete-req-btn");
 const updateReqBtn = document.getElementById("update-req-btn");
 const boardId = document.getElementById("boardId");
-const id = boardId.textContent;
 
 deleteReqBtn.addEventListener("click", () => {
+    const id = boardId.textContent;
     if (confirm("정말 삭제하시겠습니까?") === true) {
         axios.delete(`http://localhost:8080/api/boards/${id}`)
             // 삭제 성공 후 리다이렉션
@@ -27,5 +27,7 @@ deleteReqBtn.addEventListener("click", () => {
 })
 
 updateReqBtn.addEventListener("click", () => {
+    const id = boardId.textContent;
     window.location.href = `http://localhost:8080/boards/update/${id}`
 })
+

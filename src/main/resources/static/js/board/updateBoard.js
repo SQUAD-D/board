@@ -24,6 +24,9 @@ updateBtn.addEventListener("click", () => {
             if (data.code === 500) {
                 alert(data.fieldErrorMessage)
             }
+            if (data.code === 302) {
+                alert(data.message);
+            }
         })
 })
 
