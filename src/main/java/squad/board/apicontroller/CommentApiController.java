@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import squad.board.aop.CommentWriterAuth;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.dto.comment.CommentListResponse;
@@ -39,16 +40,27 @@ public class CommentApiController {
 
     // 댓글 삭제
     @DeleteMapping("/comments/{commentId}")
+    @CommentWriterAuth
     public void deleteComment(@PathVariable Long commentId, @SessionAttribute Long memberId) {
         commentService.deleteComment(commentId, memberId);
     }
 
     // 댓글 수정
     @PatchMapping("/comments/{commentId}")
+    @CommentWriterAuth
     public void updateComment(
             @PathVariable Long commentId,
-            @RequestBody CommentUpdateRequest commentUpdateRequest,
-            @SessionAttribute Long memberId) {
+            @SessionAttribute Long memberId,
+            @RequestBody CommentUpdateRequest commentUpdateRequest) {
         commentService.updateComment(commentId, memberId, commentUpdateRequest);
+    }
+
+    // 대댓글 리스트
+    @GetMapping("/{boardId}/childComments/{parentCommentId}")
+    public CommentListResponse getChildComment(
+            @PathVariable Long boardId,
+            @PathVariable Long parentCommentId
+    ) {
+        return commentService.getChildComment(boardId, parentCommentId);
     }
 }

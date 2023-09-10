@@ -3,6 +3,7 @@ package squad.board.apicontroller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import squad.board.aop.BoardWriterAuth;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.dto.board.BoardDetailResponse;
@@ -27,20 +28,21 @@ public class BoardApiController {
 
     // 게시글 삭제
     @DeleteMapping("/{boardId}")
+    @BoardWriterAuth
     public CommonIdResponse deleteBoard(
-            @SessionAttribute Long memberId,
-            @PathVariable Long boardId
+            @PathVariable Long boardId,
+            @SessionAttribute Long memberId
     ) {
         return boardService.deleteBoard(boardId, memberId);
     }
 
     // 게시글 수정
     @PatchMapping("/{boardId}")
-    // 반환고민
+    @BoardWriterAuth
     public CommonIdResponse updateBoard(
             @PathVariable Long boardId,
-            @Valid @RequestBody BoardUpdateRequest boardUpdateRequest,
-            @SessionAttribute Long memberId
+            @SessionAttribute Long memberId,
+            @Valid @RequestBody BoardUpdateRequest boardUpdateRequest
     ) {
         return boardService.updateBoard(boardId, memberId, boardUpdateRequest);
     }

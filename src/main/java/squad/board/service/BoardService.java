@@ -3,21 +3,17 @@ package squad.board.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import squad.board.aop.BoardWriterAuth;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.board.Board;
 import squad.board.dto.board.BoardDetailResponse;
 import squad.board.dto.board.BoardResponse;
 import squad.board.dto.board.BoardUpdateRequest;
 import squad.board.dto.board.CreateBoardRequest;
-import squad.board.exception.board.BoardException;
 import squad.board.repository.BoardMapper;
 import squad.board.repository.CommentMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static squad.board.exception.board.BoardStatus.INVALID_DELETE_UPDATE;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +39,6 @@ public class BoardService {
     }
 
     @Transactional
-    @BoardWriterAuth
     public CommonIdResponse deleteBoard(Long boardId, Long memberId) {
         boardMapper.deleteById(boardId);
         commentMapper.deleteByBoardId(boardId);
@@ -51,7 +46,6 @@ public class BoardService {
     }
 
     @Transactional
-    @BoardWriterAuth
     public CommonIdResponse updateBoard(Long boardId, Long memberId, BoardUpdateRequest dto) {
         LocalDateTime modifiedDate = LocalDateTime.now();
         boardMapper.updateById(boardId, dto, modifiedDate);

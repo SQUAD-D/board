@@ -3,10 +3,8 @@ package squad.board.dto.board;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -17,6 +15,6 @@ public class BoardDetailResponse {
     private String title;
     private String content;
     private String nickName;
-    private String createdDate;
-    private String modifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 }

@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import squad.board.domain.comment.Comment;
 import squad.board.dto.comment.CommentResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -18,5 +19,7 @@ public interface CommentMapper {
 
     Comment findByCommentId(Long commentId);
 
-    void updateByCommentId(Long commentId, String content);
+    void updateByCommentId(Long commentId, String content, LocalDateTime modifiedDate);
+
+    List<CommentResponse> findAllChildComments(Long boardId, Long parentCommentId);
 }

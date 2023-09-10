@@ -6,8 +6,8 @@
 <mapper namespace="squad.board.repository.CommentMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="boardId" keyColumn="comment_id">
-        insert into comment(member_id, board_id, content, created_date)
-        values (#{memberId}, #{boardId}, #{content}, #{createdDate})
+        insert into comment(member_id, board_id, content, parent_comment_id, created_date)
+        values (#{memberId}, #{boardId}, #{content}, #{parentCommentId}, #{createdDate})
     </insert>
 
     <select id="findAllCommentsWithNickName" resultType="squad.board.dto.comment.CommentResponse">
@@ -16,7 +16,18 @@
                  join member m
                       on m.member_id = c.member_id
         where c.board_id = #{boardId}
+          and c.parent_comment_id is null
         order by c.created_date desc;
+    </select>
+
+    <select id="findAllChildComments">
+        select c.comment_id, c.parent_comment_id, c.content, c.created_date, c.modified_date, m.nick_name
+        from comment c
+                 join member m
+                      on m.member_id = c.member_id
+        where c.board_id = #{boardId}
+          and c.parent_comment_id = #{parentCommentId}
+        order by c.created_date;
     </select>
 
     <delete id="deleteByBoardId">
@@ -39,7 +50,8 @@
 
     <update id="updateByCommentId">
         update comment
-        set content = #{content}
+        set content       = #{content},
+            modified_date = #{modifiedDate}
         where comment_id = #{commentId}
     </update>
 </mapper>

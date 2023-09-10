@@ -6,7 +6,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import squad.board.argumentresolver.SessionAttribute;
 import squad.board.domain.board.Board;
 import squad.board.domain.comment.Comment;
 import squad.board.exception.board.BoardException;

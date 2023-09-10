@@ -18,6 +18,7 @@ public class CommentSaveRequest {
     public Comment toEntity(Long memberId, Long boardId) {
         return Comment.builder()
                 .memberId(memberId)
+                .parentId(parentCommentId)
                 .boardId(boardId)
                 .content(content)
                 .createdDate(LocalDateTime.now())
