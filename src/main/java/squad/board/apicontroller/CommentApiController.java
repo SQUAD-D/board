@@ -2,6 +2,7 @@ package squad.board.apicontroller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import squad.board.aop.CommentWriterAuth;
@@ -33,9 +34,12 @@ public class CommentApiController {
     // 전체 댓글 리스트
     @GetMapping("/{boardId}/comments")
     public CommentListResponse findAllComments(
-            @PathVariable Long boardId
+            @PathVariable Long boardId,
+            @RequestParam Long size,
+            @RequestParam Long page,
+            @RequestParam Long defaultPageSize
     ) {
-        return commentService.getCommentList(boardId);
+        return commentService.getCommentList(boardId, size, page, defaultPageSize);
     }
 
     // 댓글 삭제

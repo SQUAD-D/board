@@ -85,7 +85,7 @@ public class MemberService {
     }
 
     // 회원가입 시 중복아이디 검증
-    public void validationLoginId(String loginId) throws LoginException {
+    public void validationLoginId(String loginId) {
         Member findMember = memberMapper.findByLoginId(loginId);
         if (findMember != null) {
             throw new LoginException(DUPLICATED_LOGIN_ID);

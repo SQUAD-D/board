@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import squad.board.dto.board.BoardDetailResponse;
 import squad.board.dto.board.BoardResponse;
 import squad.board.service.BoardService;
@@ -23,9 +24,13 @@ public class BoardController {
 
     // 게시판 리스트 페이지
     @GetMapping
-    public String boardListView(Model model) {
+    public String boardListView(
+            @RequestParam Long page,
+            @RequestParam Long size,
+            Model model) {
         List<BoardResponse> boards = boardService.findBoards();
         model.addAttribute("boards", boards);
+        model.addAttribute("pagination", boardPaging);
         return "/board/boardList";
     }
 

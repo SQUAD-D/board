@@ -6,8 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.comment.Comment;
 import squad.board.dto.comment.CommentListResponse;
+import squad.board.dto.comment.CommentPaging;
 import squad.board.dto.comment.CommentSaveRequest;
 import squad.board.dto.comment.CommentUpdateRequest;
+import squad.board.exception.comment.CommentException;
+import squad.board.exception.comment.CommentStatus;
 import squad.board.repository.CommentMapper;
 
 import java.time.LocalDateTime;
@@ -25,8 +28,22 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentListResponse getCommentList(Long boardId) {
-        return new CommentListResponse(commentMapper.findAllCommentsWithNickName(boardId));
+    public CommentListResponse getCommentList(Long boardId, Long size, Long page, Long defaultPageSize) {
+        CommentPaging commentPaging = new CommentPaging();
+        commentPaging.setCurrentPage(page);
+        // 게시글의 전체 댓글 수
+        commentPaging.setTotalComments(commentMapper.countCommentsByBoardId(boardId));
+        // 페이지 수 계산
+        Long maxPage = commentPaging.calculateTotalPages(size);
+        // 페이지 범위를 벗어난 요청 예외처리
+        if (maxPage < page || page <= 0) {
+            throw new CommentException(CommentStatus.INVALID_PAGE_NUMBER);
+        }
+        // offset 계산
+        Long offset = (page - 1) * size;
+        // 한 번에 보여줄 페이지 수 계산
+        commentPaging.calculatePageList(defaultPageSize);
+        return new CommentListResponse(commentMapper.findAllCommentsWithNickName(boardId, size, offset), commentPaging);
     }
 
     public void deleteComment(Long commentId, Long memberId) {

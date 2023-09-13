@@ -11,7 +11,9 @@ import java.util.List;
 public interface CommentMapper {
     Long save(Comment comment);
 
-    List<CommentResponse> findAllCommentsWithNickName(Long boardId);
+    List<CommentResponse> findAllCommentsWithNickName(Long boardId, Long size, Long page);
+
+    Long countCommentsByBoardId(Long boardId);
 
     void deleteByBoardId(Long boardId);
 

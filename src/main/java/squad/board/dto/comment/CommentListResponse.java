@@ -8,7 +8,16 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class CommentListResponse {
     private List<CommentResponse> comments;
+    private CommentPaging commentPaging;
+
+    public CommentListResponse(List<CommentResponse> comments, CommentPaging commentPaging) {
+        this.comments = comments;
+        this.commentPaging = commentPaging;
+    }
+
+    public CommentListResponse(List<CommentResponse> comments) {
+        this.comments = comments;
+    }
 }

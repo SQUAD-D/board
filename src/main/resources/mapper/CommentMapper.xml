@@ -17,7 +17,15 @@
                       on m.member_id = c.member_id
         where c.board_id = #{boardId}
           and c.parent_comment_id is null
-        order by c.created_date desc;
+        order by c.created_date desc
+        limit #{size} offset #{page};
+    </select>
+
+    <select id="countCommentsByBoardId">
+        select count(*)
+        from comment c
+        where c.board_id = #{boardId}
+          and c.parent_comment_id is null;
     </select>
 
     <select id="findAllChildComments">

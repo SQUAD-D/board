@@ -2,6 +2,7 @@ const writeBtn = document.getElementById('comment-write');
 const contentInput = document.getElementById('comment-content');
 const id = document.getElementById("boardId");
 const commentsContainer = document.getElementById('comment-container')
+const pageContainer = document.getElementById('page-container')
 // 댓글 생성 후 댓글 리스트 랜더링
 writeBtn.addEventListener("click", () => {
     const boardId = id.textContent;
@@ -22,7 +23,7 @@ writeBtn.addEventListener("click", () => {
 })
 
 // 댓글 삭제
-commentsContainer.addEventListener("click", async function (event) {
+commentsContainer.addEventListener("click", function (event) {
     const clickedElement = event.target;
     event.preventDefault();
     if (clickedElement.id === 'delete-comment') {
@@ -296,10 +297,18 @@ document.addEventListener("DOMContentLoaded", function () {
 // 화면에 렌더링
 function displayComments() {
     const boardId = id.textContent;
-    axios.get(`http://localhost:8080/api/boards/${boardId}/comments`)
+    const size = 5;
+    const defaultPageSize = 5;
+    let page;
+    axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
+        params: {size: size, page: 1, defaultPageSize: defaultPageSize}
+    })
         .then(response => {
             const comments = response.data.comments;
+            const firstPage = response.data.commentPaging.firstPage;
+            const lastPage = response.data.commentPaging.lastPage;
             const size = comments.length;
+            commentsContainer.innerHTML = '';
             for (let i = 0; i < size; i++) {
                 commentsContainer.innerHTML
                     += `<div class="comment-content">
@@ -334,5 +343,81 @@ function displayComments() {
                     </div>
                 </div>`
             }
+            pageContainer.innerHTML = `<span class="page"><a href="#" id="pre">Pre</a></span>`;
+            for (let i = firstPage; i < lastPage; i++) {
+                pageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
+            }
+            pageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>`;
         })
 }
+
+let currentPage = 1;
+
+pageContainer.addEventListener("click", function (event) {
+    event.preventDefault();
+    const boardId = id.textContent;
+    const clickedElement = event.target;
+    let size = 5;
+    const defaultPageSize = 5;
+    let page = clickedElement.id;
+    if (clickedElement.id === "pre") {
+        page = currentPage - 1;
+    }
+    if (clickedElement.id === "next") {
+        page = currentPage + 1;
+    }
+    axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
+        params: {size: size, page: page, defaultPageSize: defaultPageSize}
+    }).then(response => {
+        const comments = response.data.comments;
+        currentPage = response.data.commentPaging.currentPage;
+        const firstPage = response.data.commentPaging.firstPage;
+        const lastPage = response.data.commentPaging.lastPage;
+        commentsContainer.innerHTML = '';
+        for (let i = 0; i < size; i++) {
+            commentsContainer.innerHTML
+                += `<div class="comment-content">
+                    <p hidden="hidden">${comments[i].commentId}</p>
+                    <p hidden="hidden">${comments[i].parentCommentId}</p>
+                    <div class="member-nickName">
+                        <h3>${comments[i].nickName}</h3>
+                    </div>
+                    <div class="createdDate">
+                        <p>작성일 : ${comments[i].createdDate}</p>
+                    </div>
+                    ${comments[i].modifiedDate !== null ? `<div class="modifiedDate">
+                        <p>수정됨</p>
+                    </div>` : ''}                   
+                    <div class="content" id="content">
+                        <p>${comments[i].content}</p>
+                    </div>
+                    <div class="comment-menu">
+                        <a href="#" id="reply">답글</a>
+                        <a href="#" id="update-comment">수정</a>
+                        <a href="#" id="delete-comment">삭제</a>
+                    </div>
+                    <div style="display: none" class="update-form">
+                   
+                    </div>
+                    <div style="display: none" class="child-comment">
+                    <div class="child-comments${comments[i].commentId}">
+                   
+                    </div>
+                    <input type="text" placeholder="답글을 입력해주세요." id="reply-content${comments[i].commentId}"/>
+                    <button id="reply-comment-writeBtn${comments[i].commentId}">작성</button>
+                    </div>
+                </div>`
+        }
+        pageContainer.innerHTML = '';
+        pageContainer.innerHTML += `<span class="page"><a href="#" id="pre">Pre</a></span>`;
+        for (let i = firstPage; i < lastPage; i++) {
+            pageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
+        }
+        pageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>`;
+    }).catch(error => {
+        const data = error.response.data;
+        if (data.code === 401) {
+            alert(data.message);
+        }
+    })
+})
