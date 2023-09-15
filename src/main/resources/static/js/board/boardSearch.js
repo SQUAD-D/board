@@ -36,6 +36,12 @@ searchBtn.addEventListener("click", () => {
         }
         searchPageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>
 `;
+    }).catch(error => {
+        const data = error.response.data;
+        if (data.code === 304) {
+            alert(data.message);
+        }
+        window.location.href = "/boards"
     })
 })
 

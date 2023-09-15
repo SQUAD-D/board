@@ -6,16 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.board.Board;
 import squad.board.dto.Pagination;
-import squad.board.dto.board.BoardDetailResponse;
-import squad.board.dto.board.BoardListResponse;
-import squad.board.dto.board.BoardUpdateRequest;
-import squad.board.dto.board.CreateBoardRequest;
+import squad.board.dto.board.*;
 import squad.board.exception.board.BoardException;
 import squad.board.exception.board.BoardStatus;
 import squad.board.repository.BoardMapper;
 import squad.board.repository.CommentMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +56,10 @@ public class BoardService {
     @Transactional(readOnly = true)
     public BoardListResponse searchBoard(String keyWord, Long size, Long page) {
         Long offset = calcOffset(page, size);
+        Long boards = boardMapper.countByKeyWord(keyWord);
+        if (boards.equals(0L)) {
+            throw new BoardException(BoardStatus.INVALID_KEY_WORD);
+        }
         Pagination boardPaging = calcPages(boardMapper.countByKeyWord(keyWord), size, page);
         return new BoardListResponse(boardMapper.findByKeyWord(keyWord, size, offset), boardPaging);
     }
