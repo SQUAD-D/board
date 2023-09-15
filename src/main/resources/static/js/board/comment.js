@@ -199,7 +199,7 @@ commentsContainer.addEventListener("click", async function (event) {
             .then(response => {
                 const comments = response.data.comments;
                 const size = comments.length;
-                for (let i = 0; i < size; i++) {
+                for (let i = 0; i < comments.length; i++) {
                     childCommentList.innerHTML
                         += `<div class="child-comment-content">
                     <p hidden="hidden">${comments[i].commentId}</p>
@@ -259,7 +259,7 @@ function getChildComments(event) {
                 .then(response => {
                     const comments = response.data.comments;
                     const size = comments.length;
-                    for (let i = 0; i < size; i++) {
+                    for (let i = 0; i < comments.length; i++) {
                         childCommentList.innerHTML
                             += `<div class="child-comment-content">
                     <p hidden="hidden">${comments[i].commentId}</p>
@@ -294,14 +294,14 @@ document.addEventListener("DOMContentLoaded", function () {
     displayComments()
 })
 
-// 화면에 렌더링
+let size = 5;
+
+// 화면에 렌더링 [첫 접근]
 function displayComments() {
     const boardId = id.textContent;
-    const size = 5;
-    const defaultPageSize = 5;
     let page;
     axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
-        params: {size: size, page: 1, defaultPageSize: defaultPageSize}
+        params: {size: size, page: 1}
     })
         .then(response => {
             const comments = response.data.comments;
@@ -309,7 +309,7 @@ function displayComments() {
             const lastPage = response.data.commentPaging.lastPage;
             const size = comments.length;
             commentsContainer.innerHTML = '';
-            for (let i = 0; i < size; i++) {
+            for (let i = 0; i < comments.length; i++) {
                 commentsContainer.innerHTML
                     += `<div class="comment-content">
                     <p hidden="hidden">${comments[i].commentId}</p>
@@ -344,7 +344,7 @@ function displayComments() {
                 </div>`
             }
             pageContainer.innerHTML = `<span class="page"><a href="#" id="pre">Pre</a></span>`;
-            for (let i = firstPage; i < lastPage; i++) {
+            for (let i = firstPage; i < lastPage + 1; i++) {
                 pageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
             }
             pageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>`;
@@ -352,13 +352,11 @@ function displayComments() {
 }
 
 let currentPage = 1;
-
+// 페이지 접근
 pageContainer.addEventListener("click", function (event) {
     event.preventDefault();
     const boardId = id.textContent;
     const clickedElement = event.target;
-    let size = 5;
-    const defaultPageSize = 5;
     let page = clickedElement.id;
     if (clickedElement.id === "pre") {
         page = currentPage - 1;
@@ -367,14 +365,14 @@ pageContainer.addEventListener("click", function (event) {
         page = currentPage + 1;
     }
     axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
-        params: {size: size, page: page, defaultPageSize: defaultPageSize}
+        params: {size: size, page: page}
     }).then(response => {
         const comments = response.data.comments;
         currentPage = response.data.commentPaging.currentPage;
         const firstPage = response.data.commentPaging.firstPage;
         const lastPage = response.data.commentPaging.lastPage;
         commentsContainer.innerHTML = '';
-        for (let i = 0; i < size; i++) {
+        for (let i = 0; i < comments.length; i++) {
             commentsContainer.innerHTML
                 += `<div class="comment-content">
                     <p hidden="hidden">${comments[i].commentId}</p>
@@ -409,11 +407,15 @@ pageContainer.addEventListener("click", function (event) {
                 </div>`
         }
         pageContainer.innerHTML = '';
+
         pageContainer.innerHTML += `<span class="page"><a href="#" id="pre">Pre</a></span>`;
-        for (let i = firstPage; i < lastPage; i++) {
+        for (let i = firstPage; i < lastPage + 1; i++) {
             pageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
         }
         pageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>`;
+        const pageNumber = pageContainer.closest(`#${page}`);
+        pageNumber.style.backgroundColor = '#5685ff';
+
     }).catch(error => {
         const data = error.response.data;
         if (data.code === 401) {

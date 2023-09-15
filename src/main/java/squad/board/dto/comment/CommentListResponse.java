@@ -1,8 +1,8 @@
 package squad.board.dto.comment;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import squad.board.dto.Pagination;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import java.util.List;
 @Setter
 public class CommentListResponse {
     private List<CommentResponse> comments;
-    private CommentPaging commentPaging;
+    private Pagination commentPaging;
 
-    public CommentListResponse(List<CommentResponse> comments, CommentPaging commentPaging) {
+    public CommentListResponse(List<CommentResponse> comments, Pagination commentPaging) {
         this.comments = comments;
         this.commentPaging = commentPaging;
     }

@@ -3,6 +3,7 @@ package squad.board.repository;
 import org.apache.ibatis.annotations.Mapper;
 import squad.board.domain.board.Board;
 import squad.board.dto.board.BoardDetailResponse;
+import squad.board.dto.board.BoardListResponse;
 import squad.board.dto.board.BoardResponse;
 import squad.board.dto.board.BoardUpdateRequest;
 
@@ -14,14 +15,24 @@ public interface BoardMapper {
     // 게시글 저장
     Long save(Board board);
 
-    // 전체 게시글 조회 [member join for nickname]
-    List<BoardResponse> findAllWithNickName();
+//    // 전체 게시글 조회 [member join for nickname]
+//    List<BoardResponse> findAllWithNickName();
 
     // 상세게시글 조회 [member join for nickname]
     BoardDetailResponse findByIdWithNickName(Long boardId);
 
+    // 전체 게시글 조회 [member join for nickname]
+    List<BoardResponse> findAllWithNickName(Long size, Long offset);
+
+    Long countBoards();
+
+    // 게시글 전문 검색
+    List<BoardResponse> findByKeyWord(String keyWord, Long size, Long offset);
+
     // 게시글 삭제
     void deleteById(Long boardId);
+
+    Long countByKeyWord(String keyWord);
 
     // 게시글 단건 조회
     Board findById(Long boardId);

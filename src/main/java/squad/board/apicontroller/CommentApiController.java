@@ -36,10 +36,9 @@ public class CommentApiController {
     public CommentListResponse findAllComments(
             @PathVariable Long boardId,
             @RequestParam Long size,
-            @RequestParam Long page,
-            @RequestParam Long defaultPageSize
+            @RequestParam Long page
     ) {
-        return commentService.getCommentList(boardId, size, page, defaultPageSize);
+        return commentService.getCommentList(boardId, size, page);
     }
 
     // 댓글 삭제

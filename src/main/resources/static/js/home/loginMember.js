@@ -12,7 +12,7 @@ loginBtn.addEventListener("click", () => {
     })
         .then(() => {
             // 첫 화면은 1페이지 15건의 게시글
-            window.location.href = '/boards?page=1&size=15';
+            window.location.href = '/boards';
         })
         // 잘못된 로그인 요청 (아이디, 비밀번호 불일치)
         .catch(error => {

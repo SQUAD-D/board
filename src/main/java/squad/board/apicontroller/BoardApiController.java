@@ -7,6 +7,7 @@ import squad.board.aop.BoardWriterAuth;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.dto.board.BoardDetailResponse;
+import squad.board.dto.board.BoardListResponse;
 import squad.board.dto.board.BoardUpdateRequest;
 import squad.board.dto.board.CreateBoardRequest;
 import squad.board.service.BoardService;
@@ -53,5 +54,23 @@ public class BoardApiController {
             @PathVariable Long boardId
     ) {
         return boardService.findOneBoard(boardId);
+    }
+
+    // 전체 게시글 조회 (페이징 처리)
+    @GetMapping
+    public BoardListResponse boardList(
+            @RequestParam Long size,
+            @RequestParam Long page
+    ) {
+        return boardService.findBoards(size, page);
+    }
+
+    @GetMapping("/search")
+    public BoardListResponse searchBoard(
+            @RequestParam String keyWord,
+            @RequestParam Long size,
+            @RequestParam Long page
+    ) {
+        return boardService.searchBoard(keyWord, size, page);
     }
 }

@@ -18,7 +18,7 @@
         where c.board_id = #{boardId}
           and c.parent_comment_id is null
         order by c.created_date desc
-        limit #{size} offset #{page};
+        limit #{size} offset #{offset};
     </select>
 
     <select id="countCommentsByBoardId">
