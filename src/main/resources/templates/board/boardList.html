@@ -39,13 +39,14 @@
                     type="text"
                     class="search-box"
                     placeholder="검색어를 입력해주세요."
+                    id="key-word"
             />
-            <button class="search-btn">검색</button>
+            <button class="search-btn" id="search-btn">검색</button>
             <!--            차후 검색 조건 추가 -->
         </div>
 
         <div class="board-list-container">
-            <div class="board-list">
+            <div class="board-list" id="board-list-container">
                 <table>
                     <thead>
                     <tr>
@@ -54,23 +55,16 @@
                         <th>게시일</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr th:each="board:${boards}">
-                        <td>
-                            <a th:text="${board.title}"
-                               th:href="@{/boards/{boardId}(boardId=${board.boardId})}"></a>
-                        </td>
-                        <td>
-                            <a th:text="${board.nickName}"></a>
-                        </td>
-                        <td>
-                            <a th:text="${board.createdDate}" class="createdDate"></a>
-                        </td>
-                    </tr>
+                    <tbody id="board-table">
                     </tbody>
                 </table>
             </div>
-            <div class="board-page-container"></div>
+        </div>
+        <div class="page-container" id="page-container">
+
+        </div>
+        <div class="page-container" id="search-page-container">
+
         </div>
     </div>
 </main>
@@ -82,6 +76,8 @@
 </body>
 <script src="/js/home/logoutMember.js"></script>
 <script src="/js/board/simpleDateFormatter.js"></script>
+<script src="/js/board/boardList.js"></script>
+<script src="/js/board/boardSearch.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 </html>
 </html>

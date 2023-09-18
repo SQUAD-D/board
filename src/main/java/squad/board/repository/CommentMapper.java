@@ -4,13 +4,16 @@ import org.apache.ibatis.annotations.Mapper;
 import squad.board.domain.comment.Comment;
 import squad.board.dto.comment.CommentResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
 public interface CommentMapper {
     Long save(Comment comment);
 
-    List<CommentResponse> findAllCommentsWithNickName(Long boardId);
+    List<CommentResponse> findAllCommentsWithNickName(Long boardId, Long size, Long offset);
+
+    Long countCommentsByBoardId(Long boardId);
 
     void deleteByBoardId(Long boardId);
 
@@ -18,5 +21,7 @@ public interface CommentMapper {
 
     Comment findByCommentId(Long commentId);
 
-    void updateByCommentId(Long commentId, String content);
+    void updateByCommentId(Long commentId, String content, LocalDateTime modifiedDate);
+
+    List<CommentResponse> findAllChildComments(Long boardId, Long parentCommentId);
 }

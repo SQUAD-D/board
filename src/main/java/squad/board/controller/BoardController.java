@@ -23,9 +23,7 @@ public class BoardController {
 
     // 게시판 리스트 페이지
     @GetMapping
-    public String boardListView(Model model) {
-        List<BoardResponse> boards = boardService.findBoards();
-        model.addAttribute("boards", boards);
+    public String boardListView() {
         return "/board/boardList";
     }
 

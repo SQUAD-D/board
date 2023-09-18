@@ -61,7 +61,6 @@ a {
 
 .board-list-container {
     margin-top: 40px;
-    margin-bottom: 100px;
     padding-bottom: 30px;
     display: flex;
     justify-content: center;
@@ -117,5 +116,17 @@ a:hover {
 }
 
 /* 게시판 끝 */
+
+/* 페이지 컨테이너 */
+
+.page-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.page {
+    margin-right: 10px;
+}
 
 
