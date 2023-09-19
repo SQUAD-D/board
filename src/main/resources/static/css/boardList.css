@@ -129,4 +129,15 @@ a:hover {
     margin-right: 10px;
 }
 
+.no-content {
+    display: flex;
+    justify-content: center;
+}
+
+.search-option {
+    margin-right: 30px;
+    margin-top: 15px;
+    height: 20px;
+}
+
 

@@ -2,13 +2,13 @@ package squad.board.apicontroller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import squad.board.aop.CommentWriterAuth;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
-import squad.board.dto.comment.CommentListResponse;
+import squad.board.dto.ContentListResponse;
+import squad.board.dto.comment.CommentResponse;
 import squad.board.dto.comment.CommentSaveRequest;
 import squad.board.dto.comment.CommentUpdateRequest;
 import squad.board.service.CommentService;
@@ -33,7 +33,7 @@ public class CommentApiController {
 
     // 전체 댓글 리스트
     @GetMapping("/{boardId}/comments")
-    public CommentListResponse findAllComments(
+    public ContentListResponse<CommentResponse> findAllComments(
             @PathVariable Long boardId,
             @RequestParam Long size,
             @RequestParam Long page
@@ -60,7 +60,7 @@ public class CommentApiController {
 
     // 대댓글 리스트
     @GetMapping("/{boardId}/childComments/{parentCommentId}")
-    public CommentListResponse getChildComment(
+    public ContentListResponse<CommentResponse> getChildComment(
             @PathVariable Long boardId,
             @PathVariable Long parentCommentId
     ) {

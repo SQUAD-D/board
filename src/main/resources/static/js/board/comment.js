@@ -197,9 +197,8 @@ commentsContainer.addEventListener("click", async function (event) {
         childCommentList.innerHTML = '';
         await axios.get(`http://localhost:8080/api/boards/${boardId}/childComments/${parentCommentId}`)
             .then(response => {
-                const comments = response.data.comments;
-                const size = comments.length;
-                for (let i = 0; i < comments.length; i++) {
+                const comments = response.data.contents;
+                for (let i = 0; i < contents.length; i++) {
                     childCommentList.innerHTML
                         += `<div class="child-comment-content">
                     <p hidden="hidden">${comments[i].commentId}</p>
@@ -257,8 +256,7 @@ function getChildComments(event) {
             childCommentList.innerHTML = '';
             axios.get(`http://localhost:8080/api/boards/${boardId}/childComments/${parentCommentId}`)
                 .then(response => {
-                    const comments = response.data.comments;
-                    const size = comments.length;
+                    const comments = response.data.contents;
                     for (let i = 0; i < comments.length; i++) {
                         childCommentList.innerHTML
                             += `<div class="child-comment-content">
@@ -304,10 +302,9 @@ function displayComments() {
         params: {size: size, page: 1}
     })
         .then(response => {
-            const comments = response.data.comments;
-            const firstPage = response.data.commentPaging.firstPage;
-            const lastPage = response.data.commentPaging.lastPage;
-            const size = comments.length;
+            const comments = response.data.contents;
+            const firstPage = response.data.pagination.firstPage;
+            const lastPage = response.data.pagination.lastPage;
             commentsContainer.innerHTML = '';
             for (let i = 0; i < comments.length; i++) {
                 commentsContainer.innerHTML
@@ -367,10 +364,10 @@ pageContainer.addEventListener("click", function (event) {
     axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
         params: {size: size, page: page}
     }).then(response => {
-        const comments = response.data.comments;
-        currentPage = response.data.commentPaging.currentPage;
-        const firstPage = response.data.commentPaging.firstPage;
-        const lastPage = response.data.commentPaging.lastPage;
+        const comments = response.data.contents;
+        currentPage = response.data.pagination.currentPage;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
         commentsContainer.innerHTML = '';
         for (let i = 0; i < comments.length; i++) {
             commentsContainer.innerHTML

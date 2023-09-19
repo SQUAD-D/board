@@ -6,10 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import squad.board.aop.BoardWriterAuth;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
-import squad.board.dto.board.BoardDetailResponse;
-import squad.board.dto.board.BoardListResponse;
-import squad.board.dto.board.BoardUpdateRequest;
-import squad.board.dto.board.CreateBoardRequest;
+import squad.board.dto.ContentListResponse;
+import squad.board.dto.board.*;
 import squad.board.service.BoardService;
 
 @RestController
@@ -58,7 +56,7 @@ public class BoardApiController {
 
     // 전체 게시글 조회 (페이징 처리)
     @GetMapping
-    public BoardListResponse boardList(
+    public ContentListResponse<BoardResponse> boardList(
             @RequestParam Long size,
             @RequestParam Long page
     ) {
@@ -66,11 +64,12 @@ public class BoardApiController {
     }
 
     @GetMapping("/search")
-    public BoardListResponse searchBoard(
+    public ContentListResponse<BoardResponse> searchBoard(
             @RequestParam String keyWord,
             @RequestParam Long size,
-            @RequestParam Long page
+            @RequestParam Long page,
+            @RequestParam String searchType
     ) {
-        return boardService.searchBoard(keyWord, size, page);
+        return boardService.searchBoard(keyWord, size, page, searchType);
     }
 }

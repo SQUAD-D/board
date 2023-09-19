@@ -5,8 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.comment.Comment;
-import squad.board.dto.comment.CommentListResponse;
+import squad.board.dto.ContentListResponse;
 import squad.board.dto.Pagination;
+import squad.board.dto.comment.CommentResponse;
 import squad.board.dto.comment.CommentSaveRequest;
 import squad.board.dto.comment.CommentUpdateRequest;
 import squad.board.exception.comment.CommentException;
@@ -28,22 +29,14 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentListResponse getCommentList(Long boardId, Long size, Long page) {
-        Pagination commentPaging = new Pagination();
-        commentPaging.setCurrentPage(page);
-        // 게시글의 전체 댓글 수
-        commentPaging.setTotalContent(commentMapper.countCommentsByBoardId(boardId));
-        // 페이지 수 계산
-        Long maxPage = commentPaging.calculateTotalPages(size);
-        // 페이지 범위를 벗어난 요청 예외처리
-        if (maxPage < page || page <= 0) {
-            throw new CommentException(CommentStatus.INVALID_PAGE_NUMBER);
-        }
+    public ContentListResponse<CommentResponse> getCommentList(Long boardId, Long size, Long requestPage) {
+        Pagination commentPaging = new Pagination(
+                requestPage,
+                commentMapper.countCommentsByBoardId(boardId),
+                size);
         // offset 계산
-        Long offset = (page - 1) * size;
-        // 한 번에 보여줄 페이지 수 계산
-        commentPaging.calculatePageList();
-        return new CommentListResponse(commentMapper.findAllCommentsWithNickName(boardId, size, offset), commentPaging);
+        Long offset = (requestPage - 1) * size;
+        return new ContentListResponse<>(commentMapper.findAllCommentsWithNickName(boardId, size, offset), commentPaging);
     }
 
     public void deleteComment(Long commentId, Long memberId) {
@@ -55,8 +48,8 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentListResponse getChildComment(Long boardId, Long parentCommentId) {
-        return new CommentListResponse(commentMapper.findAllChildComments(boardId, parentCommentId));
+    public ContentListResponse<CommentResponse> getChildComment(Long boardId, Long parentCommentId) {
+        return new ContentListResponse<>(commentMapper.findAllChildComments(boardId, parentCommentId));
     }
 
 }

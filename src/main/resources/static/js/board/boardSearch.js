@@ -1,20 +1,25 @@
 const keyWordInput = document.getElementById('key-word');
 const searchBtn = document.getElementById('search-btn');
 const searchPageContainer = document.getElementById('search-page-container');
+const noContentContainer = document.getElementById('no-content');
 
 searchBtn.addEventListener("click", () => {
     boardPageContainer.style.display = 'none';
     searchPageContainer.style.display = 'flex';
     const keyWord = keyWordInput.value;
+    let searchType = document.getElementById('search-option');
     axios.get(`http://localhost:8080/api/boards/search`, {
-        params: {keyWord: keyWord, size: size, page: 1}
+        params: {keyWord: keyWord, size: size, page: 1, searchType: searchType.options[searchType.selectedIndex].value}
     }).then(response => {
-        const boards = response.data.boards;
-        const firstPage = response.data.boardPaging.firstPage;
-        const lastPage = response.data.boardPaging.lastPage;
+        const boards = response.data.contents;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
+        const totalContents = response.data.pagination.totalContent;
         boardTableContainer.innerHTML = '';
-        for (let i = 0; i < boards.length; i++) {
-            boardTableContainer.innerHTML += `
+        noContentContainer.innerHTML = '';
+        if (totalContents !== 0) {
+            for (let i = 0; i < boards.length; i++) {
+                boardTableContainer.innerHTML += `
             <tr>
                         <td onClick="location.href='http://localhost:8080/boards/${boards[i].boardId}'">
                             ${boards[i].title}
@@ -27,21 +32,18 @@ searchBtn.addEventListener("click", () => {
                         </td>
                     </tr>
         `
-        }
-        searchPageContainer.innerHTML = '';
-        searchPageContainer.innerHTML += `
+            }
+            searchPageContainer.innerHTML = '';
+            searchPageContainer.innerHTML += `
 <span class="page"><a href="#" id="pre">Pre</a></span>`
-        for (let i = firstPage; i < lastPage + 1; i++) {
-            searchPageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
-        }
-        searchPageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>
+            for (let i = firstPage; i < lastPage + 1; i++) {
+                searchPageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
+            }
+            searchPageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>
 `;
-    }).catch(error => {
-        const data = error.response.data;
-        if (data.code === 304) {
-            alert(data.message);
+        } else {
+            noContentContainer.innerHTML = '<h2>검색 결과가 없습니다.</h2>';
         }
-        window.location.href = "/boards"
     })
 })
 
@@ -59,10 +61,11 @@ searchPageContainer.addEventListener("click", function (event) {
     axios.get('http://localhost:8080/api/boards/search', {
         params: {keyWord: keyWord, size: size, page: page}
     }).then(response => {
-        const boards = response.data.boards;
-        currentPage = response.data.boardPaging.currentPage;
-        const firstPage = response.data.boardPaging.firstPage;
-        const lastPage = response.data.boardPaging.lastPage;
+        const boards = response.data.contents;
+        currentPage = response.data.pagination.currentPage;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
+
         boardTableContainer.innerHTML = '';
         for (let i = 0; i < boards.length; i++) {
             boardTableContainer.innerHTML += `

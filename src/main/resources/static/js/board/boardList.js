@@ -1,17 +1,16 @@
 const boardTableContainer = document.getElementById('board-table');
 const boardPageContainer = document.getElementById('page-container');
 
-let size = 10;
+let size = 15;
 // 첫 페이지 렌더링
 document.addEventListener("DOMContentLoaded", function () {
-    // boardPageContainer.style.display = 'block';
     searchPageContainer.style.display = 'none';
     axios.get('http://localhost:8080/api/boards', {
         params: {size: size, page: 1}
     }).then(response => {
-        const boards = response.data.boards;
-        const firstPage = response.data.boardPaging.firstPage;
-        const lastPage = response.data.boardPaging.lastPage;
+        const boards = response.data.contents;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
         boardTableContainer.innerHTML = '';
         for (let i = 0; i < boards.length; i++) {
             boardTableContainer.innerHTML += `
@@ -51,10 +50,10 @@ boardPageContainer.addEventListener("click", function (event) {
     axios.get('http://localhost:8080/api/boards', {
         params: {size: size, page: page}
     }).then(response => {
-        const boards = response.data.boards;
-        currentPage = response.data.boardPaging.currentPage;
-        const firstPage = response.data.boardPaging.firstPage;
-        const lastPage = response.data.boardPaging.lastPage;
+        const boards = response.data.contents;
+        currentPage = response.data.pagination.currentPage;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
         boardTableContainer.innerHTML = '';
         for (let i = 0; i < boards.length; i++) {
             boardTableContainer.innerHTML += `

@@ -9,20 +9,6 @@
         values (#{memberId}, #{title}, #{content}, #{createdDate}, #{modifiedDate})
     </insert>
 
-    <!-- api 성공하면 -->
-    <!--    <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponse">-->
-    <!--        select b.board_id,-->
-    <!--               b.title,-->
-    <!--               b.content,-->
-    <!--               m.nick_name,-->
-    <!--               b.created_date-->
-    <!--        from board b-->
-    <!--                 join member m-->
-    <!--                      on b.member_id = m.member_id-->
-    <!--        order by created_date desc-->
-    <!--    </select>-->
-    <!-- 지워 -->
-
     <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponse">
         select b.board_id,
                b.title,
@@ -36,23 +22,41 @@
         limit #{size} offset #{offset}
     </select>
 
+    <select id="findByKeyWord">
+        select b.board_id,
+        b.title,
+        b.content,
+        m.nick_name,
+        b.created_date
+        from board b
+        join member m
+        on b.member_id = m.member_id
+        <if test='searchType=="content"'>
+            where match(content) against(#{keyWord})
+        </if>
+        <if test='searchType=="title"'>
+            where match(title) against(#{keyWord})
+        </if>
+        <if test='searchType=="titleAndContent"'>
+            where match(content) against(#{keyWord})
+            union
+            select b.board_id,
+            b.title,
+            b.content,
+            m.nick_name,
+            b.created_date
+            from board b
+            join member m
+            on b.member_id = m.member_id
+            where match(title) against(#{keyWord})
+        </if>
+        order by created_date desc
+        limit #{size} offset #{offset};
+    </select>
+
     <select id="countBoards">
         select count(*)
         from board;
-    </select>
-
-    <select id="findByKeyWord">
-        select b.board_id,
-               b.title,
-               b.content,
-               m.nick_name,
-               b.created_date
-        from board b
-                 join member m
-                      on b.member_id = m.member_id
-        where match(content) against(#{keyWord})
-        order by created_date desc
-        limit #{size} offset #{offset}
     </select>
 
     <select id="countByKeyWord">
