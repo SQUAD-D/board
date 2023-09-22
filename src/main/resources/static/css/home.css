@@ -81,6 +81,10 @@ input {
     margin-top: 0;
 }
 
+#nick-validation-btn {
+    margin-top: 0;
+}
+
 #title {
     font-size: 60px;
     background-image: linear-gradient(160deg, #2254ff 0%, #70b2ff 100%);

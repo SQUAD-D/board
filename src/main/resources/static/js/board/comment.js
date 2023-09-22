@@ -292,13 +292,26 @@ document.addEventListener("DOMContentLoaded", function () {
     displayComments()
 })
 
+function getUrl() {
+    const boardId = id.textContent;
+    const mainComments = `http://localhost:8080/api/boards/${boardId}/comments`;
+    const myComments = 'http://localhost:8080/api/my-page/my-comments';
+    const pathname = location.pathname;
+    let url;
+    if (pathname === `/boards/${boardId}`) {
+        return url = mainComments;
+    } else {
+        return url = myComments;
+    }
+}
+
 let size = 5;
 
 // 화면에 렌더링 [첫 접근]
 function displayComments() {
-    const boardId = id.textContent;
     let page;
-    axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
+    const url = getUrl();
+    axios.get(url, {
         params: {size: size, page: 1}
     })
         .then(response => {

@@ -11,14 +11,14 @@ import squad.board.dto.board.*;
 import squad.board.service.BoardService;
 
 @RestController
-@RequestMapping("/api/boards")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardApiController {
 
     private final BoardService boardService;
 
     // 게시글 생성
-    @PostMapping
+    @PostMapping("/boards")
     public CommonIdResponse saveBoard(
             @SessionAttribute Long memberId,
             @Valid @RequestBody CreateBoardRequest createBoard) {
@@ -26,7 +26,7 @@ public class BoardApiController {
     }
 
     // 게시글 삭제
-    @DeleteMapping("/{boardId}")
+    @DeleteMapping("/boards/{boardId}")
     @BoardWriterAuth
     public CommonIdResponse deleteBoard(
             @PathVariable Long boardId,
@@ -36,7 +36,7 @@ public class BoardApiController {
     }
 
     // 게시글 수정
-    @PatchMapping("/{boardId}")
+    @PatchMapping("/boards/{boardId}")
     @BoardWriterAuth
     public CommonIdResponse updateBoard(
             @PathVariable Long boardId,
@@ -47,7 +47,7 @@ public class BoardApiController {
     }
 
     // 상세 게시글 조회
-    @GetMapping("/{boardId}")
+    @GetMapping("/boards/{boardId}")
     public BoardDetailResponse getBoard(
             @PathVariable Long boardId
     ) {
@@ -55,15 +55,16 @@ public class BoardApiController {
     }
 
     // 전체 게시글 조회 (페이징 처리)
-    @GetMapping
+    @GetMapping("/boards")
     public ContentListResponse<BoardResponse> boardList(
             @RequestParam Long size,
             @RequestParam Long page
     ) {
-        return boardService.findBoards(size, page);
+        return boardService.findBoards(size, page, null);
     }
 
-    @GetMapping("/search")
+    // 게시글 검색
+    @GetMapping("/boards/search")
     public ContentListResponse<BoardResponse> searchBoard(
             @RequestParam String keyWord,
             @RequestParam Long size,

@@ -2,6 +2,7 @@ package squad.board.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 import squad.board.domain.member.Member;
+import squad.board.dto.member.MemberUpdateRequest;
 
 @Mapper
 public interface MemberMapper {
@@ -16,4 +17,10 @@ public interface MemberMapper {
 
     // LoginId 로 회원 조회
     Member findByLoginId(String loginId);
+
+    // nickName으로 회원 조회
+    Member findByNickName(String nickName);
+
+    // 회원 정보 업데이터
+    void update(Long memberId, MemberUpdateRequest memberUpdateRequest);
 }

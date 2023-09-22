@@ -22,7 +22,6 @@ public class SessionInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) {
-        // member service에서 쓰지말자
         memberService.validateSession(request);
         return true;
     }

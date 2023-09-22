@@ -38,7 +38,7 @@ public class CommentApiController {
             @RequestParam Long size,
             @RequestParam Long page
     ) {
-        return commentService.getCommentList(boardId, size, page);
+        return commentService.getCommentList(boardId, size, page, null);
     }
 
     // 댓글 삭제

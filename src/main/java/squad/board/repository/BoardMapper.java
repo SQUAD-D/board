@@ -18,9 +18,9 @@ public interface BoardMapper {
     BoardDetailResponse findByIdWithNickName(Long boardId);
 
     // 전체 게시글 조회 [member join for nickname]
-    List<BoardResponse> findAllWithNickName(Long size, Long offset);
+    List<BoardResponse> findAllWithNickName(Long size, Long offset, Long memberId);
 
-    Long countBoards();
+    Long countBoards(Long memberId);
 
     // 게시글 전문 검색
     List<BoardResponse> findByKeyWord(String keyWord, Long size, Long offset, String searchType);

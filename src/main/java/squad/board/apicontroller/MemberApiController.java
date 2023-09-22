@@ -3,15 +3,11 @@ package squad.board.apicontroller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import squad.board.argumentresolver.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
-import squad.board.dto.member.CreateMemberRequest;
-import squad.board.dto.member.LoginRequest;
-import squad.board.dto.member.ValidateLoginIdRequest;
+import squad.board.dto.member.*;
 import squad.board.service.MemberService;
 
 @RestController
@@ -29,10 +25,18 @@ public class MemberApiController {
     }
 
     // 중복 아이디 검증
-    @PostMapping("/validation")
-    public void validationLoginId(
-            @RequestBody @Valid ValidateLoginIdRequest loginIdDto) {
-        memberService.validationLoginId(loginIdDto.getLoginId());
+    @PostMapping("/id-validation")
+    public void idValidation(
+            @RequestParam String loginId) {
+        memberService.validationLoginId(loginId, null);
+    }
+
+    // 중복 닉네임 검증
+    @PostMapping("/nick-validation")
+    public void nickValidation(
+            @RequestParam String nickName
+    ) {
+        memberService.validationNickName(nickName, null);
     }
 
     // 로그인
@@ -50,5 +54,22 @@ public class MemberApiController {
             HttpServletRequest request
     ) {
         return memberService.logout(request);
+    }
+
+    // 회원 단건 조회
+    @GetMapping
+    public MemberResponse findMember(
+            @squad.board.argumentresolver.SessionAttribute Long memberId
+    ) {
+        return memberService.findMember(memberId);
+    }
+
+    // 회원 정보 수정
+    @PatchMapping
+    public void updateMember(
+            @SessionAttribute Long memberId,
+            @Valid @RequestBody MemberUpdateRequest memberUpdateRequest
+    ) {
+        memberService.updateMember(memberId, memberUpdateRequest);
     }
 }

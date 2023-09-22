@@ -11,13 +11,16 @@
 
     <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponse">
         select b.board_id,
-               b.title,
-               b.content,
-               m.nick_name,
-               b.created_date
+        b.title,
+        b.content,
+        m.nick_name,
+        b.created_date
         from board b
-                 join member m
-                      on b.member_id = m.member_id
+        join member m
+        on b.member_id = m.member_id
+        <if test='memberId != null'>
+            where b.member_id = #{memberId}
+        </if>
         order by created_date desc
         limit #{size} offset #{offset}
     </select>
@@ -56,7 +59,10 @@
 
     <select id="countBoards">
         select count(*)
-        from board;
+        from board b
+        <if test='memberId != null'>
+            where b.member_id = #{memberId}
+        </if>
     </select>
 
     <select id="countByKeyWord">

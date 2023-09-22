@@ -29,14 +29,14 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public ContentListResponse<CommentResponse> getCommentList(Long boardId, Long size, Long requestPage) {
+    public ContentListResponse<CommentResponse> getCommentList(Long boardId, Long size, Long requestPage, Long memberId) {
         Pagination commentPaging = new Pagination(
                 requestPage,
-                commentMapper.countCommentsByBoardId(boardId),
+                commentMapper.countCommentsByBoardId(boardId, memberId),
                 size);
         // offset 계산
         Long offset = (requestPage - 1) * size;
-        return new ContentListResponse<>(commentMapper.findAllCommentsWithNickName(boardId, size, offset), commentPaging);
+        return new ContentListResponse<>(commentMapper.findAllCommentsWithNickName(boardId, size, offset, memberId), commentPaging);
     }
 
     public void deleteComment(Long commentId, Long memberId) {

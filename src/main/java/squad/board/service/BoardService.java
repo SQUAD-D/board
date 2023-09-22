@@ -7,14 +7,14 @@ import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.board.Board;
 import squad.board.dto.ContentListResponse;
 import squad.board.dto.Pagination;
-import squad.board.dto.board.*;
-import squad.board.exception.board.BoardException;
-import squad.board.exception.board.BoardStatus;
+import squad.board.dto.board.BoardDetailResponse;
+import squad.board.dto.board.BoardResponse;
+import squad.board.dto.board.BoardUpdateRequest;
+import squad.board.dto.board.CreateBoardRequest;
 import squad.board.repository.BoardMapper;
 import squad.board.repository.CommentMapper;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +31,10 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage) {
+    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Long memberId) {
         Long offset = calcOffset(requestPage, size);
-        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(), size);
-        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset), boardPaging);
+        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(memberId), size);
+        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, memberId), boardPaging);
     }
 
     @Transactional(readOnly = true)
