@@ -60,7 +60,7 @@ public class BoardApiController {
             @RequestParam Long size,
             @RequestParam Long page
     ) {
-        return boardService.findBoards(size, page, null);
+        return boardService.findBoards(size, page);
     }
 
     // 게시글 검색

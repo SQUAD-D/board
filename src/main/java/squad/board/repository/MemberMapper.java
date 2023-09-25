@@ -16,10 +16,7 @@ public interface MemberMapper {
     Member findMemberByLoginIdAndLoginPw(String loginId, String loginPw);
 
     // LoginId 로 회원 조회
-    Member findByLoginId(String loginId);
-
-    // nickName으로 회원 조회
-    Member findByNickName(String nickName);
+    Member findByLoginIdOrNickName(String memberInfo);
 
     // 회원 정보 업데이터
     void update(Long memberId, MemberUpdateRequest memberUpdateRequest);

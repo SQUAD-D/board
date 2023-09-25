@@ -198,7 +198,7 @@ commentsContainer.addEventListener("click", async function (event) {
         await axios.get(`http://localhost:8080/api/boards/${boardId}/childComments/${parentCommentId}`)
             .then(response => {
                 const comments = response.data.contents;
-                for (let i = 0; i < contents.length; i++) {
+                for (let i = 0; i < comments.length; i++) {
                     childCommentList.innerHTML
                         += `<div class="child-comment-content">
                     <p hidden="hidden">${comments[i].commentId}</p>

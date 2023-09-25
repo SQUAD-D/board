@@ -27,7 +27,7 @@ public class MemberService {
     @Transactional
     public CommonIdResponse join(CreateMemberRequest createMember) {
         // 서버 쪽에서 한 번 더 중복아이디 검증처리
-        validationLoginId(createMember.getLoginId(), null);
+        validationMemberInfo(createMember.getLoginId());
         Member member = createMember.toEntity();
         memberMapper.save(member);
         return new CommonIdResponse(member.getMemberId());
@@ -35,8 +35,8 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long memberId, MemberUpdateRequest memberUpdateRequest) {
-        validationLoginId(memberUpdateRequest.getLoginId(), memberId);
-        validationNickName(memberUpdateRequest.getNickName(), memberId);
+        // 서버에서 한 번 더 검증
+        validationMemberInfo(memberUpdateRequest.getLoginId());
         memberMapper.update(memberId, memberUpdateRequest);
     }
 
@@ -52,7 +52,6 @@ public class MemberService {
     public Member login(LoginRequest loginRequest) {
         String loginId = loginRequest.getLoginId();
         String loginPw = loginRequest.getLoginPw();
-        log.info("{} Login", loginId);
         return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
     }
 
@@ -79,6 +78,8 @@ public class MemberService {
         // 유효 시간은 30분
         session.setMaxInactiveInterval(1800);
 
+        log.info("{} Login", member.getLoginId());
+
         return new CommonIdResponse(member.getMemberId());
     }
 
@@ -91,21 +92,12 @@ public class MemberService {
         }
     }
 
-    // 회원가입 시 중복아이디 검증
+    // 중복아이디 검증
     @Transactional(readOnly = true)
-    public void validationLoginId(String loginId, Long memberId) {
-        Member findMember = memberMapper.findByLoginId(loginId);
-        if (findMember != null && !findMember.getMemberId().equals(memberId)) {
-            throw new LoginException(DUPLICATED_LOGIN_ID);
-        }
-    }
-
-    // 회원가입 시 중복닉네임 검증
-    @Transactional(readOnly = true)
-    public void validationNickName(String nickName, Long memberId) {
-        Member findMember = memberMapper.findByNickName(nickName);
-        if (findMember != null && !findMember.getMemberId().equals(memberId)) {
-            throw new LoginException(DUPLICATED_NICK_NAME);
+    public void validationMemberInfo(String memberInfo) {
+        Member findMember = memberMapper.findByLoginIdOrNickName(memberInfo);
+        if (findMember != null) {
+            throw new LoginException(DUPLICATED_MEMBER_INFO);
         }
     }
 }

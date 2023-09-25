@@ -22,7 +22,7 @@ validationBtn.addEventListener("click", () => {
         .catch(error => {
             const data = error.response.data;
             if (data.code === 103) {
-                alert(data.message)
+                alert("중복된 아이디입니다.")
             }
             // 필드 에러
             if (data.code === 500) {
@@ -31,7 +31,7 @@ validationBtn.addEventListener("click", () => {
         })
 })
 
-// 중복아이디 검증
+// 중복닉네임 검증
 nickValidationBtn.addEventListener("click", () => {
     const nickName = signUpNickNameInput.value;
     axios.post("http://localhost:8080/api/members/nick-validation", null, {
@@ -47,8 +47,9 @@ nickValidationBtn.addEventListener("click", () => {
         // 중복아이디 O
         .catch(error => {
             const data = error.response.data;
-            if (data.code === 104) {
-                alert(data.message)
+            if (data.code === 103) {
+                alert("중복된 닉네임 입니다.")
+
             }
             // 필드 에러
             if (data.code === 500) {

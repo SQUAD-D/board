@@ -28,7 +28,7 @@ public class MemberApiController {
     @PostMapping("/id-validation")
     public void idValidation(
             @RequestParam String loginId) {
-        memberService.validationLoginId(loginId, null);
+        memberService.validationMemberInfo(loginId);
     }
 
     // 중복 닉네임 검증
@@ -36,7 +36,7 @@ public class MemberApiController {
     public void nickValidation(
             @RequestParam String nickName
     ) {
-        memberService.validationNickName(nickName, null);
+        memberService.validationMemberInfo(nickName);
     }
 
     // 로그인

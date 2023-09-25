@@ -46,7 +46,7 @@ class MemberServiceTest {
         String loginId = "bukak3";
 
         //then
-        Assertions.assertThatThrownBy(() -> memberService.validationLoginId(loginId))
+        Assertions.assertThatThrownBy(() -> memberService.validationMemberInfo(loginId))
                 .isInstanceOf(LoginException.class);
     }
 
