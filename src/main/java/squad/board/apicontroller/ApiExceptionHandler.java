@@ -1,6 +1,5 @@
 package squad.board.apicontroller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,24 +14,22 @@ import squad.board.commonresponse.CommonExceptionResponse;
 import squad.board.commonresponse.CommonStatus;
 import squad.board.exception.CommonException;
 import squad.board.exception.board.BoardException;
-import squad.board.exception.login.LoginException;
+import squad.board.exception.login.MemberException;
 import squad.board.exception.session.SessionException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
 public class ApiExceptionHandler {
 
     // 로그인관련 예외 처리
-    @ExceptionHandler(LoginException.class)
+    @ExceptionHandler(MemberException.class)
     public CommonExceptionResponse<CommonStatus> loginExceptionHandler(
             HttpServletResponse response,
-            LoginException loginException) {
-        setStatusCode(response, loginException);
-        return new CommonExceptionResponse<>(loginException.getCommonStatus());
+            MemberException memberException) {
+        setStatusCode(response, memberException);
+        return new CommonExceptionResponse<>(memberException.getCommonStatus());
     }
 
     // 세션 검증 실패 시 로그인화면으로 리다이렉션

@@ -9,11 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
 import squad.board.dto.member.*;
-import squad.board.exception.login.LoginException;
+import squad.board.exception.login.MemberException;
 import squad.board.exception.session.SessionException;
 import squad.board.repository.MemberMapper;
+import squad.board.validation.MemberInfo;
 
-import static squad.board.exception.login.LoginStatus.*;
+import static squad.board.exception.login.MemberStatus.*;
 import static squad.board.exception.session.SessionStatus.INVALID_SESSION_ID;
 
 @Service
@@ -27,7 +28,7 @@ public class MemberService {
     @Transactional
     public CommonIdResponse join(CreateMemberRequest createMember) {
         // 서버 쪽에서 한 번 더 중복아이디 검증처리
-        validationMemberInfo(createMember.getLoginId());
+        createMember.duplicationChk(memberMapper);
         Member member = createMember.toEntity();
         memberMapper.save(member);
         return new CommonIdResponse(member.getMemberId());
@@ -36,7 +37,7 @@ public class MemberService {
     @Transactional
     public void updateMember(Long memberId, MemberUpdateRequest memberUpdateRequest) {
         // 서버에서 한 번 더 검증
-        validationMemberInfo(memberUpdateRequest.getLoginId());
+        memberUpdateRequest.duplicationChk(memberMapper, memberId);
         memberMapper.update(memberId, memberUpdateRequest);
     }
 
@@ -67,7 +68,7 @@ public class MemberService {
     public CommonIdResponse provideSession(Member member, HttpServletRequest request) {
         // 로그인 정보 검증
         if (member == null) {
-            throw new LoginException(INVALID_LOGIN_INFO);
+            throw new MemberException(INVALID_LOGIN_INFO);
         }
         // 기존 세션은 파기
         request.getSession().invalidate();
@@ -92,12 +93,9 @@ public class MemberService {
         }
     }
 
-    // 중복아이디 검증
+    // 중복 검증
     @Transactional(readOnly = true)
-    public void validationMemberInfo(String memberInfo) {
-        Member findMember = memberMapper.findByLoginIdOrNickName(memberInfo);
-        if (findMember != null) {
-            throw new LoginException(DUPLICATED_MEMBER_INFO);
-        }
+    public void validationMemberInfo(MemberInfo memberInfo) {
+        memberInfo.duplicationChk(memberMapper);
     }
 }

@@ -4,8 +4,8 @@ import lombok.Getter;
 import squad.board.exception.CommonException;
 
 @Getter
-public class LoginException extends CommonException {
-    public LoginException(LoginStatus status) {
+public class MemberException extends CommonException {
+    public MemberException(MemberStatus status) {
         super(status);
     }
 }

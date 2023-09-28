@@ -9,6 +9,9 @@ import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
 import squad.board.dto.member.*;
 import squad.board.service.MemberService;
+import squad.board.validation.MemberInfo;
+import squad.board.validation.MemberLoginId;
+import squad.board.validation.MemberNickName;
 
 @RestController
 @RequestMapping(value = "/api/members")
@@ -28,7 +31,7 @@ public class MemberApiController {
     @PostMapping("/id-validation")
     public void idValidation(
             @RequestParam String loginId) {
-        memberService.validationMemberInfo(loginId);
+        memberService.validationMemberInfo(new MemberLoginId(loginId));
     }
 
     // 중복 닉네임 검증
@@ -36,7 +39,7 @@ public class MemberApiController {
     public void nickValidation(
             @RequestParam String nickName
     ) {
-        memberService.validationMemberInfo(nickName);
+        memberService.validationMemberInfo(new MemberNickName(nickName));
     }
 
     // 로그인

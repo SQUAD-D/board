@@ -23,11 +23,23 @@
           and login_pw = #{loginPw}
     </select>
 
+    <select id="findByLoginId" parameterType="string" resultType="Member">
+        select *
+        from member
+        where login_id = #{loginId}
+    </select>
+
+    <select id="findByNickName" parameterType="string" resultType="Member">
+        select *
+        from member
+        where nick_name = #{nickName}
+    </select>
+
     <select id="findByLoginIdOrNickName" parameterType="string" resultType="Member">
         select *
         from member
-        where login_id = #{memberInfo}
-           or nick_name = #{memberInfo}
+        where login_id = #{loginId}
+           or nick_name = #{nickName}
     </select>
 
     <update id="update">

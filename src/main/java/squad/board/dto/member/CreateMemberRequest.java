@@ -4,8 +4,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import squad.board.domain.member.Member;
+import squad.board.exception.login.MemberException;
+import squad.board.exception.login.MemberStatus;
+import squad.board.repository.MemberMapper;
+import squad.board.validation.MemberInfo;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -29,5 +34,12 @@ public class CreateMemberRequest {
                 .nickName(nickName)
                 .createdDate(LocalDateTime.now())
                 .build();
+    }
+
+    public void duplicationChk(MemberMapper memberMapper) {
+        memberMapper.findByLoginIdOrNickName(loginId, nickName).ifPresent(member -> {
+            throw new MemberException(MemberStatus.DUPLICATION_CHK_REQUIRED);
+        });
+
     }
 }
