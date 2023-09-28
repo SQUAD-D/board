@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Simple Board</title>
+
+    <link rel="stylesheet" href="/css/boardBase.css"/>
+    <link rel="stylesheet" href="/css/boardDetail.css">
+    <link rel="stylesheet" href="/css/boardList.css"/>
+</head>
+<body>
+<header>
+    <div class="title-container">
+        <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
+    </div>
+</header>
+
+<main>
+    <div class="main-container">
+        <div class="menu-container">
+            <button
+                    class="menu-btn"
+                    id="writeBoard"
+                    onclick="location.href='/boards/new'">글쓰기
+            </button>
+            <button
+                    class="menu-btn"
+                    id="myBoard"
+                    onclick="location.href='/my-page/my-boards'">나의 게시글
+            </button>
+            <button class="menu-btn"
+                    id="myComment"
+                    onclick="location.href='/my-page/my-comments'">나의 댓글</button>
+            <button class="menu-btn"
+                    id="updateInfo"
+                    onclick="location.href='/my-page/info-update'">회원 정보 수정</button>
+            <button class="menu-btn" id="logOut">로그아웃</button>
+        </div>
+
+        <div class="search-container">
+            <select id="search-option" class="search-option">
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <option value="titleAndContent">제목+내용</option>
+            </select>
+            <input
+                    type="text"
+                    class="search-box"
+                    placeholder="검색어를 입력해주세요."
+                    id="key-word"
+            />
+            <button class="search-btn" id="search-btn">검색</button>
+        </div>
+
+        <div class="board-list-container">
+            <div class="board-list" id="board-list-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>닉네임</th>
+                        <th>게시일</th>
+                    </tr>
+                    </thead>
+                    <tbody id="board-table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="no-content" id="no-content">
+
+        </div>
+        <div class="page-container" id="page-container">
+
+        </div>
+        <div class="page-container" id="search-page-container">
+
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="footer-info">
+        SQUAD-BOARD / Song Hae Chan
+    </div>
+</footer>
+</body>
+<script src="/js/home/logoutMember.js"></script>
+<script src="/js/board/boardList.js"></script>
+<script src="/js/board/boardSearch.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+</html>
+</html>

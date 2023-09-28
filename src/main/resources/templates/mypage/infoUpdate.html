@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Simple Board</title>
+
+    <link rel="stylesheet" href="/css/boardBase.css"/>
+    <link rel="stylesheet" href="/css/boardDetail.css">
+    <link rel="stylesheet" href="/css/infoUpdate.css">
+</head>
+<body>
+<header>
+    <div class="title-container">
+        <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
+    </div>
+</header>
+
+<main>
+    <div class="main-container">
+        <div class="menu-container">
+            <button
+                    class="menu-btn"
+                    id="writeBoard"
+                    onclick="location.href='/boards/new'">글쓰기
+            </button>
+            <button
+                    class="menu-btn"
+                    id="myBoard"
+                    onclick="location.href='/my-page/my-boards'">나의 게시글
+            </button>
+            <button class="menu-btn"
+                    id="myComment"
+                    onclick="location.href='/my-page/my-comments'">나의 댓글
+            </button>
+            <button class="menu-btn"
+                    id="updateInfo"
+                    onclick="location.href='/my-page/info-update'">회원 정보 수정
+            </button>
+            <button class="menu-btn" id="logOut">로그아웃</button>
+        </div>
+
+        <div class="info-update-form" id="info-update-form">
+            <label for="signUpId">아이디 : </label><input type="text" placeholder="아이디" id="signUpId"/>
+            <button id="validation-btn">아이디 중복체크</button><br>
+
+            <label for="signUpPw">비밀번호 : </label><input type="text" placeholder="비밀번호" id="signUpPw" /><br>
+
+            <label for="signUpName">이름 : </label><input type="text" placeholder="이름" id="signUpName"/><br>
+
+            <label for="signUpNickName">닉네임 : </label><input type="text" placeholder="닉네임" id="signUpNickName"/>
+            <button id="nick-validation-btn">닉네임 중복체크</button>
+        </div>
+        <div class="info-update-btn" id="info-update-btn">
+            <button id="update-btn">수정</button>
+        </div>
+
+
+    </div>
+</main>
+<footer>
+    <div class="footer-info">
+        SQUAD-BOARD / Song Hae Chan
+    </div>
+</footer>
+</body>
+<script src="/js/home/logoutMember.js"></script>
+<script src="/js/board/infoUpdate.js"></script>
+<script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+</html>
+</html>

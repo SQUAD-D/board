@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="squad.board.repository.MemberMapper">
+
+    <insert id="save" parameterType="Member" useGeneratedKeys="true" keyProperty="memberId" keyColumn="member_id">
+        insert into member(login_id, login_pw, name, nick_name)
+        values (#{loginId}, #{loginPw}, #{name}, #{nickName})
+    </insert>
+
+    <select id="findById" parameterType="Member" resultType="Member">
+        select *
+        from member
+        where member_id = #{memberId}
+    </select>
+
+    <select id="findMemberByLoginIdAndLoginPw" parameterType="Member" resultType="Member">
+        select *
+        from member
+        where login_id = #{loginId}
+          and login_pw = #{loginPw}
+    </select>
+
+    <select id="findByLoginId" parameterType="string" resultType="Member">
+        select *
+        from member
+        where login_id = #{loginId}
+    </select>
+
+    <select id="findByNickName" parameterType="string" resultType="Member">
+        select *
+        from member
+        where nick_name = #{nickName}
+    </select>
+
+    <select id="findByLoginIdOrNickName" parameterType="string" resultType="Member">
+        select *
+        from member
+        where login_id = #{loginId}
+           or nick_name = #{nickName}
+    </select>
+
+    <update id="update">
+        update member m
+        set m.login_id  = #{memberUpdateRequest.loginId},
+            m.login_pw  = #{memberUpdateRequest.loginPw},
+            m.name      = #{memberUpdateRequest.name},
+            m.nick_name = #{memberUpdateRequest.nickName}
+        where m.member_id = #{memberId}
+    </update>
+</mapper>
