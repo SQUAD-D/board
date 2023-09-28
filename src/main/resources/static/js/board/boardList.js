@@ -1,20 +1,37 @@
 const boardTableContainer = document.getElementById('board-table');
 const boardPageContainer = document.getElementById('page-container');
+const noContent = document.getElementById('no-content')
 
-let size = 10;
+function getUrl() {
+    const mainBoards = 'http://localhost:8080/api/boards';
+    const myBoards = 'http://localhost:8080/api/my-page/my-boards'
+    const mainComments = '';
+    const myComments = '';
+    const pathname = location.pathname;
+    let url;
+    if (pathname === '/boards') {
+        return url = mainBoards;
+    } else {
+        return url = myBoards;
+    }
+}
+
+let size = 15;
 // 첫 페이지 렌더링
 document.addEventListener("DOMContentLoaded", function () {
-    // boardPageContainer.style.display = 'block';
     searchPageContainer.style.display = 'none';
-    axios.get('http://localhost:8080/api/boards', {
+    const url = getUrl();
+    axios.get(url, {
         params: {size: size, page: 1}
     }).then(response => {
-        const boards = response.data.boards;
-        const firstPage = response.data.boardPaging.firstPage;
-        const lastPage = response.data.boardPaging.lastPage;
+        const boards = response.data.contents;
+        const totalContent = response.data.pagination.totalContent;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
         boardTableContainer.innerHTML = '';
-        for (let i = 0; i < boards.length; i++) {
-            boardTableContainer.innerHTML += `
+        if (totalContent !== 0) {
+            for (let i = 0; i < boards.length; i++) {
+                boardTableContainer.innerHTML += `
             <tr>
                         <td onClick="location.href='http://localhost:8080/boards/${boards[i].boardId}'">
                             ${boards[i].title}
@@ -27,13 +44,18 @@ document.addEventListener("DOMContentLoaded", function () {
                         </td>
                     </tr>
         `
-        }
-        boardPageContainer.innerHTML = `
+            }
+            boardPageContainer.innerHTML = '';
+            boardPageContainer.innerHTML = `
 <span class="page"><a href="#" id="pre">Pre</a></span>`
-        for (let i = firstPage; i < lastPage + 1; i++) {
-            boardPageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
+            for (let i = firstPage; i < lastPage + 1; i++) {
+                boardPageContainer.innerHTML += `<span class="page"><a href="#" id="${i}">${i}</a></span>`
+            }
+            boardPageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>`;
+        } else {
+            noContentContainer.innerHTML = '<h2>작성한 게시글이 없습니다.</h2>';
         }
-        boardPageContainer.innerHTML += `<span><a href="#" id="next">Next</a></span>`;
+
     })
 })
 
@@ -48,13 +70,14 @@ boardPageContainer.addEventListener("click", function (event) {
     if (clickedElement.id === "next") {
         page = currentPage + 1;
     }
-    axios.get('http://localhost:8080/api/boards', {
+    const url = getUrl();
+    axios.get(url, {
         params: {size: size, page: page}
     }).then(response => {
-        const boards = response.data.boards;
-        currentPage = response.data.boardPaging.currentPage;
-        const firstPage = response.data.boardPaging.firstPage;
-        const lastPage = response.data.boardPaging.lastPage;
+        const boards = response.data.contents;
+        currentPage = response.data.pagination.currentPage;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
         boardTableContainer.innerHTML = '';
         for (let i = 0; i < boards.length; i++) {
             boardTableContainer.innerHTML += `

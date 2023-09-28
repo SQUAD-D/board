@@ -6,21 +6,19 @@ import org.springframework.web.bind.annotation.*;
 import squad.board.aop.BoardWriterAuth;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
-import squad.board.dto.board.BoardDetailResponse;
-import squad.board.dto.board.BoardListResponse;
-import squad.board.dto.board.BoardUpdateRequest;
-import squad.board.dto.board.CreateBoardRequest;
+import squad.board.dto.ContentListResponse;
+import squad.board.dto.board.*;
 import squad.board.service.BoardService;
 
 @RestController
-@RequestMapping("/api/boards")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardApiController {
 
     private final BoardService boardService;
 
     // 게시글 생성
-    @PostMapping
+    @PostMapping("/boards")
     public CommonIdResponse saveBoard(
             @SessionAttribute Long memberId,
             @Valid @RequestBody CreateBoardRequest createBoard) {
@@ -28,7 +26,7 @@ public class BoardApiController {
     }
 
     // 게시글 삭제
-    @DeleteMapping("/{boardId}")
+    @DeleteMapping("/boards/{boardId}")
     @BoardWriterAuth
     public CommonIdResponse deleteBoard(
             @PathVariable Long boardId,
@@ -38,7 +36,7 @@ public class BoardApiController {
     }
 
     // 게시글 수정
-    @PatchMapping("/{boardId}")
+    @PatchMapping("/boards/{boardId}")
     @BoardWriterAuth
     public CommonIdResponse updateBoard(
             @PathVariable Long boardId,
@@ -49,7 +47,7 @@ public class BoardApiController {
     }
 
     // 상세 게시글 조회
-    @GetMapping("/{boardId}")
+    @GetMapping("/boards/{boardId}")
     public BoardDetailResponse getBoard(
             @PathVariable Long boardId
     ) {
@@ -57,20 +55,22 @@ public class BoardApiController {
     }
 
     // 전체 게시글 조회 (페이징 처리)
-    @GetMapping
-    public BoardListResponse boardList(
+    @GetMapping("/boards")
+    public ContentListResponse<BoardResponse> boardList(
             @RequestParam Long size,
             @RequestParam Long page
     ) {
         return boardService.findBoards(size, page);
     }
 
-    @GetMapping("/search")
-    public BoardListResponse searchBoard(
+    // 게시글 검색
+    @GetMapping("/boards/search")
+    public ContentListResponse<BoardResponse> searchBoard(
             @RequestParam String keyWord,
             @RequestParam Long size,
-            @RequestParam Long page
+            @RequestParam Long page,
+            @RequestParam String searchType
     ) {
-        return boardService.searchBoard(keyWord, size, page);
+        return boardService.searchBoard(keyWord, size, page, searchType);
     }
 }

@@ -1,0 +1,12 @@
+.info-update-form {
+    margin: 70px 150px 50px 150px;
+    border: 1px solid #2254ff;
+    border-radius: 20px;
+    padding: 30px 30px 30px 30px
+}
+
+.info-update-btn {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}

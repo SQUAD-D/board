@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import squad.board.dto.board.BoardDetailResponse;
-import squad.board.dto.board.BoardResponse;
 import squad.board.service.BoardService;
-
-import java.util.List;
 
 @Controller
 @Slf4j

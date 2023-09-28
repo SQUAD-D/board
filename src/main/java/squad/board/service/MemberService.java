@@ -8,20 +8,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.member.Member;
-import squad.board.dto.member.CreateMemberRequest;
-import squad.board.dto.member.LoginRequest;
-import squad.board.exception.login.LoginException;
+import squad.board.dto.member.*;
+import squad.board.exception.login.MemberException;
 import squad.board.exception.session.SessionException;
 import squad.board.repository.MemberMapper;
+import squad.board.validation.MemberInfo;
 
-import static squad.board.exception.login.LoginStatus.DUPLICATED_LOGIN_ID;
-import static squad.board.exception.login.LoginStatus.INVALID_LOGIN_INFO;
+import static squad.board.exception.login.MemberStatus.*;
 import static squad.board.exception.session.SessionStatus.INVALID_SESSION_ID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
+@Transactional
 public class MemberService {
 
     private final MemberMapper memberMapper;
@@ -29,22 +28,31 @@ public class MemberService {
     @Transactional
     public CommonIdResponse join(CreateMemberRequest createMember) {
         // 서버 쪽에서 한 번 더 중복아이디 검증처리
-        validationLoginId(createMember.getLoginId());
+        createMember.duplicationChk(memberMapper);
         Member member = createMember.toEntity();
         memberMapper.save(member);
         return new CommonIdResponse(member.getMemberId());
     }
 
+    @Transactional
+    public void updateMember(Long memberId, MemberUpdateRequest memberUpdateRequest) {
+        // 서버에서 한 번 더 검증
+        memberUpdateRequest.duplicationChk(memberMapper, memberId);
+        memberMapper.update(memberId, memberUpdateRequest);
+    }
+
     // Id로 회원 조회
-    public Member findMember(Long memberId) {
-        return memberMapper.findById(memberId);
+    @Transactional(readOnly = true)
+    public MemberResponse findMember(Long memberId) {
+        Member member = memberMapper.findById(memberId);
+        return new MemberResponse(member);
     }
 
     // 회원 로그인
+    @Transactional(readOnly = true)
     public Member login(LoginRequest loginRequest) {
         String loginId = loginRequest.getLoginId();
         String loginPw = loginRequest.getLoginPw();
-        log.info("{} Login", loginId);
         return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
     }
 
@@ -60,7 +68,7 @@ public class MemberService {
     public CommonIdResponse provideSession(Member member, HttpServletRequest request) {
         // 로그인 정보 검증
         if (member == null) {
-            throw new LoginException(INVALID_LOGIN_INFO);
+            throw new MemberException(INVALID_LOGIN_INFO);
         }
         // 기존 세션은 파기
         request.getSession().invalidate();
@@ -71,24 +79,23 @@ public class MemberService {
         // 유효 시간은 30분
         session.setMaxInactiveInterval(1800);
 
+        log.info("{} Login", member.getLoginId());
+
         return new CommonIdResponse(member.getMemberId());
     }
 
     // 세션 검증
-    public Long validateSession(HttpServletRequest request) {
+    public void validateSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         // (주소창으로 직접)세션이 없는 접근이거나, 세션이 만료되면 메인으로 리다이렉션
         if (session == null) {
             throw new SessionException(INVALID_SESSION_ID);
         }
-        return (Long) session.getAttribute("memberId");
     }
 
-    // 회원가입 시 중복아이디 검증
-    public void validationLoginId(String loginId) {
-        Member findMember = memberMapper.findByLoginId(loginId);
-        if (findMember != null) {
-            throw new LoginException(DUPLICATED_LOGIN_ID);
-        }
+    // 중복 검증
+    @Transactional(readOnly = true)
+    public void validationMemberInfo(MemberInfo memberInfo) {
+        memberInfo.duplicationChk(memberMapper);
     }
 }

@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
         log.info("session interceptor 등록");
         registry.addInterceptor(sessionInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/css/**", "/js/**", "/webjars/axios/1.4.0/**", "/", "/api/members/login", "/api/members/logout", "/api/members/validation", "/api/members");
+                .excludePathPatterns("/css/**", "/js/**", "/webjars/axios/1.4.0/**", "/", "/api/members/login", "/api/members/logout", "/api/members/id-validation", "/api/members/nick-validation", "/api/members");
     }
 
     // Session Attribute Argument Resolver 등록

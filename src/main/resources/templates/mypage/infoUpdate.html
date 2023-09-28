@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
@@ -11,7 +10,8 @@
     <title>Simple Board</title>
 
     <link rel="stylesheet" href="/css/boardBase.css"/>
-    <link rel="stylesheet" href="/css/boardList.css"/>
+    <link rel="stylesheet" href="/css/boardDetail.css">
+    <link rel="stylesheet" href="/css/infoUpdate.css">
 </head>
 <body>
 <header>
@@ -44,45 +44,22 @@
             <button class="menu-btn" id="logOut">로그아웃</button>
         </div>
 
-        <div class="search-container">
-            <select id="search-option" class="search-option">
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="titleAndContent">제목+내용</option>
-            </select>
-            <input
-                    type="text"
-                    class="search-box"
-                    placeholder="검색어를 입력해주세요."
-                    id="key-word"
-            />
-            <button class="search-btn" id="search-btn">검색</button>
+        <div class="info-update-form" id="info-update-form">
+            <label for="signUpId">아이디 : </label><input type="text" placeholder="아이디" id="signUpId"/>
+            <button id="validation-btn">아이디 중복체크</button><br>
+
+            <label for="signUpPw">비밀번호 : </label><input type="text" placeholder="비밀번호" id="signUpPw" /><br>
+
+            <label for="signUpName">이름 : </label><input type="text" placeholder="이름" id="signUpName"/><br>
+
+            <label for="signUpNickName">닉네임 : </label><input type="text" placeholder="닉네임" id="signUpNickName"/>
+            <button id="nick-validation-btn">닉네임 중복체크</button>
+        </div>
+        <div class="info-update-btn" id="info-update-btn">
+            <button id="update-btn">수정</button>
         </div>
 
-        <div class="board-list-container">
-            <div class="board-list" id="board-list-container">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>제목</th>
-                        <th>닉네임</th>
-                        <th>게시일</th>
-                    </tr>
-                    </thead>
-                    <tbody id="board-table">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="no-content" id="no-content">
 
-        </div>
-        <div class="page-container" id="page-container">
-
-        </div>
-        <div class="page-container" id="search-page-container">
-
-        </div>
     </div>
 </main>
 <footer>
@@ -92,8 +69,7 @@
 </footer>
 </body>
 <script src="/js/home/logoutMember.js"></script>
-<script src="/js/board/boardList.js"></script>
-<script src="/js/board/boardSearch.js"></script>
+<script src="/js/board/infoUpdate.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 </html>
 </html>

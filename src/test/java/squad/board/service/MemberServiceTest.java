@@ -10,7 +10,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.domain.member.Member;
 import squad.board.dto.member.CreateMemberRequest;
-import squad.board.exception.login.LoginException;
+import squad.board.exception.login.MemberException;
 import squad.board.repository.MemberMapper;
 
 @SpringBootTest
@@ -46,8 +46,8 @@ class MemberServiceTest {
         String loginId = "bukak3";
 
         //then
-        Assertions.assertThatThrownBy(() -> memberService.validationLoginId(loginId))
-                .isInstanceOf(LoginException.class);
+        Assertions.assertThatThrownBy(() -> memberService.validationMemberInfo(loginId))
+                .isInstanceOf(MemberException.class);
     }
 
     @Test

@@ -2,6 +2,8 @@ package squad.board.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import squad.board.exception.board.BoardException;
+import squad.board.exception.board.BoardStatus;
 
 @Getter
 @Setter
@@ -12,6 +14,17 @@ public class Pagination {
     private Long currentPage;
     private Long firstPage;
     private Long lastPage;
+
+    public Pagination(Long requestPage, Long totalContent, Long size) {
+        this.currentPage = requestPage;
+        this.totalContent = totalContent;
+        this.totalPages = calculateTotalPages(size);
+        // 페이지 범위를 벗어난 요청 예외처리
+        if ((totalPages < requestPage || requestPage <= 0) && totalContent != 0) {
+            throw new BoardException(BoardStatus.INVALID_PAGE_NUMBER);
+        }
+        calculatePageList();
+    }
 
     // 총 페이지 수 연산
     public Long calculateTotalPages(Long size) {

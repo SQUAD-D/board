@@ -1,23 +1,28 @@
 package squad.board.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.board.Board;
+import squad.board.dto.ContentListResponse;
 import squad.board.dto.Pagination;
-import squad.board.dto.board.*;
+import squad.board.dto.board.BoardDetailResponse;
+import squad.board.dto.board.BoardResponse;
+import squad.board.dto.board.BoardUpdateRequest;
+import squad.board.dto.board.CreateBoardRequest;
 import squad.board.exception.board.BoardException;
 import squad.board.exception.board.BoardStatus;
 import squad.board.repository.BoardMapper;
 import squad.board.repository.CommentMapper;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class BoardService {
 
     private final BoardMapper boardMapper;
@@ -30,10 +35,21 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public BoardListResponse findBoards(Long size, Long page) {
-        Long offset = calcOffset(page, size);
-        Pagination boardPaging = calcPages(boardMapper.countBoards(), size, page);
-        return new BoardListResponse(boardMapper.findAllWithNickName(size, offset), boardPaging);
+    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Long memberId) {
+        if (memberId == null) {
+            log.info("memberId = {}");
+            throw new BoardException(BoardStatus.INVALID_MEMBER_ID);
+        }
+        Long offset = calcOffset(requestPage, size);
+        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(memberId), size);
+        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, memberId), boardPaging);
+    }
+
+    @Transactional(readOnly = true)
+    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage) {
+        Long offset = calcOffset(requestPage, size);
+        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(null), size);
+        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, null), boardPaging);
     }
 
     @Transactional(readOnly = true)
@@ -54,30 +70,10 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public BoardListResponse searchBoard(String keyWord, Long size, Long page) {
-        Long offset = calcOffset(page, size);
-        Long boards = boardMapper.countByKeyWord(keyWord);
-        if (boards.equals(0L)) {
-            throw new BoardException(BoardStatus.INVALID_KEY_WORD);
-        }
-        Pagination boardPaging = calcPages(boardMapper.countByKeyWord(keyWord), size, page);
-        return new BoardListResponse(boardMapper.findByKeyWord(keyWord, size, offset), boardPaging);
-    }
-
-    private Pagination calcPages(Long totalContent, Long size, Long page) {
-        Pagination boardPaging = new Pagination();
-        boardPaging.setCurrentPage(page);
-        // 전체 게시글 수
-        boardPaging.setTotalContent(totalContent);
-        // 페이지 수 계산
-        Long maxPage = boardPaging.calculateTotalPages(size);
-        // 페이지 범위를 벗어난 요청 예외처리
-        if (maxPage < page || page <= 0) {
-            throw new BoardException(BoardStatus.INVALID_PAGE_NUMBER);
-        }
-        // 한 번에 보여줄 페이지 수 계산
-        boardPaging.calculatePageList();
-        return boardPaging;
+    public ContentListResponse<BoardResponse> searchBoard(String keyWord, Long size, Long requestPage, String searchType) {
+        Long offset = calcOffset(requestPage, size);
+        Pagination boardPaging = new Pagination(requestPage, boardMapper.countByKeyWord(keyWord), size);
+        return new ContentListResponse<>(boardMapper.findByKeyWord(keyWord, size, offset, searchType), boardPaging);
     }
 
     private Long calcOffset(Long page, Long size) {

@@ -197,8 +197,7 @@ commentsContainer.addEventListener("click", async function (event) {
         childCommentList.innerHTML = '';
         await axios.get(`http://localhost:8080/api/boards/${boardId}/childComments/${parentCommentId}`)
             .then(response => {
-                const comments = response.data.comments;
-                const size = comments.length;
+                const comments = response.data.contents;
                 for (let i = 0; i < comments.length; i++) {
                     childCommentList.innerHTML
                         += `<div class="child-comment-content">
@@ -257,8 +256,7 @@ function getChildComments(event) {
             childCommentList.innerHTML = '';
             axios.get(`http://localhost:8080/api/boards/${boardId}/childComments/${parentCommentId}`)
                 .then(response => {
-                    const comments = response.data.comments;
-                    const size = comments.length;
+                    const comments = response.data.contents;
                     for (let i = 0; i < comments.length; i++) {
                         childCommentList.innerHTML
                             += `<div class="child-comment-content">
@@ -294,20 +292,32 @@ document.addEventListener("DOMContentLoaded", function () {
     displayComments()
 })
 
+function getUrl() {
+    const boardId = id.textContent;
+    const mainComments = `http://localhost:8080/api/boards/${boardId}/comments`;
+    const myComments = 'http://localhost:8080/api/my-page/my-comments';
+    const pathname = location.pathname;
+    let url;
+    if (pathname === `/boards/${boardId}`) {
+        return url = mainComments;
+    } else {
+        return url = myComments;
+    }
+}
+
 let size = 5;
 
 // 화면에 렌더링 [첫 접근]
 function displayComments() {
-    const boardId = id.textContent;
     let page;
-    axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
+    const url = getUrl();
+    axios.get(url, {
         params: {size: size, page: 1}
     })
         .then(response => {
-            const comments = response.data.comments;
-            const firstPage = response.data.commentPaging.firstPage;
-            const lastPage = response.data.commentPaging.lastPage;
-            const size = comments.length;
+            const comments = response.data.contents;
+            const firstPage = response.data.pagination.firstPage;
+            const lastPage = response.data.pagination.lastPage;
             commentsContainer.innerHTML = '';
             for (let i = 0; i < comments.length; i++) {
                 commentsContainer.innerHTML
@@ -367,10 +377,10 @@ pageContainer.addEventListener("click", function (event) {
     axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
         params: {size: size, page: page}
     }).then(response => {
-        const comments = response.data.comments;
-        currentPage = response.data.commentPaging.currentPage;
-        const firstPage = response.data.commentPaging.firstPage;
-        const lastPage = response.data.commentPaging.lastPage;
+        const comments = response.data.contents;
+        currentPage = response.data.pagination.currentPage;
+        const firstPage = response.data.pagination.firstPage;
+        const lastPage = response.data.pagination.lastPage;
         commentsContainer.innerHTML = '';
         for (let i = 0; i < comments.length; i++) {
             commentsContainer.innerHTML

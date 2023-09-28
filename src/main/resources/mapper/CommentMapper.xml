@@ -11,12 +11,17 @@
     </insert>
 
     <select id="findAllCommentsWithNickName" resultType="squad.board.dto.comment.CommentResponse">
-        select c.comment_id, c.parent_comment_id, c.content, c.created_date, c.modified_date, m.nick_name
+        select c.comment_id, c.board_id,c.parent_comment_id, c.content, c.created_date, c.modified_date, m.nick_name
         from comment c
-                 join member m
-                      on m.member_id = c.member_id
-        where c.board_id = #{boardId}
-          and c.parent_comment_id is null
+        join member m
+        on m.member_id = c.member_id
+        <if test='memberId == null'>
+            where c.board_id = #{boardId}
+            and c.parent_comment_id is null
+        </if>
+        <if test='memberId != null'>
+            where c.member_id = #{memberId}
+        </if>
         order by c.created_date desc
         limit #{size} offset #{offset};
     </select>
@@ -24,8 +29,13 @@
     <select id="countCommentsByBoardId">
         select count(*)
         from comment c
-        where c.board_id = #{boardId}
-          and c.parent_comment_id is null;
+        <if test='memberId == null'>
+            where c.board_id = #{boardId}
+            and c.parent_comment_id is null;
+        </if>
+        <if test='memberId != null'>
+            where c.member_id = #{memberId}
+        </if>
     </select>
 
     <select id="findAllChildComments">
