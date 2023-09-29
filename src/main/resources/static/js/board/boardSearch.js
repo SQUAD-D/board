@@ -58,7 +58,7 @@ searchPageContainer.addEventListener("click", function (event) {
     if (clickedElement.id === "next") {
         page = currentPage + 1;
     }
-    axios.get('${homeUrl}/api/boards/search', {
+    axios.get(`${homeUrl}/api/boards/search`, {
         params: {keyWord: keyWord, size: size, page: page}
     }).then(response => {
         const boards = response.data.contents;

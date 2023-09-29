@@ -7,7 +7,7 @@ const pageContainer = document.getElementById('page-container')
 writeBtn.addEventListener("click", () => {
     const boardId = id.textContent;
     const content = contentInput.value;
-    axios.post(`http://localhost:8080/api/boards/${boardId}/comments`, {
+    axios.post(`${homeUrl}/api/boards/${boardId}/comments`, {
         content
     })
         .then(response => {
@@ -30,7 +30,7 @@ commentsContainer.addEventListener("click", function (event) {
         if (confirm("정말 삭제하시겠습니까?")) {
             const commentId = getCommentId(clickedElement);
             const commentElement = clickedElement.closest('.comment-content');
-            axios.delete(`http://localhost:8080/api/boards/comments/${commentId}`)
+            axios.delete(`${homeUrl}/api/boards/comments/${commentId}`)
                 .then(() => {
                     commentElement.remove();
                 })
@@ -52,7 +52,7 @@ commentsContainer.addEventListener("click", async function (event) {
         if (confirm("정말 삭제하시겠습니까?")) {
             const commentId = getChildCommentId(clickedElement);
             const commentElement = clickedElement.closest('.child-comment-content');
-            axios.delete(`http://localhost:8080/api/boards/comments/${commentId}`)
+            axios.delete(`${homeUrl}/api/boards/comments/${commentId}`)
                 .then(() => {
                     commentElement.remove();
                 })
@@ -126,7 +126,7 @@ commentsContainer.addEventListener("click", function (event) {
         const hiddenCommentId = document.getElementById('comment-id');
         const commentId = hiddenCommentId.textContent;
         const content = inputElement.value;
-        axios.patch(`http://54.180.209.56:8080/api/boards/comments/${commentId}`, {
+        axios.patch(`${homeUrl}/api/boards/comments/${commentId}`, {
             content
         })
             .then(() => {
@@ -155,7 +155,7 @@ commentsContainer.addEventListener("click", function (event) {
         const hiddenCommentId = document.getElementById('comment-id');
         const commentId = hiddenCommentId.textContent;
         const content = inputElement.value;
-        axios.patch(`http://54.180.209.56:8080/api/boards/comments/${commentId}`, {
+        axios.patch(`${homeUrl}/api/boards/comments/${commentId}`, {
             content
         })
             .then(() => {
