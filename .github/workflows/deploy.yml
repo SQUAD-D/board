@@ -7,6 +7,7 @@ name: Deploy String boot to Amazon EC2
 env:
   PROJECT_NAME: board
 
+
 jobs:
   deploy:
     name: DEPLOY
@@ -21,6 +22,15 @@ jobs:
         with:
           java-version: 17
 
+      - name: Set Yaml
+          uses: microsoft/variable-substitution@v1
+          with:
+            files: ./src/main/resources/application-prod.yml
+          env:
+            spring.datasource.url: ${{ secrets.DB_URL }}
+            spring.datasource.username: ${{ secrets.DB_USER_NAME }}
+            spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         shell: bash
@@ -28,7 +38,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
-        
+
       - name: Make zip file
         run: zip -qq -r ./$GITHUB_SHA.zip .
         shell: bash
