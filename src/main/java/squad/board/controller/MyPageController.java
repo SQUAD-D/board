@@ -12,16 +12,16 @@ public class MyPageController {
 
     @GetMapping("/my-boards")
     public String myBoards() {
-        return "/mypage/myBoards";
+        return "mypage/myBoards";
     }
 
     @GetMapping("/my-comments")
     public String myComments() {
-        return "/mypage/myComments";
+        return "mypage/myComments";
     }
 
     @GetMapping("/info-update")
     public String infoUpdate() {
-        return "/mypage/infoUpdate";
+        return "mypage/infoUpdate";
     }
 }

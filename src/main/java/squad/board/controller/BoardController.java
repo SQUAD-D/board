@@ -21,13 +21,13 @@ public class BoardController {
     // 게시판 리스트 페이지
     @GetMapping
     public String boardListView() {
-        return "/board/boardList";
+        return "board/boardList";
     }
 
     // 게시글 작성 페이지
     @GetMapping("/new")
     public String createBoard() {
-        return "/board/createBoard";
+        return "board/createBoard";
     }
 
     // 상세 게시글 페이지
@@ -38,13 +38,13 @@ public class BoardController {
     ) {
         BoardDetailResponse board = boardService.findOneBoard(boardId);
         model.addAttribute("board", board);
-        return "/board/detailBoard";
+        return "board/detailBoard";
     }
 
     // 게시글 수정 페이지
     @GetMapping("/update/{boardId}")
     public String updateBoard(
     ) {
-        return "/board/updateBoard";
+        return "board/updateBoard";
     }
 }
