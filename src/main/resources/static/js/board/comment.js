@@ -126,7 +126,7 @@ commentsContainer.addEventListener("click", function (event) {
         const hiddenCommentId = document.getElementById('comment-id');
         const commentId = hiddenCommentId.textContent;
         const content = inputElement.value;
-        axios.patch(`http://localhost:8080/api/boards/comments/${commentId}`, {
+        axios.patch(`http://54.180.209.56:8080/api/boards/comments/${commentId}`, {
             content
         })
             .then(() => {
@@ -155,7 +155,7 @@ commentsContainer.addEventListener("click", function (event) {
         const hiddenCommentId = document.getElementById('comment-id');
         const commentId = hiddenCommentId.textContent;
         const content = inputElement.value;
-        axios.patch(`http://localhost:8080/api/boards/comments/${commentId}`, {
+        axios.patch(`http://54.180.209.56:8080/api/boards/comments/${commentId}`, {
             content
         })
             .then(() => {
@@ -188,14 +188,14 @@ commentsContainer.addEventListener("click", async function (event) {
     const contentInput = document.getElementById(`reply-content${parentCommentId}`);
     const content = contentInput.value;
     if (clickedElement.id === `reply-comment-writeBtn${parentCommentId}`) {
-        await axios.post(`http://localhost:8080/api/boards/${boardId}/comments`, {
+        await axios.post(`${homeUrl}/api/boards/${boardId}/comments`, {
             content,
             parentCommentId
         })
         const commentElement = clickedElement.closest('.comment-content');
         const childCommentList = commentElement.querySelector(`.child-comments${parentCommentId}`)
         childCommentList.innerHTML = '';
-        await axios.get(`http://localhost:8080/api/boards/${boardId}/childComments/${parentCommentId}`)
+        await axios.get(`${homeUrl}/api/boards/${boardId}/childComments/${parentCommentId}`)
             .then(response => {
                 const comments = response.data.contents;
                 for (let i = 0; i < comments.length; i++) {
@@ -254,7 +254,7 @@ function getChildComments(event) {
         if (childComment.style.display === "none") {
             childComment.style.display = "block";
             childCommentList.innerHTML = '';
-            axios.get(`http://localhost:8080/api/boards/${boardId}/childComments/${parentCommentId}`)
+            axios.get(`${homeUrl}/api/boards/${boardId}/childComments/${parentCommentId}`)
                 .then(response => {
                     const comments = response.data.contents;
                     for (let i = 0; i < comments.length; i++) {
@@ -294,8 +294,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function getUrl() {
     const boardId = id.textContent;
-    const mainComments = `http://localhost:8080/api/boards/${boardId}/comments`;
-    const myComments = 'http://localhost:8080/api/my-page/my-comments';
+    const mainComments = `${homeUrl}/api/boards/${boardId}/comments`;
+    const myComments = `${homeUrl}/api/my-page/my-comments`;
     const pathname = location.pathname;
     let url;
     if (pathname === `/boards/${boardId}`) {
@@ -374,7 +374,7 @@ pageContainer.addEventListener("click", function (event) {
     if (clickedElement.id === "next") {
         page = currentPage + 1;
     }
-    axios.get(`http://localhost:8080/api/boards/${boardId}/comments`, {
+    axios.get(`${homeUrl}/api/boards/${boardId}/comments`, {
         params: {size: size, page: page}
     }).then(response => {
         const comments = response.data.contents;

@@ -7,7 +7,7 @@ const nickValidationBtn = document.getElementById('nick-validation-btn');
 const updateBtn = document.getElementById('update-btn');
 
 document.addEventListener("DOMContentLoaded", () => {
-    axios.get(`http://localhost:8080/api/members`)
+    axios.get(`${homeUrl}/api/members`)
         .then(response => {
             const data = response.data;
             signUpIdInput.value = data.loginId;
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // 중복아이디 검증
 validationBtn.addEventListener("click", () => {
     const loginId = signUpIdInput.value;
-    axios.post("http://localhost:8080/api/members/id-validation", null, {
+    axios.post(`${homeUrl}/api/members/id-validation`, null, {
         params: {loginId: loginId}
     })
         // 중복아이디 X
@@ -46,7 +46,7 @@ validationBtn.addEventListener("click", () => {
 // 중복아이디 검증
 nickValidationBtn.addEventListener("click", () => {
     const nickName = signUpNickNameInput.value;
-    axios.post("http://localhost:8080/api/members/nick-validation", null, {
+    axios.post(`${homeUrl}/api/members/nick-validation`, null, {
         params: {nickName: nickName}
     })
         // 중복아이디 X
@@ -75,7 +75,7 @@ updateBtn.addEventListener("click", () => {
     const name = signUpNameInput.value;
     const nickName = signUpNickNameInput.value;
 
-    axios.patch("http://localhost:8080/api/members", {
+    axios.patch(`${homeUrl}/api/members`, {
             loginId,
             loginPw,
             name,

@@ -8,7 +8,7 @@ searchBtn.addEventListener("click", () => {
     searchPageContainer.style.display = 'flex';
     const keyWord = keyWordInput.value;
     let searchType = document.getElementById('search-option');
-    axios.get(`http://localhost:8080/api/boards/search`, {
+    axios.get(`${homeUrl}/api/boards/search`, {
         params: {keyWord: keyWord, size: size, page: 1, searchType: searchType.options[searchType.selectedIndex].value}
     }).then(response => {
         const boards = response.data.contents;
@@ -21,7 +21,7 @@ searchBtn.addEventListener("click", () => {
             for (let i = 0; i < boards.length; i++) {
                 boardTableContainer.innerHTML += `
             <tr>
-                        <td onClick="location.href='http://localhost:8080/boards/${boards[i].boardId}'">
+                        <td onClick="location.href='${homeUrl}/boards/${boards[i].boardId}'">
                             ${boards[i].title}
                         </td>
                         <td>
@@ -58,7 +58,7 @@ searchPageContainer.addEventListener("click", function (event) {
     if (clickedElement.id === "next") {
         page = currentPage + 1;
     }
-    axios.get('http://localhost:8080/api/boards/search', {
+    axios.get('${homeUrl}/api/boards/search', {
         params: {keyWord: keyWord, size: size, page: page}
     }).then(response => {
         const boards = response.data.contents;
@@ -70,7 +70,7 @@ searchPageContainer.addEventListener("click", function (event) {
         for (let i = 0; i < boards.length; i++) {
             boardTableContainer.innerHTML += `
             <tr>
-                        <td onClick="location.href='http://localhost:8080/boards/${boards[i].boardId}'">
+                        <td onClick="location.href='${homeUrl}/boards/${boards[i].boardId}'">
                             ${boards[i].title}
                         </td>
                         <td>

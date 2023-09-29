@@ -3,8 +3,8 @@ const boardPageContainer = document.getElementById('page-container');
 const noContent = document.getElementById('no-content')
 
 function getUrl() {
-    const mainBoards = 'http://localhost:8080/api/boards';
-    const myBoards = 'http://localhost:8080/api/my-page/my-boards'
+    const mainBoards = `${homeUrl}/api/boards`;
+    const myBoards = `${homeUrl}/api/my-page/my-boards`
     const mainComments = '';
     const myComments = '';
     const pathname = location.pathname;
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             for (let i = 0; i < boards.length; i++) {
                 boardTableContainer.innerHTML += `
             <tr>
-                        <td onClick="location.href='http://localhost:8080/boards/${boards[i].boardId}'">
+                        <td onClick="location.href='${homeUrl}/boards/${boards[i].boardId}'">
                             ${boards[i].title}
                         </td>
                         <td>
@@ -82,7 +82,7 @@ boardPageContainer.addEventListener("click", function (event) {
         for (let i = 0; i < boards.length; i++) {
             boardTableContainer.innerHTML += `
             <tr>
-                        <td onClick="location.href='http://localhost:8080/boards/${boards[i].boardId}'">
+                        <td onClick="location.href='${homeUrl}/boards/${boards[i].boardId}'">
                             ${boards[i].title}
                         </td>
                         <td>

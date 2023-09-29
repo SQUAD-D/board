@@ -5,7 +5,7 @@ const writeBtn = document.getElementById("write-btn");
 writeBtn.addEventListener("click", () => {
     const title = titleInput.value;
     const content = contentInput.value;
-    axios.post("http://localhost:8080/api/boards", {
+    axios.post(`${homeUrl}/api/boards`, {
         title,
         content
     }).then(response => {

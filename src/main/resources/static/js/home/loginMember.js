@@ -6,7 +6,7 @@ loginBtn.addEventListener("click", () => {
     const loginId = loginIdInput.value;
     const loginPw = loginPwInput.value;
 
-    axios.post("http://localhost:8080/api/members/login", {
+    axios.post(`${homeUrl}/api/members/login`, {
         loginId,
         loginPw,
     })

@@ -4,7 +4,7 @@ const noContent = document.getElementById('no-content');
 const size = 10;
 
 document.addEventListener("DOMContentLoaded", function () {
-    axios.get(`http://localhost:8080/api/my-page/my-comments`, {
+    axios.get(`${homeUrl}/api/my-page/my-comments`, {
         params: {size: size, page: 1}
     })
         .then(response => {
@@ -70,7 +70,7 @@ pageContainer.addEventListener("click", function (event) {
     if (clickedElement.id === "next") {
         page = currentPage + 1;
     }
-    axios.get(`http://localhost:8080/api/my-page/my-comments`, {
+    axios.get(`${homeUrl}/api/my-page/my-comments`, {
         params: {size: size, page: page}
     }).then(response => {
         const comments = response.data.contents;

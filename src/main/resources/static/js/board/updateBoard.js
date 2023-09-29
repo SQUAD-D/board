@@ -11,12 +11,12 @@ const boardId = segments[3];
 updateBtn.addEventListener("click", () => {
     const title = titleInput.value;
     const content = contentInput.value;
-    axios.patch(`http://localhost:8080/api/boards/${boardId}`, {
+    axios.patch(`${homeUrl}/api/boards/${boardId}`, {
         title,
         content,
     })
         .then(() => {
-            window.location.href = `http://localhost:8080/boards/${boardId}`
+            window.location.href = `${homeUrl}/boards/${boardId}`
         })
         .catch(error => {
             const data = error.response.data;
@@ -31,7 +31,7 @@ updateBtn.addEventListener("click", () => {
 })
 
 document.addEventListener("DOMContentLoaded", () => {
-    axios.get(`http://localhost:8080/api/boards/${boardId}`)
+    axios.get(`${homeUrl}/api/boards/${boardId}`)
         .then(response => {
             const data = response.data;
             titleInput.value = data.title;
