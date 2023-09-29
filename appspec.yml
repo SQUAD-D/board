@@ -3,15 +3,16 @@ os: linux
 
 files:
   - source: /
-    destination: /opt/testapp
+    destination: /home/ubuntu/.ssh/simple-board
+    overwrite: yes
+file_exists_behavior: OVERWRITE
+
 permissions:
-  - object: /opt/testapp/
+  - object: /home/ubuntu/.ssh/simple-board
     owner: ubuntu
     group: ubuntu
-    mode: 755
 hooks:
   AfterInstall:
-    # location은 프로젝트의 root경로를 기준
     - location: deploy.sh
       timeout: 60
-      runas: root
+      runas: ubuntu
