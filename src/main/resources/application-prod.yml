@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${{ secrets.DB_URL }}
+    username: ${{ secrets.DB_USER_NAME }}
+    password: ${{ secrets.DB_PASSWORD }}
+mybatis:
+  # mapper 위치 설정
+  mapper-locations: classpath:/mapper/*.xml
+  # result type 패키지명 생략을 위한 설정
+  type-aliases-package: squad.board.domain
+  # domain 의 카멜 케이스 설정
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-super-type:
