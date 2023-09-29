@@ -10,7 +10,7 @@ env:
 jobs:
   deploy:
     name: DEPLOY
-    runs-on: ubuntu-22.04.2
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 17.0.8.1
+          java-version: 17
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
