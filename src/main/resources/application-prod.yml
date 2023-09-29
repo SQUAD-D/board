@@ -4,6 +4,8 @@ spring:
     url: ${url}
     username: ${username}
     password: ${password}
+  thymeleaf:
+    prefix: classpath:/templates/
 mybatis:
   # mapper 위치 설정
   mapper-locations: classpath:/mapper/*.xml
