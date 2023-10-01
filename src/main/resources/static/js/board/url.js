@@ -1,1 +1,1 @@
-const homeUrl = 'http://haechan.store/'
+const homeUrl = 'http://haechan.store'
