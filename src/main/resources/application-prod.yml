@@ -1,4 +1,8 @@
 spring:
+  data:
+    redis:
+      host: ${host}
+      port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${url}
