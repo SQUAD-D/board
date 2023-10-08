@@ -63,13 +63,16 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
         id: deploy
+        env:
+          COMPOSE: "/home/ubuntu/compose/docker-compose.yml"
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
+          envs: COMPOSE
           port: 22
           script: |
-            sudo docker rm -f $(docker ps -qa)
+            sudo docker-compose -f $COMPOSE down --rmi all
             sudo docker pull haechansomg/simple-board
-            docker-compose up -d
-            docker image prune -f
+            sudo docker-compose -f $COMPOSE up -d
+            sudo docker image prune -f
