@@ -68,6 +68,6 @@ jobs:
           port: 22
           script: |
             sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/simple-board
+            sudo docker pull haechansomg/simple-board
             docker-compose up -d
             docker image prune -f
