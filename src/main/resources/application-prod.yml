@@ -22,3 +22,6 @@ mybatis:
 logging:
   file:
     path: /home/.ssh
+server:
+  tomcat:
+    use-relative-redirects: true
