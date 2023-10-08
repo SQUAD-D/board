@@ -58,7 +58,7 @@ jobs:
         run: docker push haechansomg/simple-board
 
       - name: Deploy to server
-        uses: board/ssh-action@master
+        uses: board/ssh-action@main
         id: deploy
         with:
           host: ${{ secrets.HOST }}
