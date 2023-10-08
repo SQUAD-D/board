@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 name: Deploy Spring boot to Amazon EC2
 env:
@@ -58,7 +59,7 @@ jobs:
         run: docker push haechansomg/simple-board
 
       - name: Deploy to server
-        uses: board/ssh-action@main
+        uses: appleboy/ssh-action@main
         id: deploy
         with:
           host: ${{ secrets.HOST }}
