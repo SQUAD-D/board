@@ -55,3 +55,17 @@ jobs:
       # Docker Hub push (4)
       - name: docker Hub push
         run: docker push haechansomg/simple-board
+
+      - name: Deploy to server
+        uses: board/ssh-action@master
+        id: deploy
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          envs: GITHUB_SHA
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/simple-board
+            docker-compose up -d
+            docker image prune -f
