@@ -1,0 +1,19 @@
+version: '3'
+services:
+  spring_app1:
+    build: .
+    container_name: Spring-Tomcat-1
+    image: haechansomg/simple-board
+    ports:
+      - 8080:8080
+  spring_app2:
+    build: .
+    container_name: Spring-Tomcat-2
+    image: haechansomg/simple-board
+    ports:
+      - 8081:8080
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
