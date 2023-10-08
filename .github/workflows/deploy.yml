@@ -3,6 +3,8 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
 
 name: Deploy Spring boot to Amazon EC2
 env:
@@ -58,21 +60,9 @@ jobs:
       - name: docker Hub push
         run: docker push haechansomg/simple-board
 
-      - name: copy file via ssh password
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          port: 22
-          source: "docker-compose.yml"
-          target: "/home"
-
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.0
         id: deploy
-        env:
-          COMPOSE: "/home/docker-compose.yml"
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
@@ -81,6 +71,5 @@ jobs:
           script: |
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull haechansomg/simple-board
-            sudo docker-compose -f $COMPOSE down --rmi all
-            sudo docker-compose -f $COMPOSE up -d
+            docker-compose up -d
             docker image prune -f
