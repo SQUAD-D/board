@@ -59,7 +59,7 @@ jobs:
         run: docker push haechansomg/simple-board
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@main
+        uses: appleboy/ssh-action@v1.0.0
         id: deploy
         with:
           host: ${{ secrets.HOST }}
