@@ -32,7 +32,6 @@ jobs:
         with:
           files: ./src/main/resources/application-prod.yml
         env:
-          spring.data.redis.host: ${{ secrets.REDIS_HOST}}
           spring.datasource.url: ${{ secrets.DB_URL }}
           spring.datasource.username: ${{ secrets.DB_USER_NAME }}
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
