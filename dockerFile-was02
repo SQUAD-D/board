@@ -4,4 +4,4 @@ ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 COPY scouter/agent.java/scouter-agent-java-2.20.0.jar scouter-agent-java-2.20.0.jar
 COPY scouter/agent.java/conf/was02.conf was02.conf
-ENTRYPOINT ["java","-javaagent:scouter-agent-java-2.20.0.jar","-Dscouter.config=was01.conf","-Duser.timezone=Asia/Seoul","-jar","app.jar"]
+ENTRYPOINT ["java","-javaagent:scouter-agent-java-2.20.0.jar","-Dscouter.config=was02.conf","-Duser.timezone=Asia/Seoul","-jar","app.jar"]
