@@ -18,6 +18,7 @@ import squad.board.repository.BoardMapper;
 import squad.board.repository.CommentMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +74,7 @@ public class BoardService {
     public ContentListResponse<BoardResponse> searchBoard(String keyWord, Long size, Long requestPage, String searchType) {
         Long offset = calcOffset(requestPage, size);
         Pagination boardPaging = new Pagination(requestPage, boardMapper.countByKeyWord(keyWord), size);
+        List<BoardResponse> byKeyWord = boardMapper.findByKeyWord(keyWord, size, offset, searchType);
         return new ContentListResponse<>(boardMapper.findByKeyWord(keyWord, size, offset, searchType), boardPaging);
     }
 
