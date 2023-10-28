@@ -2,7 +2,7 @@ version: '3'
 services:
   spring_app1:
     container_name: Spring-Tomcat-1
-    image: haechansomg/simple-board
+    image: haechansomg/simple-board:was01
     build:
       context: .
       dockerfile: dockerFile-was01
@@ -10,7 +10,7 @@ services:
       - 8080:8080
   spring_app2:
     container_name: Spring-Tomcat-2
-    image: haechansomg/simple-board
+    image: haechansomg/simple-board2:was02
     build:
       context: .
       dockerfile: dockerFile-was01
