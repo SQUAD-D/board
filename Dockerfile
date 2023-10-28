@@ -1,5 +1,8 @@
 FROM openjdk:17-jdk
 
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","-javaagent:/home/ubuntu/scouter/agent.java/scouter.agent.jar","-Dscouter.config=/home/ubuntu/scouter/agent.java/conf/was01.conf","-Duser.timezone=Asia/Seoul","app.jar"]
+WORKDIR /app
+ARG JAR_FILE=/build/libs/*.jar
+COPY ${JAR_FILE} /app/app.jar
+ARG SCOUTER=/scouter/agent.java
+COPY ${SCOUTER} /app/scouter/agent.java
+ENTRYPOINT ["java","-jar","-javaagent:scouter/agent.java/scouter.agent.jar","-Dscouter.config=scouter/agent.java/scouter.agent.jar/conf/scouter.conf","-Duser.timezone=Asia/Seoul","app.jar"]
