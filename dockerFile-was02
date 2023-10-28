@@ -1,0 +1,5 @@
+FROM openjdk:17-jdk
+
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-javaagent:/home/ubuntu/scouter/agent.java/scouter.agent.jar","-Dscouter.config=/home/ubuntu/scouter/agent.java/conf/was02.conf","-Dobj_name=WAS-02","-Duser.timezone=Asia/Seoul","-jar","app.jar"]

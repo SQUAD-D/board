@@ -3,11 +3,17 @@ services:
   spring_app1:
     container_name: Spring-Tomcat-1
     image: haechansomg/simple-board
+    build:
+      context: .
+      dockerfile: dockerFile-was01
     ports:
       - 8080:8080
   spring_app2:
     container_name: Spring-Tomcat-2
     image: haechansomg/simple-board
+    build:
+      context: .
+      dockerfile: dockerFile-was01
     ports:
       - 8081:8081
   redis:
