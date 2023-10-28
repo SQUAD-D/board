@@ -49,7 +49,7 @@ jobs:
         run: docker build -t haechansomg/simple-board:was01 -f ./dockerFile-was01 .
 
       - name: docker image build WAS-02
-        run: docker build -t haechansomg/simple-board2:was02 -f ./dockerFile-was02
+        run: docker build -t haechansomg/simple-board2:was02 -f ./dockerFile-was02 .
 
       # DockerHub Login
       - name: docker login
