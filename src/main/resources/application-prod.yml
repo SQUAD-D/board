@@ -30,7 +30,7 @@ cloud:
     s3:
       bucket: ${bucket_name}
     region:
-      static: ${bucket_regin}
+      static: ${aws_region}
     stack:
       auto: false
     credentials:
