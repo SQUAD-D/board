@@ -35,10 +35,10 @@ jobs:
           spring.datasource.url: ${{ secrets.DB_URL }}
           spring.datasource.username: ${{ secrets.DB_USER_NAME }}
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
-          cloud.aws.s3.bucket: ${{secrets.BUCKET_NAME}}
-          cloud.aws.region: ${{secrets.AWS_REGION}}
-          cloud.aws.credentials.access: ${{secrets.S3_ACCESS}}
-          cloud.aws.credentials.secret: ${{secrets.S3_SECRET}}
+          cloud.aws.s3.bucket: ${{ secrets.BUCKET_NAME }}
+          cloud.aws.region: ${{ secrets.AWS_REGION }}
+          cloud.aws.credentials.access: ${{ secrets.S3_ACCESS }}
+          cloud.aws.credentials.secret: ${{ secrets.S3_SECRET }}
 
 
       - name: Grant execute permission for gradlew

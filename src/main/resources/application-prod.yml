@@ -28,11 +28,11 @@ server:
 cloud:
   aws:
     s3:
-      bucket: ${bucket_name}
+      bucket: ${bucket}
     region:
-      static: ${aws_region}
+      static: ${static}
     stack:
       auto: false
     credentials:
-      access-key: ${S3_access}
-      secret-key: ${S3_secret}
+      access-key: ${access-key}
+      secret-key: ${secret-key}
