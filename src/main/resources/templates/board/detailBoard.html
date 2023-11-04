@@ -57,6 +57,9 @@
                 <pre th:text="${board.content}">
                 </pre>
             </div>
+            <div th:if="${board.imageURL != null}">
+                <img th:src="${board.imageURL}" width="500px">
+            </div>
             <div class="board-menu-container">
                 <button class="menu-btn" id="delete-req-btn">삭제
                 </button>

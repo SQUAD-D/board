@@ -25,3 +25,14 @@ logging:
 server:
   tomcat:
     use-relative-redirects: true
+cloud:
+  aws:
+    s3:
+      bucket: ${bucket_name}
+    region:
+      static: ${bucket_regin}
+    stack:
+      auto: false
+    credentials:
+      access-key: ${S3_access}
+      secret-key: ${S3_secret}
