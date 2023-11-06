@@ -76,7 +76,7 @@ public class BoardService {
         return response;
     }
 
-    public CommonIdResponse deleteBoard(Long boardId, Long memberId) {
+    public CommonIdResponse deleteBoard(Long boardId) {
         String imageFileName = imageMapper.findImageFileName(boardId);
         s3Service.deleteImage(imageFileName);
         boardMapper.deleteById(boardId);
@@ -84,7 +84,7 @@ public class BoardService {
         return new CommonIdResponse(boardId);
     }
 
-    public CommonIdResponse updateBoard(Long boardId, Long memberId, BoardUpdateRequest dto) {
+    public CommonIdResponse updateBoard(Long boardId, BoardUpdateRequest dto) {
         LocalDateTime modifiedDate = LocalDateTime.now();
         boardMapper.updateById(boardId, dto, modifiedDate);
         return new CommonIdResponse(boardId);

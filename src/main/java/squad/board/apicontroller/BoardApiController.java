@@ -32,10 +32,9 @@ public class BoardApiController {
     @DeleteMapping("/boards/{boardId}")
     @BoardWriterAuth
     public CommonIdResponse deleteBoard(
-            @PathVariable Long boardId,
-            @SessionAttribute Long memberId
+            @PathVariable Long boardId
     ) {
-        return boardService.deleteBoard(boardId, memberId);
+        return boardService.deleteBoard(boardId);
     }
 
     // 게시글 수정
@@ -43,10 +42,9 @@ public class BoardApiController {
     @BoardWriterAuth
     public CommonIdResponse updateBoard(
             @PathVariable Long boardId,
-            @SessionAttribute Long memberId,
             @Valid @RequestBody BoardUpdateRequest boardUpdateRequest
     ) {
-        return boardService.updateBoard(boardId, memberId, boardUpdateRequest);
+        return boardService.updateBoard(boardId, boardUpdateRequest);
     }
 
     // 상세 게시글 조회
