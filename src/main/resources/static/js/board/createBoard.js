@@ -1,27 +1,20 @@
 const titleInput = document.getElementById("title");
-const contentInput = document.getElementById("content");
+// const contentInput = document.getElementById("content");
+const contentInput = document.getElementById("editor");
 const writeBtn = document.getElementById("write-btn");
-const FileElement = document.getElementById("file");
+const imageSelector = document.getElementById('img-selector');
+let imageInfoList = [];
 
 writeBtn.addEventListener("click", () => {
     const title = titleInput.value;
-    const content = contentInput.value;
-    const formData = new FormData()
+    const content = contentInput.innerHTML;
     const data = {
         "title": title,
-        "content": content
+        "content": content,
+        "imageInfo": imageInfoList
     }
-    formData.append("data", new Blob([JSON.stringify(data)], {
-        type: "application/json"
-    }));
-    formData.append("image", FileElement.files[0]);
-    axios.post(`${homeUrl}/api/boards`,
-        formData
-        , {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        }).then(response => {
+    axios.post(`${homeUrl}/api/boards`, data
+    ).then(response => {
         const statusCode = response.status;
         // 게시글 작성 성공
         if (statusCode === 200) {
@@ -37,19 +30,34 @@ writeBtn.addEventListener("click", () => {
 })
 
 // 이미지 첨부기능
+const btnImage = document.getElementById('btn-image');
+btnImage.addEventListener('click', function () {
+    imageSelector.click();
+});
 
-const inputImage = document.getElementById("file")
-inputImage.addEventListener("change", e => {
-    readImage(e.target)
-})
+imageSelector.addEventListener('change', function (e) {
+    const files = e.target.files;
+    const formData = new FormData();
+    let imgSrc;
+    formData.append("image", files[0]);
+    axios.post(`${homeUrl}/api/boards/img`,
+        formData
+        , {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(response => {
+        imgSrc = response.data.imageSrc;
+        imageInfoList.push(
+            {
+                imageUUID: response.data.imageUUID,
+                imageSize: response.data.imageSize,
+                imageOriginalName: response.data.imageOriginalName
+            });
+        let img = document.createElement("img");
+        img.src = imgSrc;
+        img.style.width = '600px';
+        contentInput.appendChild(img);
+    })// 이미지 예외처리 여기서 받자!!!!
+});
 
-function readImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader()
-        reader.onload = e => {
-            const previewImage = document.getElementById("preview-image")
-            previewImage.src = e.target.result;
-        }
-        reader.readAsDataURL(input.files[0])
-    }
-}

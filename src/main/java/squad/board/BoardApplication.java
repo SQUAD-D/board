@@ -1,9 +1,11 @@
 package squad.board;
 
+import org.quartz.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
@@ -11,10 +13,8 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @SpringBootApplication
 @EnableRedisHttpSession
 @EnableConfigurationProperties
+@EnableScheduling
 public class BoardApplication {
-    static {
-        System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(BoardApplication.class, args);
@@ -27,5 +27,4 @@ public class BoardApplication {
         serializer.setCookiePath("/");
         return serializer;
     }
-
 }

@@ -2,7 +2,6 @@ package squad.board.apicontroller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import squad.board.aop.BoardWriterAuth;
@@ -20,12 +19,18 @@ public class BoardApiController {
     private final BoardService boardService;
 
     // 게시글 생성
-    @PostMapping(value = "/boards", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/boards")
     public CommonIdResponse saveBoard(
             @SessionAttribute Long memberId,
-            @Valid @RequestPart(value = "data") CreateBoardRequest createBoard,
-            @RequestPart(value = "image", required = false) MultipartFile image) {
-        return boardService.createBoard(memberId, createBoard, image);
+            @Valid @RequestBody CreateBoardRequest createBoard) {
+        return boardService.createBoard(memberId, createBoard);
+    }
+
+    // 이미지 S3 전송
+    @PostMapping(value = "/boards/img")
+    public ImageInfoResponse saveImg(
+            @RequestPart(value = "image") MultipartFile image) {
+        return boardService.saveImage(image);
     }
 
     // 게시글 삭제

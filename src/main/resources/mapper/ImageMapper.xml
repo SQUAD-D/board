@@ -5,12 +5,12 @@
 
 <mapper namespace="squad.board.repository.ImageMapper">
     <insert id="save" useGeneratedKeys="true" keyColumn="image_id">
-        insert into image(board_id, file_name)
-        values (#{boardId}, #{fileName})
+        insert into image(board_id, image_name, image_size, image_uuid)
+        values (#{boardId}, #{request.imageOriginalName}, #{request.imageSize}, #{request.imageUUID})
     </insert>
 
-    <select id="findImageFileName" resultType="String">
-        select file_name
+    <select id="findImageFileName" resultType="string">
+        select image_uuid
         from image
         where board_id = #{boardId}
     </select>

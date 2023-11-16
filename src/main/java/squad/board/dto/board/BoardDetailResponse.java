@@ -17,14 +17,4 @@ public class BoardDetailResponse {
     private String nickName;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private String imageURL;
-
-    public BoardDetailResponse(Long boardId, String title, String content, String nickName, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        this.boardId = boardId;
-        this.title = title;
-        this.content = content;
-        this.nickName = nickName;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
-    }
 }
