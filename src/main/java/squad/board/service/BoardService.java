@@ -12,6 +12,8 @@ import squad.board.dto.Pagination;
 import squad.board.dto.board.*;
 import squad.board.exception.board.BoardException;
 import squad.board.exception.board.BoardStatus;
+import squad.board.exception.image.ImageException;
+import squad.board.exception.image.ImageStatus;
 import squad.board.repository.BoardMapper;
 import squad.board.repository.CommentMapper;
 import squad.board.repository.ImageMapper;
@@ -29,10 +31,12 @@ public class BoardService {
     private final CommentMapper commentMapper;
     private final ImageMapper imageMapper;
     private final S3Service s3Service;
+    private static final long MAX_IMAGE_SIZE = 5000000L;
+    private static final int MAX_IMAGE_NAME_SIZE = 100;
+
 
     public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
-        // s3에서 이미지의 디렉토리를 옮기기때문에 사용자의 이미지 소스 url 도 변경
-        createBoard.changeImageSrc("tmp", "original");
+        createBoard.changeS3ImageKey("tmp", "original");
         // 게시글 저장
         Board board = createBoard.toEntity(memberId);
         boardMapper.save(board);
@@ -50,8 +54,18 @@ public class BoardService {
     public ImageInfoResponse saveImage(MultipartFile image) {
         // TODO 파일 이름 및 확장자 예외 처리가 필요함
         String imgOriginalName = image.getOriginalFilename();
-        // TODO 파일 크기 예외 처리가 필요함
+        if (!imgOriginalName.substring(imgOriginalName.lastIndexOf(".")).matches("(.png|.jpg|.jpeg)$")) {
+            throw new ImageException(ImageStatus.INVALID_IMAGE_EXTENSION);
+        }
+        // 이미지 파일명 길이 제한
+        if (imgOriginalName.length() > MAX_IMAGE_NAME_SIZE) {
+            throw new ImageException(ImageStatus.IMAGE_NAME_SIZE_EXCEEDED);
+        }
         long imgSize = image.getSize();
+        // 이미지 파일 크기 제한
+        if (imgSize > MAX_IMAGE_SIZE) {
+            throw new ImageException(ImageStatus.IMAGE_SIZE_EXCEEDED);
+        }
         String uuid = s3Service.saveFile(image, "tmp");
         String imgSrc = s3Service.loadImage(uuid, "tmp");
         return new ImageInfoResponse(uuid, imgSize, imgOriginalName, imgSrc);

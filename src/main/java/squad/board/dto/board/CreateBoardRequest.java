@@ -19,10 +19,10 @@ public class CreateBoardRequest {
     private String content;
     private List<ImageInfoRequest> imageInfo;
 
-    // 이 메서드가 toEntity보다 먼저 실행돼야함 TODO 질문
-    public void changeImageSrc(String from, String to) {
+    public CreateBoardRequest changeS3ImageKey(String from, String to) {
         // regex 를 이용해 from 폴더 -> to 폴더로 src 속성값 변경
         content = content.replace(".com/" + from + "/", ".com/" + to + "/");
+        return this;
     }
 
     public Board toEntity(Long memberId) {

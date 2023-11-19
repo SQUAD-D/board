@@ -46,7 +46,8 @@ imageSelector.addEventListener('change', function (e) {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
-        }).then(response => {
+        }
+    ).then(response => {
         imgSrc = response.data.imageSrc;
         imageInfoList.push(
             {
@@ -58,6 +59,9 @@ imageSelector.addEventListener('change', function (e) {
         img.src = imgSrc;
         img.style.width = '600px';
         contentInput.appendChild(img);
-    })// 이미지 예외처리 여기서 받자!!!!
+    }).catch(error => {
+        const data = error.response.data;
+        alert(data.message);
+    })
 });
 

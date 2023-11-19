@@ -16,7 +16,7 @@ public class SessionAttributeArgumentResolver implements HandlerMethodArgumentRe
     }
 
     @Override
-    public Long resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Long resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         return (Long) webRequest.getAttribute("memberId", WebRequest.SCOPE_SESSION);
     }
 }

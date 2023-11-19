@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import squad.board.aop.BoardWriterAuth;
+import squad.board.argumentresolver.S3KeyConvert;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
 import squad.board.dto.ContentListResponse;
@@ -22,9 +23,10 @@ public class BoardApiController {
     @PostMapping(value = "/boards")
     public CommonIdResponse saveBoard(
             @SessionAttribute Long memberId,
-            @Valid @RequestBody CreateBoardRequest createBoard) {
+            @Valid @RequestBody @S3KeyConvert CreateBoardRequest createBoard) {
         return boardService.createBoard(memberId, createBoard);
     }
+
 
     // 이미지 S3 전송
     @PostMapping(value = "/boards/img")
