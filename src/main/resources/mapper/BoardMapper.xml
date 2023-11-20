@@ -4,7 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="squad.board.repository.BoardMapper">
-    <insert id="save" useGeneratedKeys="true" keyProperty="boardId" keyColumn="board_id">
+    <insert id="save" useGeneratedKeys="true" keyColumn="board_id" keyProperty="boardId"
+            parameterType="squad.board.domain.board.Board">
         insert into board(member_id, title, content, created_date, modified_date)
         values (#{memberId}, #{title}, #{content}, #{createdDate}, #{modifiedDate})
     </insert>
@@ -67,7 +68,17 @@
 
     <select id="countByKeyWord">
         select count(*)
-        from (select * from board where match(content) against(#{keyWord})) as `b*`;
+        <if test='searchType=="content"'>
+            from (select * from board where match(content) against(#{keyWord})) as `b*`;
+        </if>
+        <if test='searchType=="title"'>
+            from (select * from board where match(title) against(#{keyWord})) as `b*`;
+        </if>
+        <if test='searchType=="titleAndContent"'>
+            from (select * from board where match(title) against(#{keyWord})
+            union
+            select * from board where match(content) against(#{keyWord})) as `b*`;
+        </if>
     </select>
 
     <select id="findByIdWithNickName" resultType="squad.board.dto.board.BoardDetailResponse" parameterType="long">

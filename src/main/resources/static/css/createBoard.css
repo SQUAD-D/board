@@ -49,21 +49,63 @@ textarea {
     width: 700px;
 }
 
-.content-box {
-    background-color: #eee;
-    border: none;
-    padding: 12px 15px;
-    margin: 8px 0;
-    width: 700px;
-    height: 550px;
+button {
+    border-radius: 20px;
+    border: 1px solid #5685ff;
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+}
+
+/*.content-box {*/
+/*    background-color: #eee;*/
+/*    border: none;*/
+/*    padding: 12px 15px;*/
+/*    margin: 8px 0;*/
+/*    width: 700px;*/
+/*    height: 550px;*/
+/*}*/
+
+#editor {
+    width: 680px;
+    height: 500px;
+    word-break: break-all;
+    padding: 16px 24px;
+    border: 1px solid #5685ff;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+.editor-menu {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 /* 게시글 수정 컨테이너 끝 */
 
 .create-btn {
-    margin: 60px 60px;
+    margin: 30px 60px;
     display: flex;
     justify-content: center;
+}
+
+.image-container {
+    margin: 30px 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.image-upload {
+    padding: 6px 25px;
+    background-color: #5685ff;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
 }
 
 .update-btn {
@@ -71,3 +113,13 @@ textarea {
     display: flex;
     justify-content: center;
 }
+
+#editor img {
+    max-width: 100%;
+}
+
+.menu-active {
+    color: white;
+    background-color: #5685ff;
+}
+

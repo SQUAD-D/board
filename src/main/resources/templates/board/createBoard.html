@@ -35,10 +35,44 @@
             </button>
             <button class="menu-btn" id="logOut">로그아웃</button>
         </div>
-
         <div class="create-board-container">
             <input type="text" class="title-box" placeholder="제목을 입력해주세요." id="title"/>
-            <textarea class="content-box" placeholder="내용을 입력해주세요." id="content"></textarea>
+            <div class="editor-menu">
+                <button id="btn-bold">
+                    <b>B</b>
+                </button>
+                <button id="btn-italic">
+                    <i>I</i>
+                </button>
+                <button id="btn-underline">
+                    <u>U</u>
+                </button>
+                <button id="btn-strike">
+                    <s>S</s>
+                </button>
+                <button id="btn-ordered-list">
+                    OL
+                </button>
+                <button id="btn-unordered-list">
+                    UL
+                </button>
+                <button id="btn-image">
+                    IMG
+                </button>
+            </div>
+            <div id="editor" contenteditable="true"></div>
+            <!--            <textarea class="content-box" placeholder="내용을 입력해주세요." id="content"></textarea>-->
+        </div>
+
+        <!--        <div class="image-container">-->
+        <!--            <label class="image-upload" id="image-upload" for="file" onchange="readURL(this)">-->
+        <!--                이미지 업로드-->
+        <!--            </label>-->
+        <!--        </div>-->
+        <input type="file" accept="image/*" id="img-selector" style="display: none">
+
+        <div id="images">
+            <img style="width: 200px" id="preview-image">
         </div>
 
         <div class="create-btn">
@@ -53,6 +87,7 @@
     </div>
 </footer>
 <script src="/js/home/logoutMember.js"></script>
+<script src="/js/board/editorMenu.js"></script>
 <script src="/js/board/createBoard.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <script src="/js/board/url.js"></script>

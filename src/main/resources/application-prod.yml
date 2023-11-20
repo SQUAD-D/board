@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 100MB
   data:
     redis:
       host: redis
@@ -25,3 +29,14 @@ logging:
 server:
   tomcat:
     use-relative-redirects: true
+cloud:
+  aws:
+    s3:
+      bucket: ${bucket}
+    region:
+      static: ${static}
+    stack:
+      auto: false
+    credentials:
+      access-key: ${access-key}
+      secret-key: ${secret-key}

@@ -1,4 +1,4 @@
-package squad.board;
+package squad.board.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/css/**", "/js/**", "/webjars/axios/1.4.0/**", "/", "/api/members/login", "/api/members/logout", "/api/members/id-validation", "/api/members/nick-validation", "/api/members");
     }
 
-    // Session Attribute Argument Resolver 등록
+    //Argument Resolver 등록
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(sessionAttributeArgumentResolver);

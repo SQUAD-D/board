@@ -1,7 +1,7 @@
 const id = document.getElementById("boardId");
 const updateBtn = document.getElementById("update-btn");
 const titleInput = document.getElementById("title")
-const contentInput = document.getElementById("content")
+const contentInput = document.getElementById("editor")
 
 // url 경로 파싱
 const pathString = window.location.pathname;
@@ -10,7 +10,7 @@ const boardId = segments[3];
 
 updateBtn.addEventListener("click", () => {
     const title = titleInput.value;
-    const content = contentInput.value;
+    const content = contentInput.innerHTML;
     axios.patch(`${homeUrl}/api/boards/${boardId}`, {
         title,
         content,
@@ -35,6 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => {
             const data = response.data;
             titleInput.value = data.title;
-            contentInput.textContent = data.content;
+            contentInput.innerHTML = data.content;
         })
 })

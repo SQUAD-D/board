@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
     // 게시글 저장
-    Long save(Board board);
+    void save(Board board);
 
     // 상세게시글 조회 [member join for nickname]
     BoardDetailResponse findByIdWithNickName(Long boardId);
@@ -28,7 +28,7 @@ public interface BoardMapper {
     // 게시글 삭제
     void deleteById(Long boardId);
 
-    Long countByKeyWord(String keyWord);
+    Long countByKeyWord(String keyWord, String searchType);
 
     // 게시글 단건 조회
     Board findById(Long boardId);

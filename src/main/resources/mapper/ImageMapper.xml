@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="squad.board.repository.ImageMapper">
+    <insert id="save" useGeneratedKeys="true" keyColumn="image_id">
+        insert into image(board_id, image_name, image_size, image_uuid)
+        values (#{boardId}, #{request.imageOriginalName}, #{request.imageSize}, #{request.imageUUID})
+    </insert>
+
+    <select id="findImageFileName" resultType="string">
+        select image_uuid
+        from image
+        where board_id = #{boardId}
+    </select>
+
+</mapper>

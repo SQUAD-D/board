@@ -3,6 +3,7 @@ package squad.board.apicontroller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import squad.board.aop.BoardWriterAuth;
 import squad.board.argumentresolver.SessionAttribute;
 import squad.board.commonresponse.CommonIdResponse;
@@ -18,21 +19,27 @@ public class BoardApiController {
     private final BoardService boardService;
 
     // 게시글 생성
-    @PostMapping("/boards")
+    @PostMapping(value = "/boards")
     public CommonIdResponse saveBoard(
             @SessionAttribute Long memberId,
             @Valid @RequestBody CreateBoardRequest createBoard) {
         return boardService.createBoard(memberId, createBoard);
+    }
+    
+    // 이미지 S3 전송
+    @PostMapping(value = "/boards/img")
+    public ImageInfoResponse saveImg(
+            @RequestPart(value = "image") MultipartFile image) {
+        return boardService.saveImage(image);
     }
 
     // 게시글 삭제
     @DeleteMapping("/boards/{boardId}")
     @BoardWriterAuth
     public CommonIdResponse deleteBoard(
-            @PathVariable Long boardId,
-            @SessionAttribute Long memberId
+            @PathVariable Long boardId
     ) {
-        return boardService.deleteBoard(boardId, memberId);
+        return boardService.deleteBoard(boardId);
     }
 
     // 게시글 수정
@@ -40,10 +47,9 @@ public class BoardApiController {
     @BoardWriterAuth
     public CommonIdResponse updateBoard(
             @PathVariable Long boardId,
-            @SessionAttribute Long memberId,
             @Valid @RequestBody BoardUpdateRequest boardUpdateRequest
     ) {
-        return boardService.updateBoard(boardId, memberId, boardUpdateRequest);
+        return boardService.updateBoard(boardId, boardUpdateRequest);
     }
 
     // 상세 게시글 조회
