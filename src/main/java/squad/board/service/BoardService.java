@@ -36,14 +36,13 @@ public class BoardService {
 
 
     public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
-        createBoard.changeS3ImageKey("tmp", "original");
         // 게시글 저장
         Board board = createBoard.toEntity(memberId);
         boardMapper.save(board);
         // 이미지 정보 저장
         List<ImageInfoRequest> imageInfoRequests = createBoard.getImageInfo();
         for (ImageInfoRequest request : imageInfoRequests) {
-            // DB에 이미지 정보 저장 TODO Bulk 연산
+            // DB에 이미지 정보 저장
             imageMapper.save(request, board.getBoardId());
             // tmp 폴더의 이미지를 original 폴더로 이동
             s3Service.moveImageToOriginal(request.getImageUUID(), "tmp", "original");
@@ -52,7 +51,6 @@ public class BoardService {
     }
 
     public ImageInfoResponse saveImage(MultipartFile image) {
-        // TODO 파일 이름 및 확장자 예외 처리가 필요함
         String imgOriginalName = image.getOriginalFilename();
         if (!imgOriginalName.substring(imgOriginalName.lastIndexOf(".")).matches("(.png|.jpg|.jpeg)$")) {
             throw new ImageException(ImageStatus.INVALID_IMAGE_EXTENSION);
