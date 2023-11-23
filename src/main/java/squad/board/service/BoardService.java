@@ -113,10 +113,11 @@ public class BoardService {
 
     public CommonIdResponse updateBoard(Long boardId, BoardUpdateRequest updateBoard) {
         // 이미지 정보 저장
-        Optional<List<ImageInfoRequest>> imageInfoRequests =
-                Optional.ofNullable(updateBoard.getImageInfoList());
+        List<ImageInfoRequest> imageInfoRequests = updateBoard.getImageInfoList();
         // DB에 이미지 정보 저장
-        imageInfoRequests.ifPresent(infoRequests -> saveImageInfo(boardId, infoRequests));
+        if (!imageInfoRequests.isEmpty()) {
+            saveImageInfo(boardId, imageInfoRequests);
+        }
         // 기존 이미지 정보
         List<String> savedImageUuid = imageMapper.findImageUuid(boardId);
         // 이미지가 있는 게시글일 경우 check
