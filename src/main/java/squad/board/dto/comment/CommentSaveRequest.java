@@ -9,7 +9,6 @@ import squad.board.domain.comment.Comment;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 public class CommentSaveRequest {
     @NotEmpty(message = "댓글 내용을 입력해주세요.")
     private String content;

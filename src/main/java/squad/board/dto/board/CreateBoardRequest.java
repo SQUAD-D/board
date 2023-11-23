@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
 public class CreateBoardRequest {
     @NotEmpty(message = "제목을 입력해주세요.")
     private String title;

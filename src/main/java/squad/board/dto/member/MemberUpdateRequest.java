@@ -12,7 +12,6 @@ import squad.board.repository.MemberMapper;
 import java.util.Objects;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class MemberUpdateRequest {
     @NotEmpty(message = "아이디를 입력해주세요.")

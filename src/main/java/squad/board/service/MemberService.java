@@ -14,6 +14,8 @@ import squad.board.exception.session.SessionException;
 import squad.board.repository.MemberMapper;
 import squad.board.validation.MemberInfo;
 
+import java.util.Optional;
+
 import static squad.board.exception.login.MemberStatus.*;
 import static squad.board.exception.session.SessionStatus.INVALID_SESSION_ID;
 
@@ -50,10 +52,10 @@ public class MemberService {
 
     // 회원 로그인
     @Transactional(readOnly = true)
-    public Member login(LoginRequest loginRequest) {
+    public Optional<Member> login(LoginRequest loginRequest) {
         String loginId = loginRequest.getLoginId();
         String loginPw = loginRequest.getLoginPw();
-        return memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw);
+        return Optional.ofNullable(memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw));
     }
 
     public CommonIdResponse logout(HttpServletRequest request) {
@@ -65,23 +67,21 @@ public class MemberService {
     }
 
     // 세션 발급
-    public CommonIdResponse provideSession(Member member, HttpServletRequest request) {
+    public CommonIdResponse provideSession(Optional<Member> member, HttpServletRequest request) {
         // 로그인 정보 검증
-        if (member == null) {
-            throw new MemberException(INVALID_LOGIN_INFO);
-        }
+        Member loginMember = member.orElseThrow(() -> new MemberException(INVALID_LOGIN_INFO));
         // 기존 세션은 파기
         request.getSession().invalidate();
         // 세션이 없다면 새로운 세션 생성
         HttpSession session = request.getSession(true);
         // 세션에 member의 PK 값을 Value로 세팅
-        session.setAttribute("memberId", member.getMemberId());
+        session.setAttribute("memberId", loginMember.getMemberId());
         // 유효 시간은 30분
         session.setMaxInactiveInterval(1800);
 
-        log.info("{} Login", member.getLoginId());
+        log.info("{} Login", loginMember.getMemberId());
 
-        return new CommonIdResponse(member.getMemberId());
+        return new CommonIdResponse(loginMember.getMemberId());
     }
 
     // 세션 검증

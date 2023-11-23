@@ -12,6 +12,8 @@ import squad.board.dto.comment.CommentResponse;
 import squad.board.service.BoardService;
 import squad.board.service.CommentService;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/my-page")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class MyPageApiController {
             @RequestParam Long page,
             @SessionAttribute Long memberId
     ) {
-        return boardService.findBoards(size, page, memberId);
+        return boardService.findBoards(size, page, Optional.ofNullable(memberId));
     }
 
     // 나의 댓글 리스트

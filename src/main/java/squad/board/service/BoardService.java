@@ -20,6 +20,7 @@ import squad.board.repository.ImageMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,22 +42,35 @@ public class BoardService {
         boardMapper.save(board);
         // 이미지 정보 저장
         List<ImageInfoRequest> imageInfoRequests = createBoard.getImageInfo();
-        for (ImageInfoRequest request : imageInfoRequests) {
+        if (!imageInfoRequests.isEmpty()) {
             // DB에 이미지 정보 저장
-            imageMapper.save(request, board.getBoardId());
-            // tmp 폴더의 이미지를 original 폴더로 이동
-            s3Service.moveImageToOriginal(request.getImageUUID(), "tmp", "original");
+            saveImageInfo(board.getBoardId(), imageInfoRequests);
         }
         return new CommonIdResponse(board.getBoardId());
     }
 
-    public ImageInfoResponse saveImage(MultipartFile image) {
-        String imgOriginalName = image.getOriginalFilename();
-        if (!imgOriginalName.substring(imgOriginalName.lastIndexOf(".")).matches("(.png|.jpg|.jpeg)$")) {
+    private void saveImageInfo(Long boardId, List<ImageInfoRequest> imageInfoRequests) {
+        imageMapper.save(imageInfoRequests, boardId);
+        for (ImageInfoRequest request : imageInfoRequests) {
+            // tmp 폴더의 이미지를 original 폴더로 이동
+            s3Service.moveImageToOriginal(request.getImageUUID(), "tmp", "original");
+        }
+    }
+
+    public ImageInfoResponse saveImageToS3(MultipartFile image) {
+        imageValidation(image);
+        String uuid = s3Service.saveFile(image, "tmp");
+        String imgSrc = s3Service.loadImage(uuid, "tmp");
+        return new ImageInfoResponse(uuid, image.getSize(), image.getOriginalFilename(), imgSrc);
+    }
+
+    private static void imageValidation(MultipartFile image) {
+        String imageName = image.getOriginalFilename();
+        if (!imageName.substring(imageName.lastIndexOf(".")).matches("(.png|.jpg|.jpeg)$")) {
             throw new ImageException(ImageStatus.INVALID_IMAGE_EXTENSION);
         }
         // 이미지 파일명 길이 제한
-        if (imgOriginalName.length() > MAX_IMAGE_NAME_SIZE) {
+        if (imageName.length() > MAX_IMAGE_NAME_SIZE) {
             throw new ImageException(ImageStatus.IMAGE_NAME_SIZE_EXCEEDED);
         }
         long imgSize = image.getSize();
@@ -64,20 +78,14 @@ public class BoardService {
         if (imgSize > MAX_IMAGE_SIZE) {
             throw new ImageException(ImageStatus.IMAGE_SIZE_EXCEEDED);
         }
-        String uuid = s3Service.saveFile(image, "tmp");
-        String imgSrc = s3Service.loadImage(uuid, "tmp");
-        return new ImageInfoResponse(uuid, imgSize, imgOriginalName, imgSrc);
     }
 
     @Transactional(readOnly = true)
-    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Long memberId) {
-        if (memberId == null) {
-            log.info("memberId = {}");
-            throw new BoardException(BoardStatus.INVALID_MEMBER_ID);
-        }
+    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Optional<Long> memberId) {
+        Long validMemberId = memberId.orElseThrow(() -> new BoardException(BoardStatus.INVALID_MEMBER_ID));
         Long offset = calcOffset(requestPage, size);
-        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(memberId), size);
-        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, memberId), boardPaging);
+        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(validMemberId), size);
+        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, validMemberId), boardPaging);
     }
 
     @Transactional(readOnly = true)
@@ -93,18 +101,34 @@ public class BoardService {
     }
 
     public CommonIdResponse deleteBoard(Long boardId) {
-        List<String> imageUUID = imageMapper.findImageUUID(boardId);
+        List<String> imageUUID = imageMapper.findImageUuid(boardId);
         for (String uuid : imageUUID) {
             s3Service.deleteImage(uuid, "original");
         }
+        imageMapper.deleteByBoardId(boardId);
         boardMapper.deleteById(boardId);
         commentMapper.deleteByBoardId(boardId);
         return new CommonIdResponse(boardId);
     }
 
-    public CommonIdResponse updateBoard(Long boardId, BoardUpdateRequest dto) {
+    public CommonIdResponse updateBoard(Long boardId, BoardUpdateRequest updateBoard) {
+        // 이미지 정보 저장
+        Optional<List<ImageInfoRequest>> imageInfoRequests =
+                Optional.ofNullable(updateBoard.getImageInfoList());
+        // DB에 이미지 정보 저장
+        imageInfoRequests.ifPresent(infoRequests -> saveImageInfo(boardId, infoRequests));
+        // 기존 이미지 정보
+        List<String> savedImageUuid = imageMapper.findImageUuid(boardId);
+        // 이미지가 있는 게시글일 경우 check
+        if (!savedImageUuid.isEmpty()) {
+            List<String> deleteRequestImageUuid = updateBoard.checkDeletedImage(savedImageUuid);
+            // 삭제 요청 이미지가 있을 경우
+            if (!deleteRequestImageUuid.isEmpty()) {
+                imageMapper.deleteByImageUuid(deleteRequestImageUuid);
+            }
+        }
         LocalDateTime modifiedDate = LocalDateTime.now();
-        boardMapper.updateById(boardId, dto, modifiedDate);
+        boardMapper.updateById(boardId, updateBoard, modifiedDate);
         return new CommonIdResponse(boardId);
     }
 

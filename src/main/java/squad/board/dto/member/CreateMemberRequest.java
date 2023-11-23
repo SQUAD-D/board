@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class CreateMemberRequest {
     @NotEmpty(message = "아이디를 입력해주세요.")
