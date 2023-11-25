@@ -30,8 +30,12 @@ public class BoardUpdateRequest {
     public List<String> checkDeletedImage(List<String> originalUuid) {
         List<String> requestUuid = extractImageUuid();
         return originalUuid.stream()
-                .filter(o -> requestUuid.stream().noneMatch(Predicate.isEqual(o)))
+                .filter(o -> isNoneMatchWithRegex(requestUuid, o))
                 .toList();
+    }
+
+    private boolean isNoneMatchWithRegex(List<String> requestUuid, String o) {
+        return requestUuid.stream().noneMatch(Predicate.isEqual(o));
     }
 
     private List<String> extractImageUuid() {

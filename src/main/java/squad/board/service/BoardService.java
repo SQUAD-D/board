@@ -2,6 +2,7 @@ package squad.board.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,6 @@ import squad.board.repository.ImageMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,9 @@ public class BoardService {
     private final S3Service s3Service;
     private static final long MAX_IMAGE_SIZE = 5000000L;
     private static final int MAX_IMAGE_NAME_SIZE = 100;
-
+    private static final String TEMP_FOLDER_NAME = "tmp";
+    private static final String ORIGINAL_FOLDER_NAME = "original";
+    private static final String IMAGE_EXTENSION_EXTRACT_REGEX = "(.png|.jpg|.jpeg)$";
 
     public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
         // 게시글 저장
@@ -42,7 +44,7 @@ public class BoardService {
         boardMapper.save(board);
         // 이미지 정보 저장
         List<ImageInfoRequest> imageInfoRequests = createBoard.getImageInfo();
-        if (!imageInfoRequests.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(imageInfoRequests)) {
             // DB에 이미지 정보 저장
             saveImageInfo(board.getBoardId(), imageInfoRequests);
         }
@@ -53,20 +55,20 @@ public class BoardService {
         imageMapper.save(imageInfoRequests, boardId);
         for (ImageInfoRequest request : imageInfoRequests) {
             // tmp 폴더의 이미지를 original 폴더로 이동
-            s3Service.moveImageToOriginal(request.getImageUUID(), "tmp", "original");
+            s3Service.moveImageToOriginal(request.getImageUUID(), TEMP_FOLDER_NAME, ORIGINAL_FOLDER_NAME);
         }
     }
 
     public ImageInfoResponse saveImageToS3(MultipartFile image) {
         imageValidation(image);
-        String uuid = s3Service.saveFile(image, "tmp");
-        String imgSrc = s3Service.loadImage(uuid, "tmp");
+        String uuid = s3Service.saveFile(image, TEMP_FOLDER_NAME);
+        String imgSrc = s3Service.loadImage(uuid, TEMP_FOLDER_NAME);
         return new ImageInfoResponse(uuid, image.getSize(), image.getOriginalFilename(), imgSrc);
     }
 
-    private static void imageValidation(MultipartFile image) {
+    private void imageValidation(MultipartFile image) {
         String imageName = image.getOriginalFilename();
-        if (!imageName.substring(imageName.lastIndexOf(".")).matches("(.png|.jpg|.jpeg)$")) {
+        if (!imageName.substring(imageName.lastIndexOf(".")).matches(IMAGE_EXTENSION_EXTRACT_REGEX)) {
             throw new ImageException(ImageStatus.INVALID_IMAGE_EXTENSION);
         }
         // 이미지 파일명 길이 제한
@@ -81,11 +83,13 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Optional<Long> memberId) {
-        Long validMemberId = memberId.orElseThrow(() -> new BoardException(BoardStatus.INVALID_MEMBER_ID));
+    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Long memberId) {
+        if (memberId == null) {
+            throw new BoardException(BoardStatus.INVALID_MEMBER_ID);
+        }
         Long offset = calcOffset(requestPage, size);
-        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(validMemberId), size);
-        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, validMemberId), boardPaging);
+        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(memberId), size);
+        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, memberId), boardPaging);
     }
 
     @Transactional(readOnly = true)
@@ -115,22 +119,25 @@ public class BoardService {
         // 이미지 정보 저장
         List<ImageInfoRequest> imageInfoRequests = updateBoard.getImageInfoList();
         // DB에 이미지 정보 저장
-        if (!imageInfoRequests.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(imageInfoRequests)) {
             saveImageInfo(boardId, imageInfoRequests);
         }
         // 기존 이미지 정보
         List<String> savedImageUuid = imageMapper.findImageUuid(boardId);
         // 이미지가 있는 게시글일 경우 check
-        if (!savedImageUuid.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(savedImageUuid)) {
             List<String> deleteRequestImageUuid = updateBoard.checkDeletedImage(savedImageUuid);
-            // 삭제 요청 이미지가 있을 경우
-            if (!deleteRequestImageUuid.isEmpty()) {
-                imageMapper.deleteByImageUuid(deleteRequestImageUuid);
-            }
+            deleteImageInfo(deleteRequestImageUuid);
         }
         LocalDateTime modifiedDate = LocalDateTime.now();
         boardMapper.updateById(boardId, updateBoard, modifiedDate);
         return new CommonIdResponse(boardId);
+    }
+
+    private void deleteImageInfo(List<String> deleteRequestImageUuid) {
+        if (CollectionUtils.isNotEmpty(deleteRequestImageUuid)) {
+            imageMapper.deleteByImageUuid(deleteRequestImageUuid);
+        }
     }
 
     @Transactional(readOnly = true)

@@ -50,14 +50,6 @@ public class MemberService {
         return new MemberResponse(member);
     }
 
-    // 회원 로그인
-    @Transactional(readOnly = true)
-    public Optional<Member> login(LoginRequest loginRequest) {
-        String loginId = loginRequest.getLoginId();
-        String loginPw = loginRequest.getLoginPw();
-        return Optional.ofNullable(memberMapper.findMemberByLoginIdAndLoginPw(loginId, loginPw));
-    }
-
     public CommonIdResponse logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Long memberId = (Long) session.getAttribute("memberId");
@@ -67,21 +59,23 @@ public class MemberService {
     }
 
     // 세션 발급
-    public CommonIdResponse provideSession(Optional<Member> member, HttpServletRequest request) {
-        // 로그인 정보 검증
-        Member loginMember = member.orElseThrow(() -> new MemberException(INVALID_LOGIN_INFO));
+    public CommonIdResponse provideSession(LoginRequest loginRequest, HttpServletRequest request) {
+        Member findMember = memberMapper.findMemberByLoginIdAndLoginPw(loginRequest.getLoginId(), loginRequest.getLoginPw());
+        if (findMember == null) {
+            throw new MemberException(INVALID_LOGIN_INFO);
+        }
         // 기존 세션은 파기
         request.getSession().invalidate();
         // 세션이 없다면 새로운 세션 생성
         HttpSession session = request.getSession(true);
         // 세션에 member의 PK 값을 Value로 세팅
-        session.setAttribute("memberId", loginMember.getMemberId());
+        session.setAttribute("memberId", findMember.getMemberId());
         // 유효 시간은 30분
         session.setMaxInactiveInterval(1800);
 
-        log.info("{} Login", loginMember.getMemberId());
+        log.info("{} Login", findMember.getMemberId());
 
-        return new CommonIdResponse(loginMember.getMemberId());
+        return new CommonIdResponse(findMember.getMemberId());
     }
 
     // 세션 검증

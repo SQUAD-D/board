@@ -28,7 +28,7 @@ public class MyPageApiController {
             @RequestParam Long page,
             @SessionAttribute Long memberId
     ) {
-        return boardService.findBoards(size, page, Optional.ofNullable(memberId));
+        return boardService.findBoards(size, page, memberId);
     }
 
     // 나의 댓글 리스트

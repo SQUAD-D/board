@@ -41,7 +41,7 @@ public class S3Service {
     }
 
     public void moveImageToOriginal(String imageUUID, String from, String to) {
-        s3Client.copyObject(bucket, "tmp/" + imageUUID, bucket, "original/" + imageUUID);
+        s3Client.copyObject(bucket, from + "/" + imageUUID, bucket, to + "/" + imageUUID);
         s3Client.deleteObject(bucket, from + "/" + imageUUID);
     }
 
