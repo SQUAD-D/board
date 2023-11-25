@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.model.Delete;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
 
@@ -38,7 +41,7 @@ public class S3Service {
     }
 
     public void moveImageToOriginal(String imageUUID, String from, String to) {
-        s3Client.copyObject(bucket, "tmp/" + imageUUID, bucket, "original/" + imageUUID);
+        s3Client.copyObject(bucket, from + "/" + imageUUID, bucket, to + "/" + imageUUID);
         s3Client.deleteObject(bucket, from + "/" + imageUUID);
     }
 

@@ -12,6 +12,8 @@ import squad.board.dto.comment.CommentResponse;
 import squad.board.service.BoardService;
 import squad.board.service.CommentService;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/my-page")
 @RequiredArgsConstructor

@@ -25,12 +25,12 @@ public class BoardApiController {
             @Valid @RequestBody CreateBoardRequest createBoard) {
         return boardService.createBoard(memberId, createBoard);
     }
-    
+
     // 이미지 S3 전송
     @PostMapping(value = "/boards/img")
     public ImageInfoResponse saveImg(
             @RequestPart(value = "image") MultipartFile image) {
-        return boardService.saveImage(image);
+        return boardService.saveImageToS3(image);
     }
 
     // 게시글 삭제

@@ -6,7 +6,6 @@ import squad.board.exception.board.BoardException;
 import squad.board.exception.board.BoardStatus;
 
 @Getter
-@Setter
 public class Pagination {
     private final Long defaultPageSize = 10L;
     private Long totalContent;

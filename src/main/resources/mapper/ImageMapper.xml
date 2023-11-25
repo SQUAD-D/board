@@ -6,13 +6,31 @@
 <mapper namespace="squad.board.repository.ImageMapper">
     <insert id="save" useGeneratedKeys="true" keyColumn="image_id">
         insert into image(board_id, image_name, image_size, image_uuid)
-        values (#{boardId}, #{request.imageOriginalName}, #{request.imageSize}, #{request.imageUUID})
+        values
+        <foreach collection="list" item="imageInfo" separator=",">
+            (#{boardId}, #{imageInfo.imageOriginalName}, #{imageInfo.imageSize}, #{imageInfo.imageUUID})
+        </foreach>
     </insert>
 
-    <select id="findImageFileName" resultType="string">
+    <select id="findImageUuid" resultType="string">
         select image_uuid
         from image
         where board_id = #{boardId}
     </select>
+
+    <delete id="deleteByBoardId">
+        delete
+        from image
+        where board_id = #{boardId};
+    </delete>
+
+    <delete id="deleteByImageUuid" parameterType="string">
+        delete
+        from image
+        where image_uuid in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 
 </mapper>

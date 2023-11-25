@@ -6,7 +6,6 @@ import lombok.Setter;
 import squad.board.domain.member.Member;
 
 @Getter
-@Setter
 public class MemberResponse {
     private String loginId;
 
@@ -15,7 +14,7 @@ public class MemberResponse {
     private String name;
 
     private String nickName;
-    
+
     public MemberResponse(Member member) {
         this.loginId = member.getLoginId();
         this.loginPw = member.getLoginPw();

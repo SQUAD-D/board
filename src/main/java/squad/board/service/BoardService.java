@@ -2,6 +2,7 @@ package squad.board.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +34,9 @@ public class BoardService {
     private final S3Service s3Service;
     private static final long MAX_IMAGE_SIZE = 5000000L;
     private static final int MAX_IMAGE_NAME_SIZE = 100;
-
+    private static final String TEMP_FOLDER_NAME = "tmp";
+    private static final String ORIGINAL_FOLDER_NAME = "original";
+    private static final String IMAGE_EXTENSION_EXTRACT_REGEX = "(.png|.jpg|.jpeg)$";
 
     public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
         // 게시글 저장
@@ -41,22 +44,35 @@ public class BoardService {
         boardMapper.save(board);
         // 이미지 정보 저장
         List<ImageInfoRequest> imageInfoRequests = createBoard.getImageInfo();
-        for (ImageInfoRequest request : imageInfoRequests) {
+        if (CollectionUtils.isNotEmpty(imageInfoRequests)) {
             // DB에 이미지 정보 저장
-            imageMapper.save(request, board.getBoardId());
-            // tmp 폴더의 이미지를 original 폴더로 이동
-            s3Service.moveImageToOriginal(request.getImageUUID(), "tmp", "original");
+            saveImageInfo(board.getBoardId(), imageInfoRequests);
         }
         return new CommonIdResponse(board.getBoardId());
     }
 
-    public ImageInfoResponse saveImage(MultipartFile image) {
-        String imgOriginalName = image.getOriginalFilename();
-        if (!imgOriginalName.substring(imgOriginalName.lastIndexOf(".")).matches("(.png|.jpg|.jpeg)$")) {
+    private void saveImageInfo(Long boardId, List<ImageInfoRequest> imageInfoRequests) {
+        imageMapper.save(imageInfoRequests, boardId);
+        for (ImageInfoRequest request : imageInfoRequests) {
+            // tmp 폴더의 이미지를 original 폴더로 이동
+            s3Service.moveImageToOriginal(request.getImageUUID(), TEMP_FOLDER_NAME, ORIGINAL_FOLDER_NAME);
+        }
+    }
+
+    public ImageInfoResponse saveImageToS3(MultipartFile image) {
+        imageValidation(image);
+        String uuid = s3Service.saveFile(image, TEMP_FOLDER_NAME);
+        String imgSrc = s3Service.loadImage(uuid, TEMP_FOLDER_NAME);
+        return new ImageInfoResponse(uuid, image.getSize(), image.getOriginalFilename(), imgSrc);
+    }
+
+    private void imageValidation(MultipartFile image) {
+        String imageName = image.getOriginalFilename();
+        if (!imageName.substring(imageName.lastIndexOf(".")).matches(IMAGE_EXTENSION_EXTRACT_REGEX)) {
             throw new ImageException(ImageStatus.INVALID_IMAGE_EXTENSION);
         }
         // 이미지 파일명 길이 제한
-        if (imgOriginalName.length() > MAX_IMAGE_NAME_SIZE) {
+        if (imageName.length() > MAX_IMAGE_NAME_SIZE) {
             throw new ImageException(ImageStatus.IMAGE_NAME_SIZE_EXCEEDED);
         }
         long imgSize = image.getSize();
@@ -64,15 +80,11 @@ public class BoardService {
         if (imgSize > MAX_IMAGE_SIZE) {
             throw new ImageException(ImageStatus.IMAGE_SIZE_EXCEEDED);
         }
-        String uuid = s3Service.saveFile(image, "tmp");
-        String imgSrc = s3Service.loadImage(uuid, "tmp");
-        return new ImageInfoResponse(uuid, imgSize, imgOriginalName, imgSrc);
     }
 
     @Transactional(readOnly = true)
     public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Long memberId) {
         if (memberId == null) {
-            log.info("memberId = {}");
             throw new BoardException(BoardStatus.INVALID_MEMBER_ID);
         }
         Long offset = calcOffset(requestPage, size);
@@ -93,19 +105,39 @@ public class BoardService {
     }
 
     public CommonIdResponse deleteBoard(Long boardId) {
-        List<String> imageUUID = imageMapper.findImageUUID(boardId);
+        List<String> imageUUID = imageMapper.findImageUuid(boardId);
         for (String uuid : imageUUID) {
             s3Service.deleteImage(uuid, "original");
         }
+        imageMapper.deleteByBoardId(boardId);
         boardMapper.deleteById(boardId);
         commentMapper.deleteByBoardId(boardId);
         return new CommonIdResponse(boardId);
     }
 
-    public CommonIdResponse updateBoard(Long boardId, BoardUpdateRequest dto) {
+    public CommonIdResponse updateBoard(Long boardId, BoardUpdateRequest updateBoard) {
+        // 이미지 정보 저장
+        List<ImageInfoRequest> imageInfoRequests = updateBoard.getImageInfoList();
+        // DB에 이미지 정보 저장
+        if (CollectionUtils.isNotEmpty(imageInfoRequests)) {
+            saveImageInfo(boardId, imageInfoRequests);
+        }
+        // 기존 이미지 정보
+        List<String> savedImageUuid = imageMapper.findImageUuid(boardId);
+        // 이미지가 있는 게시글일 경우 check
+        if (CollectionUtils.isNotEmpty(savedImageUuid)) {
+            List<String> deleteRequestImageUuid = updateBoard.checkDeletedImage(savedImageUuid);
+            deleteImageInfo(deleteRequestImageUuid);
+        }
         LocalDateTime modifiedDate = LocalDateTime.now();
-        boardMapper.updateById(boardId, dto, modifiedDate);
+        boardMapper.updateById(boardId, updateBoard, modifiedDate);
         return new CommonIdResponse(boardId);
+    }
+
+    private void deleteImageInfo(List<String> deleteRequestImageUuid) {
+        if (CollectionUtils.isNotEmpty(deleteRequestImageUuid)) {
+            imageMapper.deleteByImageUuid(deleteRequestImageUuid);
+        }
     }
 
     @Transactional(readOnly = true)

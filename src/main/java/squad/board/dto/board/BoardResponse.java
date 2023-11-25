@@ -7,7 +7,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @AllArgsConstructor
 // 게시판 목록 DTO
 public class BoardResponse {

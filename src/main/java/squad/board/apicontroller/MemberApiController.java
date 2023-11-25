@@ -47,8 +47,7 @@ public class MemberApiController {
     public CommonIdResponse loginMember(
             @RequestBody @Valid LoginRequest loginRequest,
             HttpServletRequest request) {
-        Member member = memberService.login(loginRequest);
-        return memberService.provideSession(member, request);
+        return memberService.provideSession(loginRequest, request);
     }
 
     // 로그아웃
