@@ -21,11 +21,11 @@ services:
     ports:
       - 8081:8081
   redis:
-    image: redis:latest
+    image: "redis:latest"
     container_name: redis
     hostname: redis
-    expose:
-      - "6379"
+    ports:
+      - 6379:6379
   redis-exporter:
     image: oliver006/redis_exporter
     ports:
