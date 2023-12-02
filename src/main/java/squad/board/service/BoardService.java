@@ -37,16 +37,14 @@ public class BoardService {
     private static final String TEMP_FOLDER_NAME = "tmp";
     private static final String ORIGINAL_FOLDER_NAME = "original";
     private static final String IMAGE_EXTENSION_EXTRACT_REGEX = "(.png|.jpg|.jpeg)$";
-
+    
     public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
         // 게시글 저장
         Board board = createBoard.toEntity(memberId);
         boardMapper.save(board);
         // 이미지 정보 저장
-        List<ImageInfoRequest> imageInfoRequests = createBoard.getImageInfo();
-        if (CollectionUtils.isNotEmpty(imageInfoRequests)) {
-            // DB에 이미지 정보 저장
-            saveImageInfo(board.getBoardId(), imageInfoRequests);
+        if (createBoard.isImageExist()) {
+            saveImageInfo(board.getBoardId(), createBoard.getImageInfo());
         }
         return new CommonIdResponse(board.getBoardId());
     }

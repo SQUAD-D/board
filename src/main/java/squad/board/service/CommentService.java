@@ -39,11 +39,11 @@ public class CommentService {
         return new ContentListResponse<>(commentMapper.findAllCommentsWithNickName(boardId, size, offset, memberId), commentPaging);
     }
 
-    public void deleteComment(Long commentId, Long memberId) {
+    public void deleteComment(Long commentId) {
         commentMapper.deleteByCommentId(commentId);
     }
 
-    public void updateComment(Long commentId, Long memberId, CommentUpdateRequest commentUpdateRequest) {
+    public void updateComment(Long commentId, CommentUpdateRequest commentUpdateRequest) {
         commentMapper.updateByCommentId(commentId, commentUpdateRequest.getContent(), LocalDateTime.now());
     }
 

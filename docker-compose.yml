@@ -1,5 +1,15 @@
 version: '3'
 services:
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
   spring_app1:
     container_name: Spring-Tomcat-1
     image: haechansomg/simple-board:was01
@@ -16,3 +26,14 @@ services:
     hostname: redis
     expose:
       - "6379"
+  redis-exporter:
+    image: oliver006/redis_exporter
+    ports:
+      - 9121:9121
+    environment:
+      REDIS_ADDR: "redis:6379"
+      REDIS_USER: null
+      REDIS_PASSWORD: my_master_password
+    links:
+      - redis
+      - prometheus

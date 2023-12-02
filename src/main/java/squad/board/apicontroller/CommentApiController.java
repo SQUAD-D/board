@@ -44,8 +44,8 @@ public class CommentApiController {
     // 댓글 삭제
     @DeleteMapping("/comments/{commentId}")
     @CommentWriterAuth
-    public void deleteComment(@PathVariable Long commentId, @SessionAttribute Long memberId) {
-        commentService.deleteComment(commentId, memberId);
+    public void deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
     }
 
     // 댓글 수정
@@ -55,13 +55,14 @@ public class CommentApiController {
             @PathVariable Long commentId,
             @SessionAttribute Long memberId,
             @RequestBody CommentUpdateRequest commentUpdateRequest) {
-        commentService.updateComment(commentId, memberId, commentUpdateRequest);
+        commentService.updateComment(commentId, commentUpdateRequest);
     }
 
     // 대댓글 리스트
     @GetMapping("/{boardId}/childComments/{parentCommentId}")
     public ContentListResponse<CommentResponse> getChildComment(
             @PathVariable Long boardId,
+            @SessionAttribute Long memberId,
             @PathVariable Long parentCommentId
     ) {
         return commentService.getChildComment(boardId, parentCommentId);
