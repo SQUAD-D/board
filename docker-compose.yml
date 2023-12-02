@@ -32,8 +32,6 @@ services:
       - 9121:9121
     environment:
       REDIS_ADDR: "redis:6379"
-      REDIS_USER: null
-      REDIS_PASSWORD: my_master_password
     links:
       - redis
       - prometheus
