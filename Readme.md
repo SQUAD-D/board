@@ -4,7 +4,7 @@
 
 ## Project Preview
 
-- Main
+- Main 화면
 
 ![main.png](mdimg%2Fmain.png)
 
