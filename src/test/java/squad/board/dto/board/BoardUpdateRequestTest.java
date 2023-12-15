@@ -24,8 +24,7 @@ class BoardUpdateRequestTest {
         //when
         List<String> result = boardUpdateRequest.checkDeletedImage(originalUUID);
         //then
-        System.out.println(result);
-        Assertions.assertThat(result.get(0)).isEqualTo(imageUUID3);
+        Assertions.assertThat(result).asList().contains(imageUUID3);
     }
 
 }

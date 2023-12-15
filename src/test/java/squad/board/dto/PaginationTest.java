@@ -32,6 +32,7 @@ class PaginationTest {
     @Test
     @DisplayName("총 페이지 수를 벗어난 요청은 예외를 발생시킨다.")
     public void 페이지_접근_예외() {
+        // Pagination 은 존재하지않는 페이지 정보
         Assertions.assertThatExceptionOfType(BoardException.class).isThrownBy(() -> new Pagination(5L, 10L, 5L));
     }
 
