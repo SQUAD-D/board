@@ -1,9 +1,8 @@
 package squad.board.dto.board;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 import squad.board.domain.board.Board;
 
 import java.time.LocalDateTime;
@@ -32,4 +31,9 @@ public class CreateBoardRequest {
                 .modifiedDate(null)
                 .build();
     }
+
+    public boolean isImageExist() {
+        return CollectionUtils.isNotEmpty(imageInfo);
+    }
+
 }

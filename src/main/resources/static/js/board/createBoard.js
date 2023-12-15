@@ -16,9 +16,10 @@ writeBtn.addEventListener("click", () => {
     axios.post(`${homeUrl}/api/boards`, data
     ).then(response => {
         const statusCode = response.status;
+        const data = response.data;
         // 게시글 작성 성공
         if (statusCode === 200) {
-            window.location.href = '/boards';
+            window.location.href = `/boards/${data.id}`;
         }
     }).catch(error => {
         const data = error.response.data;

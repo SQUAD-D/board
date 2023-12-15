@@ -43,6 +43,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-quartz:2.7.5'
     implementation 'org.apache.commons:commons-collections4:4.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
 }
 
 tasks.named('test') {
