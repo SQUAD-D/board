@@ -11,8 +11,11 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+
     // 게시글 저장
     void save(Board board);
+
+    void saveAll(List<Board> boards);
 
     // 상세게시글 조회 [member join for nickname]
     BoardDetailResponse findByIdWithNickName(Long boardId);

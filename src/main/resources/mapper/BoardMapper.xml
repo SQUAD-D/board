@@ -1,111 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="squad.board.repository.BoardMapper">
-    <insert id="save" useGeneratedKeys="true" keyColumn="board_id" keyProperty="boardId"
-            parameterType="squad.board.domain.board.Board">
-        insert into board(member_id, title, content, created_date, modified_date)
-        values (#{memberId}, #{title}, #{content}, #{createdDate}, #{modifiedDate})
-    </insert>
+  <insert id="save" useGeneratedKeys="true" keyColumn="board_id" keyProperty="boardId"
+    parameterType="squad.board.domain.board.Board">
+    insert into board(member_id, title, content, created_date, modified_date)
+    values (#{memberId}, #{title}, #{content}, #{createdDate}, #{modifiedDate})
+  </insert>
 
-    <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponse">
-        select b.board_id,
-        b.title,
-        b.content,
-        m.nick_name,
-        b.created_date
-        from board b
-        join member m
-        on b.member_id = m.member_id
-        <if test='memberId != null'>
-            where b.member_id = #{memberId}
-        </if>
-        order by created_date desc
-        limit #{size} offset #{offset}
-    </select>
+  <insert id="saveAll" keyColumn="board_id" keyProperty="boardId"
+    parameterType="squad.board.domain.board.Board">
+    insert into board(member_id, title, content, created_date, modified_date)
+    values
+    <foreach collection="list" item="boards" separator=",">
+      (#{boards.memberId},
+      #{boards.title},
+      #{boards.content},
+      NULL,
+      NULL
+      )
+    </foreach>
+  </insert>
 
-    <select id="findByKeyWord">
-        select b.board_id,
-        b.title,
-        b.content,
-        m.nick_name,
-        b.created_date
-        from board b
-        join member m
-        on b.member_id = m.member_id
-        <if test='searchType=="content"'>
-            where match(content) against(#{keyWord})
-        </if>
-        <if test='searchType=="title"'>
-            where match(title) against(#{keyWord})
-        </if>
-        <if test='searchType=="titleAndContent"'>
-            where match(content) against(#{keyWord})
-            union
-            select b.board_id,
-            b.title,
-            b.content,
-            m.nick_name,
-            b.created_date
-            from board b
-            join member m
-            on b.member_id = m.member_id
-            where match(title) against(#{keyWord})
-        </if>
-        order by created_date desc
-        limit #{size} offset #{offset};
-    </select>
+  <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponse">
+    select b.board_id,
+    b.title,
+    b.content,
+    m.nick_name,
+    b.created_date
+    from board b
+    join member m
+    on b.member_id = m.member_id
+    <if test='memberId != null'>
+      where b.member_id = #{memberId}
+    </if>
+    order by created_date desc
+    limit #{size} offset #{offset}
+  </select>
 
-    <select id="countBoards">
-        select count(*)
-        from board b
-        <if test='memberId != null'>
-            where b.member_id = #{memberId}
-        </if>
-    </select>
+  <select id="findByKeyWord">
+    select b.board_id,
+    b.title,
+    b.content,
+    m.nick_name,
+    b.created_date
+    from board b
+    join member m
+    on b.member_id = m.member_id
+    <if test='searchType=="content"'>
+      where match(content) against(#{keyWord})
+    </if>
+    <if test='searchType=="title"'>
+      where match(title) against(#{keyWord})
+    </if>
+    <if test='searchType=="titleAndContent"'>
+      where match(content) against(#{keyWord})
+      union
+      select b.board_id,
+      b.title,
+      b.content,
+      m.nick_name,
+      b.created_date
+      from board b
+      join member m
+      on b.member_id = m.member_id
+      where match(title) against(#{keyWord})
+    </if>
+    order by created_date desc
+    limit #{size} offset #{offset};
+  </select>
 
-    <select id="countByKeyWord">
-        select count(*)
-        <if test='searchType=="content"'>
-            from (select * from board where match(content) against(#{keyWord})) as `b*`;
-        </if>
-        <if test='searchType=="title"'>
-            from (select * from board where match(title) against(#{keyWord})) as `b*`;
-        </if>
-        <if test='searchType=="titleAndContent"'>
-            from (select * from board where match(title) against(#{keyWord})
-            union
-            select * from board where match(content) against(#{keyWord})) as `b*`;
-        </if>
-    </select>
+  <select id="countBoards">
+    select count(*)
+    from board b
+    <if test='memberId != null'>
+      where b.member_id = #{memberId}
+    </if>
+  </select>
 
-    <select id="findByIdWithNickName" resultType="squad.board.dto.board.BoardDetailResponse" parameterType="long">
-        select b.board_id, b.title, b.content, m.nick_name, b.created_date, b.modified_date
-        from board b
-                 join member m
-                      on b.member_id = m.member_id
-        where b.board_id = #{boardId}
-    </select>
+  <select id="countByKeyWord">
+    select count(*)
+    <if test='searchType=="content"'>
+      from (select * from board where match(content) against(#{keyWord})) as `b*`;
+    </if>
+    <if test='searchType=="title"'>
+      from (select * from board where match(title) against(#{keyWord})) as `b*`;
+    </if>
+    <if test='searchType=="titleAndContent"'>
+      from (select * from board where match(title) against(#{keyWord})
+      union
+      select * from board where match(content) against(#{keyWord})) as `b*`;
+    </if>
+  </select>
 
-    <delete id="deleteById">
-        delete
-        from board
-        where board_id = #{boardId}
-    </delete>
+  <select id="findByIdWithNickName" resultType="squad.board.dto.board.BoardDetailResponse"
+    parameterType="long">
+    select b.board_id, b.title, b.content, m.nick_name, b.created_date, b.modified_date
+    from board b
+           join member m
+                on b.member_id = m.member_id
+    where b.board_id = #{boardId}
+  </select>
 
-    <select id="findById" resultType="Board">
-        select *
-        from board
-        where board_id = #{boardId}
-    </select>
+  <delete id="deleteById">
+    delete
+    from board
+    where board_id = #{boardId}
+  </delete>
 
-    <update id="updateById">
-        update board
-        set title         = #{dto.title},
-            content       = #{dto.content},
-            modified_date = #{modifiedDate}
-        where board_id = #{boardId}
-    </update>
+  <select id="findById" resultType="Board">
+    select *
+    from board
+    where board_id = #{boardId}
+  </select>
+
+  <update id="updateById">
+    update board
+    set title         = #{dto.title},
+        content       = #{dto.content},
+        modified_date = #{modifiedDate}
+    where board_id = #{boardId}
+  </update>
 </mapper>
