@@ -83,8 +83,7 @@ jobs:
           envs: COMPOSE
           port: 22
           script: |
-                    sudo docker-compose -f $COMPOSE down --rmi all
-                    sudo docker pull haechansomg/simple-board:was01
-            #            sudo docker pull haechansomg/simple-board2:was02
-                    sudo docker-compose -f $COMPOSE up -d
-                    sudo docker image prune -f
+            sudo docker-compose -f $COMPOSE down --rmi all
+            sudo docker pull haechansomg/simple-board:was01
+            sudo docker-compose -f $COMPOSE up -d
+            sudo docker image prune -f
