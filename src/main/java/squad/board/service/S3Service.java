@@ -1,26 +1,28 @@
 package squad.board.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.model.Delete;
-import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
+import squad.board.dto.S3.S3Task;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class S3Service {
+
     private final AmazonS3 s3Client;
+    private final S3MessageQueue messageQueue;
+    private static final String TEMP_FOLDER_NAME = "tmp";
+    private static final String ORIGINAL_FOLDER_NAME = "original";
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -33,16 +35,26 @@ public class S3Service {
         metadata.setContentLength(multipartFile.getSize());
         metadata.setContentType(multipartFile.getContentType());
         try {
-            s3Client.putObject(bucket, folderName + "/" + uuid, multipartFile.getInputStream(), metadata);
+            s3Client.putObject(bucket, folderName + "/" + uuid, multipartFile.getInputStream(),
+                    metadata);
         } catch (IOException e) {
             log.error("Image Upload Failed");
         }
         return uuid;
     }
 
-    public void moveImageToOriginal(String imageUUID, String from, String to) {
-        s3Client.copyObject(bucket, from + "/" + imageUUID, bucket, to + "/" + imageUUID);
-        s3Client.deleteObject(bucket, from + "/" + imageUUID);
+    @Async
+    public void moveImageToOriginal() {
+        while (messageQueue.isEmpty()) {
+            S3Task task = messageQueue.pop();
+            try {
+                s3Client.copyObject(bucket, TEMP_FOLDER_NAME + "/" + task.getImgUUID(), bucket, ORIGINAL_FOLDER_NAME + "/" + task.getImgUUID());
+                s3Client.deleteObject(bucket, TEMP_FOLDER_NAME + "/" + task.getImgUUID());
+            } catch (AmazonServiceException e) {
+                task.increaseFailCount();
+                messageQueue.push(task);
+            }
+        }
     }
 
     // 이미지 소스 반환

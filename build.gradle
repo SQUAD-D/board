@@ -44,6 +44,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-quartz:2.7.5'
     implementation 'org.apache.commons:commons-collections4:4.0'
     implementation group: 'com.github.javafaker', name: 'javafaker', version: '1.0.2'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2")
 }

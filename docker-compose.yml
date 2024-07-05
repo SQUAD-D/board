@@ -32,6 +32,6 @@ services:
     #      - 9121:9121
     #    environment:
     #      REDIS_ADDR: "redis:6379"
-    links:
-      - redis
+#    links:
+#      - redis
 #      - prometheus
