@@ -20,17 +20,17 @@ public class S3Consumer {
     private final S3MailSender s3MailSender;
     private final String MAIL_CONTENT = "The dead letter queue has exceeded its maximum allowable size.";
 
-//    @Scheduled(fixedDelay = 1000)
-//    public void normalConsume() {
-//        while (!messageQueue.isEmpty()) {
-//            String uuid = messageQueue.pop();
-//            try {
-//                s3Service.moveImageToOriginal(uuid);
-//            } catch (AmazonServiceException e) {
-//                deadLetterQueue.push(uuid);
-//            }
-//        }
-//    }
+    @Scheduled(fixedDelay = 1000)
+    public void normalConsume() {
+        while (!messageQueue.isEmpty()) {
+            String uuid = messageQueue.pop();
+            try {
+                s3Service.moveImageToOriginal(uuid);
+            } catch (AmazonServiceException e) {
+                deadLetterQueue.push(uuid);
+            }
+        }
+    }
 
     @Scheduled(fixedDelay = 2000)
     public void deadLetterConsume() {

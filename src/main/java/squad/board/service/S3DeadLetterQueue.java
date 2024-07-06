@@ -12,8 +12,12 @@ public class S3DeadLetterQueue {
 
     private static final String MESSAGE_QUEUE = "s3_dead_letter";
     private static final int EMPTY = 0;
-    private static final int LIMIT = 3;
+    private static final int LIMIT = 30;
     private final RedisTemplate<String, Object> redisTemplate;
+
+    public void push(String uuid) {
+        redisTemplate.opsForList().leftPush(MESSAGE_QUEUE, uuid);
+    }
 
     public void pushAll(List<String> imageUUID) {
         for (String uuid : imageUUID)

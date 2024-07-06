@@ -48,7 +48,7 @@ public class BoardService {
         // 이미지 정보 저장
         if (createBoard.isImageExist()) {
             imageMapper.save(createBoard.getImageInfo(), board.getBoardId());
-            deadLetterQueue.pushAll(createBoard.getImageInfo().stream()
+            messageQueue.pushAll(createBoard.getImageInfo().stream()
                     .map(ImageInfoRequest::getImageUUID)
                     .toList());
         }
