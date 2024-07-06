@@ -1,79 +1,79 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <link rel="icon" href="data:,">
+  <link rel="icon" href="data:,">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200"/>
-    <title>Simple Board</title>
-    <link rel="stylesheet" href="/css/boardBase.css">
-    <link rel="stylesheet" href="/css/createBoard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200"/>
+  <title>Simple Board</title>
+  <link rel="stylesheet" href="/css/boardBase.css">
+  <link rel="stylesheet" href="/css/createBoard.css">
 </head>
 <body>
 <header>
-    <div class="title-container">
-        <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
-    </div>
+  <div class="title-container">
+    <h1 class="top-title"><a href="/boards">Simple Board</a></h1>
+  </div>
 </header>
 
 <main>
-    <div class="main-container">
+  <div class="main-container">
 
-        <div class="menu-container">
-            <button
-                    class="menu-btn"
-                    id="myBoard"
-                    onclick="location.href='/my-page/my-boards'">나의 게시글
-            </button>
-            <button class="menu-btn"
-                    id="myComment"
-                    onclick="location.href='/my-page/my-comments'">나의 댓글
-            </button>
-            <button class="menu-btn"
-                    id="updateInfo"
-                    onclick="location.href='/my-page/info-update'">회원 정보 수정
-            </button>
-            <button class="menu-btn" id="logOut">로그아웃</button>
-        </div>
-        <div class="create-board-container">
-            <input type="text" class="title-box" placeholder="제목을 입력해주세요." id="title"/>
-            <div class="editor-menu">
-                <button id="btn-bold">
-                    <b>B</b>
-                </button>
-                <button id="btn-italic">
-                    <i>I</i>
-                </button>
-                <button id="btn-underline">
-                    <u>U</u>
-                </button>
-                <button id="btn-strike">
-                    <s>S</s>
-                </button>
-                <button id="btn-ordered-list">
-                    OL
-                </button>
-                <button id="btn-unordered-list">
-                    UL
-                </button>
-                <button id="btn-image">
-                    IMG
-                </button>
-            </div>
-            <div id="editor" contenteditable="true"></div>
-        </div>
-        <input type="file" accept="image/*" id="img-selector" style="display: none">
-
-        <div class="create-btn">
-            <button id="write-btn">작성</button>
-        </div>
+    <div class="menu-container">
+      <button
+          class="menu-btn"
+          id="myBoard"
+          onclick="location.href='/my-page/my-boards'">나의 게시글
+      </button>
+      <button class="menu-btn"
+              id="myComment"
+              onclick="location.href='/my-page/my-comments'">나의 댓글
+      </button>
+      <button class="menu-btn"
+              id="updateInfo"
+              onclick="location.href='/my-page/info-update'">회원 정보 수정
+      </button>
+      <button class="menu-btn" id="logOut">로그아웃</button>
     </div>
+    <div class="create-board-container">
+      <input type="text" class="title-box" placeholder="제목을 입력해주세요." id="title"/>
+      <div class="editor-menu">
+        <button id="btn-bold">
+          <b>B</b>
+        </button>
+        <button id="btn-italic">
+          <i>I</i>
+        </button>
+        <button id="btn-underline">
+          <u>U</u>
+        </button>
+        <button id="btn-strike">
+          <s>S</s>
+        </button>
+        <button id="btn-ordered-list">
+          OL
+        </button>
+        <button id="btn-unordered-list">
+          UL
+        </button>
+        <button id="btn-image">
+          IMG
+        </button>
+      </div>
+      <div id="editor" contenteditable="true"></div>
+    </div>
+    <input type="file" accept="image/*" id="img-selector" style="display: none">
+
+    <div class="create-btn">
+      <button id="write-btn">작성</button>
+    </div>
+  </div>
 </main>
 
 <footer>
-    <div class="footer-info">
-        SQUAD-BOARD / Song Hae Chan
-    </div>
+  <div class="footer-info">
+    SQUAD-BOARD / Song Hae Chan
+  </div>
 </footer>
 <script src="/js/home/logoutMember.js"></script>
 <script src="/js/board/editorMenu.js"></script>

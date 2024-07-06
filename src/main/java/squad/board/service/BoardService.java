@@ -1,5 +1,6 @@
 package squad.board.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -21,6 +22,7 @@ import squad.board.repository.ImageMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,33 +30,29 @@ import java.util.List;
 @Slf4j
 public class BoardService {
 
+    private static final long MAX_IMAGE_SIZE = 5000000L;
+    private static final int MAX_IMAGE_NAME_SIZE = 100;
+    private static final String IMAGE_EXTENSION_EXTRACT_REGEX = "(.png|.jpg|.jpeg)$";
+    private static final String TEMP_FOLDER_NAME = "tmp";
     private final BoardMapper boardMapper;
     private final CommentMapper commentMapper;
     private final ImageMapper imageMapper;
     private final S3Service s3Service;
-    private static final long MAX_IMAGE_SIZE = 5000000L;
-    private static final int MAX_IMAGE_NAME_SIZE = 100;
-    private static final String TEMP_FOLDER_NAME = "tmp";
-    private static final String ORIGINAL_FOLDER_NAME = "original";
-    private static final String IMAGE_EXTENSION_EXTRACT_REGEX = "(.png|.jpg|.jpeg)$";
-    
-    public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
+    private final S3MessageQueue messageQueue;
+    private final S3DeadLetterQueue deadLetterQueue;
+
+    public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) throws JsonProcessingException {
         // 게시글 저장
         Board board = createBoard.toEntity(memberId);
         boardMapper.save(board);
         // 이미지 정보 저장
         if (createBoard.isImageExist()) {
-            saveImageInfo(board.getBoardId(), createBoard.getImageInfo());
+            imageMapper.save(createBoard.getImageInfo(), board.getBoardId());
+            deadLetterQueue.pushAll(createBoard.getImageInfo().stream()
+                    .map(ImageInfoRequest::getImageUUID)
+                    .toList());
         }
         return new CommonIdResponse(board.getBoardId());
-    }
-
-    private void saveImageInfo(Long boardId, List<ImageInfoRequest> imageInfoRequests) {
-        imageMapper.save(imageInfoRequests, boardId);
-        for (ImageInfoRequest request : imageInfoRequests) {
-            // tmp 폴더의 이미지를 original 폴더로 이동
-            s3Service.moveImageToOriginal(request.getImageUUID(), TEMP_FOLDER_NAME, ORIGINAL_FOLDER_NAME);
-        }
     }
 
     public ImageInfoResponse saveImageToS3(MultipartFile image) {
@@ -66,7 +64,8 @@ public class BoardService {
 
     private void imageValidation(MultipartFile image) {
         String imageName = image.getOriginalFilename();
-        if (!imageName.substring(imageName.lastIndexOf(".")).matches(IMAGE_EXTENSION_EXTRACT_REGEX)) {
+        if (!imageName.substring(imageName.lastIndexOf("."))
+                .matches(IMAGE_EXTENSION_EXTRACT_REGEX)) {
             throw new ImageException(ImageStatus.INVALID_IMAGE_EXTENSION);
         }
         // 이미지 파일명 길이 제한
@@ -81,20 +80,28 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage, Long memberId) {
-        if (memberId == null) {
+    public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage,
+                                                         Long memberId) {
+        if (memberId==null) {
             throw new BoardException(BoardStatus.INVALID_MEMBER_ID);
         }
         Long offset = calcOffset(requestPage, size);
-        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(memberId), size);
-        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, memberId), boardPaging);
+        Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(memberId),
+                size);
+        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, memberId),
+                boardPaging);
+    }
+
+    private Long calcOffset(Long page, Long size) {
+        return (page - 1) * size;
     }
 
     @Transactional(readOnly = true)
     public ContentListResponse<BoardResponse> findBoards(Long size, Long requestPage) {
         Long offset = calcOffset(requestPage, size);
         Pagination boardPaging = new Pagination(requestPage, boardMapper.countBoards(null), size);
-        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, null), boardPaging);
+        return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, null),
+                boardPaging);
     }
 
     @Transactional(readOnly = true)
@@ -118,7 +125,7 @@ public class BoardService {
         List<ImageInfoRequest> imageInfoRequests = updateBoard.getImageInfoList();
         // DB에 이미지 정보 저장
         if (CollectionUtils.isNotEmpty(imageInfoRequests)) {
-            saveImageInfo(boardId, imageInfoRequests);
+            imageMapper.save(imageInfoRequests, boardId);
         }
         // 기존 이미지 정보
         List<String> savedImageUuid = imageMapper.findImageUuid(boardId);
@@ -139,14 +146,14 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public ContentListResponse<BoardResponse> searchBoard(String keyWord, Long size, Long requestPage, String searchType) {
+    public ContentListResponse<BoardResponse> searchBoard(String keyWord, Long size,
+                                                          Long requestPage, String searchType) {
         Long offset = calcOffset(requestPage, size);
-        Pagination boardPaging = new Pagination(requestPage, boardMapper.countByKeyWord(keyWord, searchType), size);
-        List<BoardResponse> byKeyWord = boardMapper.findByKeyWord(keyWord, size, offset, searchType);
-        return new ContentListResponse<>(boardMapper.findByKeyWord(keyWord, size, offset, searchType), boardPaging);
-    }
-
-    private Long calcOffset(Long page, Long size) {
-        return (page - 1) * size;
+        Pagination boardPaging = new Pagination(requestPage,
+                boardMapper.countByKeyWord(keyWord, searchType), size);
+        List<BoardResponse> byKeyWord = boardMapper.findByKeyWord(keyWord, size, offset,
+                searchType);
+        return new ContentListResponse<>(
+                boardMapper.findByKeyWord(keyWord, size, offset, searchType), boardPaging);
     }
 }

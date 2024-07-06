@@ -1,7 +1,9 @@
 package squad.board.apicontroller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import squad.board.aop.BoardWriterAuth;
@@ -22,9 +24,18 @@ public class BoardApiController {
     @PostMapping(value = "/boards")
     public CommonIdResponse saveBoard(
             @SessionAttribute Long memberId,
-            @Valid @RequestBody CreateBoardRequest createBoard) {
+            @Valid @RequestBody CreateBoardRequest createBoard) throws JsonProcessingException {
         return boardService.createBoard(memberId, createBoard);
     }
+
+//    @PostMapping(value = "/boards", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
+//        MediaType.APPLICATION_JSON_VALUE})
+//    public CommonIdResponse saveBoard(
+//        @SessionAttribute Long memberId,
+//        @RequestPart CreateBoardRequest createBoard,
+//        @RequestPart("images") MultipartFile[] images) {
+//        return boardService.createBoard(memberId, createBoard, images);
+//    }
 
     // 이미지 S3 전송
     @PostMapping(value = "/boards/img")
