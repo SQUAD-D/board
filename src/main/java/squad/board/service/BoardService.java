@@ -1,8 +1,6 @@
 package squad.board.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,12 +11,7 @@ import squad.board.commonresponse.CommonIdResponse;
 import squad.board.domain.board.Board;
 import squad.board.dto.ContentListResponse;
 import squad.board.dto.Pagination;
-import squad.board.dto.board.BoardDetailResponse;
-import squad.board.dto.board.BoardResponse;
-import squad.board.dto.board.BoardUpdateRequest;
-import squad.board.dto.board.CreateBoardRequest;
-import squad.board.dto.board.ImageInfoRequest;
-import squad.board.dto.board.ImageInfoResponse;
+import squad.board.dto.board.*;
 import squad.board.exception.board.BoardException;
 import squad.board.exception.board.BoardStatus;
 import squad.board.exception.image.ImageException;
@@ -27,34 +20,38 @@ import squad.board.repository.BoardMapper;
 import squad.board.repository.CommentMapper;
 import squad.board.repository.ImageMapper;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class BoardService {
 
+    private static final long MAX_IMAGE_SIZE = 5000000L;
+    private static final int MAX_IMAGE_NAME_SIZE = 100;
+    private static final String IMAGE_EXTENSION_EXTRACT_REGEX = "(.png|.jpg|.jpeg)$";
+    private static final String TEMP_FOLDER_NAME = "tmp";
     private final BoardMapper boardMapper;
     private final CommentMapper commentMapper;
     private final ImageMapper imageMapper;
     private final S3Service s3Service;
     private final S3MessageQueue messageQueue;
-    private static final long MAX_IMAGE_SIZE = 5000000L;
-    private static final int MAX_IMAGE_NAME_SIZE = 100;
-    private static final String IMAGE_EXTENSION_EXTRACT_REGEX = "(.png|.jpg|.jpeg)$";
-    private static final String TEMP_FOLDER_NAME = "tmp";
+    private final S3DeadLetterQueue deadLetterQueue;
 
-    public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) {
+    public CommonIdResponse createBoard(Long memberId, CreateBoardRequest createBoard) throws JsonProcessingException {
         // 게시글 저장
         Board board = createBoard.toEntity(memberId);
         boardMapper.save(board);
         // 이미지 정보 저장
         if (createBoard.isImageExist()) {
             imageMapper.save(createBoard.getImageInfo(), board.getBoardId());
-            messageQueue.pushAll(createBoard.getImageInfo());
-            s3Service.moveImageToOriginal();
+            deadLetterQueue.pushAll(createBoard.getImageInfo().stream()
+                    .map(ImageInfoRequest::getImageUUID)
+                    .toList());
         }
-        log.info("board id = {}, successfully moved {} images", board.getBoardId(),
-                createBoard.getImageInfo().size());
         return new CommonIdResponse(board.getBoardId());
     }
 
@@ -93,6 +90,10 @@ public class BoardService {
                 size);
         return new ContentListResponse<>(boardMapper.findAllWithNickName(size, offset, memberId),
                 boardPaging);
+    }
+
+    private Long calcOffset(Long page, Long size) {
+        return (page - 1) * size;
     }
 
     @Transactional(readOnly = true)
@@ -154,9 +155,5 @@ public class BoardService {
                 searchType);
         return new ContentListResponse<>(
                 boardMapper.findByKeyWord(keyWord, size, offset, searchType), boardPaging);
-    }
-
-    private Long calcOffset(Long page, Long size) {
-        return (page - 1) * size;
     }
 }
