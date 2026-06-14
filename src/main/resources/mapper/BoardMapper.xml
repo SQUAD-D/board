@@ -26,50 +26,67 @@
 
   <select id="findAllWithNickName" resultType="squad.board.dto.board.BoardResponse">
     select b.board_id,
-    b.title,
-    b.content,
-    m.nick_name,
-    b.created_date
+           b.title,
+           b.content,
+           m.nick_name,
+           b.created_date
     from board b
-    join member m
-    on b.member_id = m.member_id
-    <if test='memberId != null'>
-      where b.member_id = #{memberId}
-    </if>
-    order by created_date desc
-    limit #{size} offset #{offset}
+           join member m on b.member_id = m.member_id
+           join (
+             select board_id
+             from board
+             <if test='memberId != null'>
+               where member_id = #{memberId}
+             </if>
+             order by created_date desc
+             limit #{size} offset #{offset}
+           ) as ids on b.board_id = ids.board_id
+    order by b.created_date desc
   </select>
 
   <select id="findByKeyWord">
-    select b.board_id,
-    b.title,
-    b.content,
-    m.nick_name,
-    b.created_date
-    from board b
-    join member m
-    on b.member_id = m.member_id
     <if test='searchType=="content"'>
-      where match(content) against(#{keyWord})
+      select b.board_id, b.title, b.content, m.nick_name, b.created_date
+      from board b
+             join member m on b.member_id = m.member_id
+             join (
+               select board_id
+               from board
+               where match(content) against(#{keyWord})
+               order by created_date desc
+               limit #{size} offset #{offset}
+             ) as ids on b.board_id = ids.board_id
+      order by b.created_date desc
     </if>
     <if test='searchType=="title"'>
-      where match(title) against(#{keyWord})
+      select b.board_id, b.title, b.content, m.nick_name, b.created_date
+      from board b
+             join member m on b.member_id = m.member_id
+             join (
+               select board_id
+               from board
+               where match(title) against(#{keyWord})
+               order by created_date desc
+               limit #{size} offset #{offset}
+             ) as ids on b.board_id = ids.board_id
+      order by b.created_date desc
     </if>
     <if test='searchType=="titleAndContent"'>
-      where match(content) against(#{keyWord})
-      union
-      select b.board_id,
-      b.title,
-      b.content,
-      m.nick_name,
-      b.created_date
+      select b.board_id, b.title, b.content, m.nick_name, b.created_date
       from board b
-      join member m
-      on b.member_id = m.member_id
-      where match(title) against(#{keyWord})
+             join member m on b.member_id = m.member_id
+             join (
+               select board_id
+               from (
+                 select board_id, created_date from board where match(content) against(#{keyWord})
+                 union
+                 select board_id, created_date from board where match(title) against(#{keyWord})
+               ) as union_result
+               order by created_date desc
+               limit #{size} offset #{offset}
+             ) as ids on b.board_id = ids.board_id
+      order by b.created_date desc
     </if>
-    order by created_date desc
-    limit #{size} offset #{offset};
   </select>
 
   <select id="countBoards">
